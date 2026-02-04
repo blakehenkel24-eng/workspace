@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MBB Slide Generator - Demo</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+        }
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+        .input-panel {
+            width: 400px;
+            background: white;
+            padding: 24px;
+            border-right: 1px solid #e0e0e0;
+            overflow-y: auto;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 8px;
+            color: #1a1a1a;
+        }
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+        .demo-badge {
+            display: inline-block;
+            background: #0066cc;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            font-weight: 600;
+            font-size: 13px;
+            color: #333;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        input[type="text"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d0d0d0;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        select {
+            cursor: pointer;
+            background: white;
+        }
+        .generate-btn {
+            width: 100%;
+            padding: 14px;
+            background: #0066cc;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .generate-btn:hover { background: #0052a3; }
+        .generate-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .output-panel {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+        }
+        .output-section {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .output-section h2 {
+            font-size: 16px;
+            margin-bottom: 16px;
+            color: #333;
+        }
+        .slide-preview {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 40px;
+            min-height: 400px;
+            position: relative;
+        }
+        .slide-header {
+            border-bottom: 3px solid #0066cc;
+            padding-bottom: 12px;
+            margin-bottom: 24px;
+        }
+        .slide-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a1a1a;
+            line-height: 1.3;
+        }
+        .slide-content {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #333;
+        }
+        .slide-content ul {
+            padding-left: 24px;
+        }
+        .slide-content li {
+            margin-bottom: 12px;
+        }
+        .slide-content li li {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 6px;
+        }
+        .text-output {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 16px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            position: relative;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            padding: 6px 12px;
+            background: #0066cc;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .copy-btn:hover { background: #0052a3; }
+        .loading {
+            text-align: center;
+            padding: 60px;
+            color: #666;
+        }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #e0e0e0;
+            border-top-color: #0066cc;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .placeholder {
+            text-align: center;
+            padding: 80px 40px;
+            color: #999;
+        }
+        .placeholder-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="input-panel">
+            <h1>MBB Slide Generator</h1>
+            <span class="demo-badge">Demo Mode</span>
+            <p class="subtitle">Generate McKinsey, Bain, BCG-style slides</p>
+            
+            <form id="slideForm">
+                <div class="form-group">
+                    <label for="slideType">Slide Type</label>
+                    <select id="slideType" required>
+                        <option value="">Select type...</option>
+                        <option value="executive-summary">Executive Summary</option>
+                        <option value="situation-analysis">Situation Analysis</option>
+                        <option value="recommendation">Recommendation</option>
+                        <option value="data-insight">Data Insight</option>
+                        <option value="comparison">Comparison/Framework</option>
+                        <option value="process">Process/Workflow</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="audience">Audience</label>
+                    <select id="audience" required>
+                        <option value="">Select audience...</option>
+                        <option value="c-suite">C-Suite / Board</option>
+                        <option value="pe-investors">PE Investors</option>
+                        <option value="management">Management Team</option>
+                        <option value="consultants">Internal Consultants</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="context">Slide Context / Description</label>
+                    <textarea id="context" placeholder="Describe what this slide needs to communicate..." required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="data">Data / Information (Optional)</label>
+                    <textarea id="data" placeholder="Paste any data, metrics, or information to include..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="takeaway">Key Takeaway (Optional)</label>
+                    <input type="text" id="takeaway" placeholder="The one thing you want them to remember...">
+                </div>
+                
+                <button type="submit" class="generate-btn" id="generateBtn">Generate Slide</button>
+            </form>
+        </div>
+        
+        <div class="output-panel" id="outputPanel">
+            <div class="placeholder">
+                <div class="placeholder-icon">📊</div>
+                <h3>Ready to Generate</h3>
+                <p>Fill out the form and click "Generate Slide" to create your MBB-style slide.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Demo content templates
+        const demoSlides = {
+            'executive-summary': {
+                title: 'Q4 Performance: Strong Growth Despite Margin Pressure',
+                content: [
+                    'Revenue grew 15% YoY to $50M, exceeding target by 3 percentage points',
+                    ['Driven by enterprise segment expansion and new product launch', 'Customer acquisition cost improved 12% through optimized channels'],
+                    'Margin compression of 400bps reflects supply chain headwinds',
+                    ['COGS increased 22% due to raw material inflation', 'Pricing power partially offset cost increases'],
+                    'EBITDA of $7M (14% margin) vs. $9M prior year (18% margin)',
+                    ['Actions underway to restore margin through sourcing and pricing']
+                ]
+            },
+            'recommendation': {
+                title: 'Three Strategic Actions to Capture $50M Opportunity',
+                content: [
+                    'Implement dynamic pricing strategy to recover 200bps margin',
+                    ['Target price increases of 5-8% in low-elasticity segments', 'Expected impact: $2.5M annual EBITDA improvement'],
+                    'Renegotiate supplier contracts with top 5 vendors',
+                    ['Consolidate spend to secure volume discounts', 'Explore near-shoring alternatives to reduce logistics costs'],
+                    'Accelerate high-margin service revenue growth',
+                    ['Cross-sell to existing customer base', 'Target: 25% of revenue mix by Q4']
+                ]
+            },
+            'situation-analysis': {
+                title: 'Market Position: Growth Opportunities and Competitive Risks',
+                content: [
+                    'Market growing at 8% CAGR with consolidation underway',
+                    ['Top 3 players control 65% market share (up from 52% in 2021)', 'Customer preference shifting toward integrated solutions'],
+                    'Our competitive position: Strong product, limited distribution',
+                    ['Technology rated #1 in independent benchmark study', 'Sales coverage gaps in Midwest and Southeast regions'],
+                    'Key risk: Well-funded competitor planning aggressive expansion',
+                    ['$100M war chest from recent PE backing', 'Hiring our former sales leadership']
+                ]
+            },
+            'data-insight': {
+                title: 'Customer Churn Analysis Reveals Retention Leverage Points',
+                content: [
+                    'Churn concentrated in first 90 days: 40% of annual attrition',
+                    ['Onboarding completion rate only 65%', 'Customers with \\u003c3 logins in month 1 have 3x churn risk'],
+                    'Enterprise segment shows 95% retention vs. 78% for SMB',
+                    ['Dedicated CSMs drive 12-point improvement in net revenue retention', 'SMB self-service tools have 40% lower adoption than benchmark'],
+                    'Product usage is strongest predictor of retention',
+                    ['Power users (\\u003e10 features used) have 98% renewal rate', 'Single-feature users churn at 35% annually']
+                ]
+            },
+            'comparison': {
+                title: 'Strategic Options: Build vs. Buy vs. Partner Analysis',
+                content: [
+                    'Build in-house: Highest control, longest time-to-market',
+                    ['18-month development timeline with $5M investment', 'Full ownership of IP and customization capability'],
+                    'Acquisition: Fastest market entry, integration risk',
+                    ['$30-50M purchase price for viable targets', '6-12 month integration timeline, 25% customer overlap'],
+                    'Strategic partnership: Balanced risk, shared economics',
+                    ['Revenue share model (70/30 split)', '4-6 month to launch, limited differentiation']
+                ]
+            },
+            'process': {
+                title: 'Implementation Roadmap: 90-Day Execution Plan',
+                content: [
+                    'Phase 1 (Days 1-30): Foundation and quick wins',
+                    ['Finalize vendor contracts and pricing strategy', 'Launch pilot with 5 key accounts', 'Establish weekly steering committee cadence'],
+                    'Phase 2 (Days 31-60): Scale and optimize',
+                    ['Roll out to full customer base', 'Implement automated monitoring and alerting', 'Train support team on new processes'],
+                    'Phase 3 (Days 61-90): Measure and iterate',
+                    ['Conduct comprehensive performance review', 'Document lessons learned and best practices', 'Plan Phase 2 expansion opportunities']
+                ]
+            }
+        };
+
+        function generateDemoSlide(slideType, audience, context, data, takeaway) {
+            const template = demoSlides[slideType] || demoSlides['executive-summary'];
+            
+            // Customize based on context keywords
+            let title = template.title;
+            if (context.toLowerCase().includes('revenue')) {
+                title = title.replace('Q4 Performance', 'Revenue Growth Analysis');
+            }
+            if (audience === 'pe-investors') {
+                title = title.replace('Strategic', 'Value Creation');
+            }
+            
+            return {
+                title: title,
+                content: template.content,
+                takeaway: takeaway || 'Immediate action required to address key challenges while capitalizing on growth opportunities.'
+            };
+        }
+
+        function formatContent(content) {
+            let html = '<ul>';
+            content.forEach(item => {
+                if (Array.isArray(item)) {
+                    html += '<ul>';
+                    item.forEach(sub => {
+                        html += `<li>${sub}</li>`;
+                    });
+                    html += '</ul>';
+                } else {
+                    html += `<li>${item}</li>`;
+                }
+            });
+            html += '</ul>';
+            return html;
+        }
+
+        function formatPlainText(title, content, takeaway) {
+            let text = `TITLE: ${title}\n\n`;
+            content.forEach(item => {
+                if (Array.isArray(item)) {
+                    item.forEach(sub => {
+                        text += `  • ${sub}\n`;
+                    });
+                } else {
+                    text += `• ${item}\n`;
+                }
+            });
+            text += `\nKEY TAKEAWAY: ${takeaway}`;
+            return text;
+        }
+
+        document.getElementById('slideForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const btn = document.getElementById('generateBtn');
+            const output = document.getElementById('outputPanel');
+            
+            const formData = {
+                slideType: document.getElementById('slideType').value,
+                audience: document.getElementById('audience').value,
+                context: document.getElementById('context').value,
+                data: document.getElementById('data').value,
+                takeaway: document.getElementById('takeaway').value
+            };
+            
+            btn.disabled = true;
+            btn.textContent = 'Generating...';
+            output.innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Crafting your slide...</p>
+                </div>
+            `;
+            
+            // Simulate API delay
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            
+            const result = generateDemoSlide(
+                formData.slideType,
+                formData.audience,
+                formData.context,
+                formData.data,
+                formData.takeaway
+            );
+            
+            output.innerHTML = `
+                <div class="output-section">
+                    <h2>📊 Slide Preview</h2>
+                    <div class="slide-preview">
+                        <div class="slide-header">
+                            <div class="slide-title">${result.title}</div>
+                        </div>
+                        <div class="slide-content">
+                            ${formatContent(result.content)}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="output-section">
+                    <h2>📋 Copy-Paste Content</h2>
+                    <div class="text-output" id="copyText">
+                        <button class="copy-btn" onclick="copyToClipboard()">Copy</button>
+${formatPlainText(result.title, result.content, result.takeaway)}
+                    </div>
+                </div>
+                
+                <div class="output-section">
+                    <h2>🔄 Regenerate</h2>
+                    <button class="generate-btn" onclick="document.getElementById('generateBtn').click()">
+                        Try Again
+                    </button>
+                    <p style="margin-top: 12px; color: #666; font-size: 13px;">
+                        Demo mode: No API costs. Each slide type shows different template.
+                    </p>
+                </div>
+            `;
+            
+            btn.disabled = false;
+            btn.textContent = 'Generate Slide';
+        });
+
+        function copyToClipboard() {
+            const text = document.getElementById('copyText').innerText.replace('Copy', '').trim();
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = document.querySelector('.copy-btn');
+                btn.textContent = 'Copied!';
+                setTimeout(() => btn.textContent = 'Copy', 2000);
+            });
+        }
+    </script>
+</body>
+</html>

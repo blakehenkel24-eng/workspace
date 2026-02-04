@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slide Science AI — Free AI Resources for Consultants</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bain-red: #CC0000;
+            --bain-red-dark: #990000;
+            --text-dark: #1a1a1a;
+            --text-gray: #666;
+            --bg-light: #f8f9fa;
+            --white: #ffffff;
+            --border: #e0e0e0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background: var(--white);
+        }
+
+        /* Header */
+        header {
+            padding: 20px 40px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--bain-red);
+            letter-spacing: -0.5px;
+        }
+
+        .logo span {
+            color: var(--text-dark);
+            font-weight: 400;
+        }
+
+        /* Hero */
+        .hero {
+            padding: 80px 40px 60px;
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 56px;
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 24px;
+            letter-spacing: -1px;
+        }
+
+        .hero p {
+            font-size: 22px;
+            color: var(--text-gray);
+            max-width: 700px;
+            margin: 0 auto 40px;
+        }
+
+        /* Resources Grid */
+        .resources {
+            padding: 60px 40px;
+            background: var(--bg-light);
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 32px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 60px;
+        }
+
+        .resource-card {
+            background: var(--white);
+            border-radius: 8px;
+            padding: 32px;
+            border: 1px solid var(--border);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .resource-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+        }
+
+        .resource-icon {
+            font-size: 40px;
+            margin-bottom: 16px;
+        }
+
+        .resource-card h3 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .resource-card p {
+            color: var(--text-gray);
+            font-size: 15px;
+        }
+
+        /* Articles Section */
+        .articles {
+            padding: 60px 40px;
+        }
+
+        .article-list {
+            display: grid;
+            gap: 16px;
+        }
+
+        .article-item {
+            padding: 24px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s;
+        }
+
+        .article-item:hover {
+            border-color: var(--bain-red);
+        }
+
+        .article-item h4 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .article-item span {
+            color: var(--bain-red);
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        /* CTA Section */
+        .cta {
+            padding: 80px 40px;
+            background: var(--text-dark);
+            color: var(--white);
+            text-align: center;
+        }
+
+        .cta h2 {
+            font-size: 40px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .cta p {
+            font-size: 18px;
+            color: #999;
+            margin-bottom: 40px;
+        }
+
+        /* Form */
+        .signup-form {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 14px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            background: rgba(255,255,255,0.1);
+            color: var(--white);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .form-group input::placeholder {
+            color: #888;
+        }
+
+        .form-group select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23888' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            padding-right: 40px;
+        }
+
+        .form-group select option {
+            background: var(--text-dark);
+            color: var(--white);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: var(--bain-red);
+            color: var(--white);
+            border: none;
+            border-radius: 6px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .submit-btn:hover {
+            background: var(--bain-red-dark);
+        }
+
+        .privacy-note {
+            font-size: 13px;
+            color: #666;
+            margin-top: 16px;
+        }
+
+        /* Footer */
+        footer {
+            padding: 40px;
+            text-align: center;
+            color: var(--text-gray);
+            font-size: 14px;
+            border-top: 1px solid var(--border);
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .hero h1 {
+                font-size: 36px;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .resource-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">Slide Science<span> AI</span></div>
+    </header>
+
+    <section class="hero">
+        <h1>AI-powered resources for modern consultants</h1>
+        <p>Free prompts, templates, and frameworks to help consultants work smarter with AI. Used by operators at top consulting firms and PE shops.</p>
+    </section>
+
+    <section class="resources">
+        <div class="container">
+            <h2 class="section-title">What's inside</h2>
+            
+            <div class="resource-grid">
+                <div class="resource-card">
+                    <div class="resource-icon">🤖</div>
+                    <h3>AI Prompt Library</h3>
+                    <p>50+ tested prompts for slide creation, data analysis, client communication, and research. Copy-paste ready.</p>
+                </div>
+                
+                <div class="resource-card">
+                    <div class="resource-icon">📋</div>
+                    <h3>Custom Project Instructions</h3>
+                    <p>Pre-built instructions for Claude, ChatGPT, and other AI tools optimized for consulting workflows.</p>
+                </div>
+                
+                <div class="resource-card">
+                    <div class="resource-icon">📊</div>
+                    <h3>Excel Templates</h3>
+                    <p>Financial models, data analysis frameworks, and presentation-ready charts. Plug in your data and go.</p>
+                </div>
+                
+                <div class="resource-card">
+                    <div class="resource-icon">⚡</div>
+                    <h3>Workflow Automations</h3>
+                    <p>Step-by-step guides for automating repetitive tasks. Save hours on data processing and formatting.</p>
+                </div>
+                
+                <div class="resource-card">
+                    <div class="resource-icon">🎯</div>
+                    <h3>Slide Frameworks</h3>
+                    <p>Proven structures for executive summaries, recommendations, and situation analyses. MBB-tested.</p>
+                </div>
+                
+                <div class="resource-card">
+                    <div class="resource-icon">📚</div>
+                    <h3>AI Tool Stack Guide</h3>
+                    <p>The complete toolkit for AI-powered consulting. What to use, when to use it, and how much it costs.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="articles">
+        <div class="container">
+            <h2 class="section-title">Latest Articles</h2>
+            
+            <div class="article-list">
+                <div class="article-item">
+                    <h4>How I Use Claude for Consulting Work (Custom Projects Walkthrough)</h4>
+                    <span>Read →</span>
+                </div>
+                
+                <div class="article-item">
+                    <h4>Setting Up Your AI Environment: A Consultant's Guide</h4>
+                    <span>Read →</span>
+                </div>
+                
+                <div class="article-item">
+                    <h4>5 AI Prompts That Saved Me 10 Hours Last Week</h4>
+                    <span>Read →</span>
+                </div>
+                
+                <div class="article-item">
+                    <h4>From Data to Insights: Automating Analysis with AI</h4>
+                    <span>Read →</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta">
+        <h2>Get free access to the library</h2>
+        <p>Join 0+ consultants already using these resources. No spam, unsubscribe anytime.</p>
+        
+        <form class="signup-form" id="signupForm">
+            <div class="form-group">
+                <input type="email" id="email" placeholder="Work email" required>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <input type="text" id="company" placeholder="Company" required>
+                </div>
+                
+                <div class="form-group">
+                    <select id="role" required>
+                        <option value="" disabled selected>Role</option>
+                        <option value="consultant">Consultant</option>
+                        <option value="associate">Associate</option>
+                        <option value="manager">Manager</option>
+                        <option value="director">Director / Partner</option>
+                        <option value="pe">Private Equity</option>
+                        <option value="operator">Operator</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+            </div>
+            
+            <button type="submit" class="submit-btn">Get Free Access →</button>
+            
+            <p class="privacy-note">We respect your privacy. Your information will never be shared.</p>
+        </form>
+    </section>
+
+    <footer>
+        <p>© 2026 Slide Science AI. Built for consultants, by consultants.</p>
+    </footer>
+
+    <script>
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const company = document.getElementById('company').value;
+            const role = document.getElementById('role').value;
+            
+            // For now, just show a thank you message
+            // In production, this would send to your backend/ESP
+            alert('Thanks for signing up! We\'ll send you access to the library shortly.');
+            
+            // Log to console (for testing)
+            console.log('Signup:', { email, company, role });
+            
+            // Reset form
+            this.reset();
+        });
+    </script>
+</body>
+</html>
