@@ -2,195 +2,397 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="theme-color" content="#0f172a">
-  <title>DocuGen - AI Document Generator</title>
-  <link rel="stylesheet" href="../styles.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SlideTheory v2.0 - MBB-Inspired Slide Generation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="app-container">
+  <!-- Skip to content link for keyboard users -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  
+  <!-- ARIA live region for status announcements -->
+  <div id="statusAnnouncer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+  
+  <div class="app">
     <!-- Header -->
-    <header class="app-header">
-      <h1 class="app-title">DocuGen</h1>
-      <span class="app-badge">Beta</span>
-    </header>
-
-    <!-- Mobile Step Indicator -->
-    <nav class="stepper" aria-label="Form steps">
-      <div class="stepper-track">
-        <button class="step active" data-step="1" aria-current="step">
-          <span class="step-number">1</span>
-          <span class="step-label">Form</span>
+    <header class="header">
+      <div class="logo">Slide<span class="logo-accent">Theory</span>
+        <span class="version-badge">v2.0</span>
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn" id="templatesBtn" title="Quick Templates">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7"/>
+            <rect x="14" y="3" width="7" height="7"/>
+            <rect x="14" y="14" width="7" height="7"/>
+            <rect x="3" y="14" width="7" height="7"/>
+          </svg>
         </button>
-        <div class="stepper-line"></div>
-        <button class="step" data-step="2">
-          <span class="step-number">2</span>
-          <span class="step-label">Preview</span>
+        <button class="icon-btn" id="toggleVersionBtn" title="Switch to v1">
+          <span style="font-size: 11px; font-weight: 600;">V1</span>
+        </button>
+        <button class="icon-btn" id="helpBtn" title="Help (?)" data-shortcut="?">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+            <path d="M12 17h.01"/>
+          </svg>
         </button>
       </div>
-    </nav>
+    </header>
 
-    <!-- Main Content Area with Swipe Support -->
-    <main class="main-content" id="mainContent">
-      <!-- Step 1: Form -->
-      <section class="step-panel active" id="formStep" aria-labelledby="form-heading">
-        <h2 id="form-heading" class="sr-only">Document Form</h2>
-        
-        <form class="doc-form" id="docForm" novalidate>
-          <!-- Template Selector -->
-          <div class="form-group">
-            <label for="template" class="form-label">Document Template</label>
-            <select id="template" class="form-select" required>
-              <option value="" disabled selected>Select a template</option>
-              <option value="meeting">Meeting Notes</option>
-              <option value="proposal">Project Proposal</option>
-              <option value="report">Status Report</option>
-              <option value="letter">Business Letter</option>
+    <!-- Main Layout -->
+    <div class="main-layout">
+      <!-- Input Panel -->
+      <aside class="input-panel">
+        <div class="panel-header">
+          <h1 class="panel-title">Create Your Slide</h1>
+          <p class="panel-subtitle">Generate professional consulting slides with MBB-style structure. Press <kbd>Ctrl</kbd>+<kbd>Enter</kbd> to generate.</p>
+        </div>
+
+        <!-- Version Toggle -->
+        <div class="version-toggle">
+          <button class="version-btn active" data-version="v2">v2.0 MBB Templates</button>
+          <button class="version-btn" data-version="v1">v1.0 Classic</button>
+        </div>
+
+        <!-- Error Alert Container -->
+        <div id="errorContainer" class="hidden"></div>
+
+        <!-- V2 Form -->
+        <form id="slideFormV2" class="slide-form-v2">
+          <!-- Slide Type -->
+          <div class="form-section">
+            <label class="form-label" for="slideTypeV2">
+              Slide Type<span class="required">*</span>
+            </label>
+            <select class="select" id="slideTypeV2" name="slideType" required>
+              <option value="">Select slide type...</option>
+              <option value="Executive Summary">Executive Summary</option>
+              <option value="Horizontal Flow">Horizontal Flow (Process)</option>
+              <option value="Vertical Flow">Vertical Flow (Hierarchy)</option>
+              <option value="Graph/Chart">Graph/Chart (Data)</option>
+              <option value="General">General (Flexible)</option>
             </select>
+            <div class="form-hint" id="slideTypeHintV2"></div>
           </div>
 
-          <!-- Title Input -->
-          <div class="form-group">
-            <label for="title" class="form-label">Document Title</label>
-            <input type="text" id="title" class="form-input" placeholder="Enter document title" required>
+          <!-- Audience -->
+          <div class="form-section">
+            <label class="form-label" for="audienceV2">
+              Audience<span class="required">*</span>
+            </label>
+            <select class="select" id="audienceV2" name="audience" required>
+              <option value="">Select audience...</option>
+              <option value="C-Suite/Board">C-Suite/Board (High-level)</option>
+              <option value="External Client">External Client</option>
+              <option value="Internal/Working Team">Internal/Working Team</option>
+              <option value="PE/Investors">PE/Investors (Data-heavy)</option>
+            </select>
+            <div class="form-hint" id="audienceHintV2">Adjusts whitespace and detail level automatically</div>
           </div>
 
-          <!-- Content Textarea -->
-          <div class="form-group">
-            <label for="content" class="form-label">Content</label>
-            <textarea id="content" class="form-textarea" rows="8" placeholder="Enter your content here..." required></textarea>
-            <span class="form-hint">Minimum 16px font for mobile accessibility</span>
+          <!-- Key Takeaway -->
+          <div class="form-section">
+            <label class="form-label" for="keyTakeawayV2">
+              Key Takeaway<span class="required">*</span>
+            </label>
+            <p class="form-description">The single most important message to communicate.</p>
+            <input 
+              type="text"
+              class="input" 
+              id="keyTakeawayV2" 
+              name="keyTakeaway" 
+              maxlength="150"
+              placeholder="E.g., Revenue growth of 25% positions us for Series B..."
+              required
+            />
+            <div class="char-counter" id="keyTakeawayCounterV2">0 / 150</div>
           </div>
 
-          <!-- Options -->
-          <div class="form-group">
-            <label class="form-label">Options</label>
-            <label class="checkbox-label touch-target">
-              <input type="checkbox" id="includeHeader" checked>
-              <span class="checkbox-text">Include header</span>
+          <!-- Context -->
+          <div class="form-section">
+            <label class="form-label" for="contextV2">
+              Context<span class="required">*</span>
             </label>
-            <label class="checkbox-label touch-target">
-              <input type="checkbox" id="includeFooter" checked>
-              <span class="checkbox-text">Include footer</span>
-            </label>
-            <label class="checkbox-label touch-target">
-              <input type="checkbox" id="aiEnhance">
-              <span class="checkbox-text">AI enhancement</span>
-            </label>
+            <p class="form-description">Background, research findings, client context, strategic considerations.</p>
+            <textarea 
+              class="textarea" 
+              id="contextV2" 
+              name="context" 
+              rows="5" 
+              maxlength="2000"
+              placeholder="Describe the business situation, market dynamics, competitive landscape, and any relevant strategic considerations..."
+              required
+            ></textarea>
+            <div class="char-counter" id="contextCounterV2">0 / 2000</div>
+          </div>
+
+          <!-- Presentation Mode -->
+          <div class="form-section">
+            <label class="form-label">Presentation Mode</label>
+            <div class="toggle-group">
+              <button type="button" class="toggle-btn active" data-mode="presentation" id="modePresentationV2">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="4" width="18" height="12" rx="2"/>
+                  <path d="M8 20h8"/>
+                  <path d="M12 16v4"/>
+                </svg>
+                Presentation (Less detail)
+              </button>
+              <button type="button" class="toggle-btn" data-mode="read" id="modeReadV2">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+                  <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+                </svg>
+                Read Mode (More detail)
+              </button>
+            </div>
+          </div>
+
+          <!-- Data Input -->
+          <div class="form-section">
+            <label class="form-label" for="dataInputV2">Data Input</label>
+            <p class="form-description">Paste Excel data, CSV, or key metrics. Optional.</p>
+            <textarea 
+              class="textarea textarea--data" 
+              id="dataInputV2" 
+              name="dataInput" 
+              rows="4" 
+              maxlength="2000"
+              placeholder="Revenue:	$5.2M (+23%)
+Customers:	1,240 (+45%)
+Gross Margin:	68% (+4pp)"
+            ></textarea>
+            <div class="file-upload-wrapper">
+              <input type="file" id="dataFileV2" class="file-input" accept=".csv,.xlsx,.xls,.txt" />
+              <label for="dataFileV2" class="file-upload-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="17 8 12 3 7 8"/>
+                  <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+                Upload file
+              </label>
+              <span class="file-name" id="fileNameV2"></span>
+            </div>
           </div>
 
           <!-- Generate Button -->
-          <button type="submit" class="btn btn-primary btn-large touch-target">
-            <span class="btn-text">Generate Preview</span>
-            <span class="btn-icon" aria-hidden="true">→</span>
+          <button type="submit" class="btn btn--primary btn--lg btn--full" id="generateBtnV2" disabled>
+            <svg class="btn__icon" id="generateIconV2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+            </svg>
+            <span id="generateTextV2">Generate Slide</span>
+            <span class="btn__shortcut">Ctrl+Enter</span>
           </button>
         </form>
-      </section>
 
-      <!-- Step 2: Preview -->
-      <section class="step-panel" id="previewStep" aria-labelledby="preview-heading" hidden>
-        <h2 id="preview-heading" class="sr-only">Document Preview</h2>
-        
-        <div class="preview-container">
-          <div class="preview-toolbar">
-            <button class="btn btn-icon touch-target" id="refreshPreview" aria-label="Refresh preview">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
-              </svg>
-            </button>
-            <span class="preview-status">Last updated: <time id="lastUpdated">Just now</time></span>
+        <!-- V1 Form (Hidden by default) -->
+        <form id="slideFormV1" class="slide-form-v1 hidden">
+          <!-- Slide Type -->
+          <div class="form-section">
+            <label class="form-label" for="slideTypeV1">Slide Type<span class="required">*</span></label>
+            <select class="select" id="slideTypeV1" name="slideType" required>
+              <option value="">Select slide type...</option>
+              <optgroup label="Core Slides">
+                <option value="Executive Summary">Executive Summary</option>
+                <option value="Market Analysis">Market Analysis</option>
+                <option value="Financial Model">Financial Model</option>
+              </optgroup>
+              <optgroup label="Strategic Analysis">
+                <option value="Competitive Analysis">Competitive Analysis</option>
+                <option value="Growth Strategy">Growth Strategy</option>
+                <option value="Risk Assessment">Risk Assessment</option>
+              </optgroup>
+            </select>
           </div>
 
-          <div class="preview-document" id="previewContent">
-            <div class="doc-header">
-              <h3 id="previewTitle">Document Title</h3>
-              <p class="doc-meta" id="previewMeta">Generated on Feb 5, 2026</p>
+          <!-- Context -->
+          <div class="form-section">
+            <label class="form-label" for="contextV1">Context<span class="required">*</span></label>
+            <textarea class="textarea" id="contextV1" name="context" rows="4" maxlength="500" placeholder="Describe the purpose, key message, and background..." required></textarea>
+            <div class="char-counter" id="contextCounterV1">0 / 500</div>
+          </div>
+
+          <!-- Data Points -->
+          <div class="form-section">
+            <label class="form-label" for="dataPointsV1">Data Points</label>
+            <textarea class="textarea" id="dataPointsV1" name="dataPoints" rows="4" maxlength="1000" placeholder="Revenue: $4.2M (+23% YoY)
+Gross Margin: 68%..."></textarea>
+          </div>
+
+          <!-- Audience -->
+          <div class="form-section">
+            <label class="form-label" for="audienceV1">Target Audience<span class="required">*</span></label>
+            <select class="select" id="audienceV1" name="audience" required>
+              <option value="">Select audience...</option>
+              <option value="C-Suite">C-Suite</option>
+              <option value="Board">Board Members</option>
+              <option value="Investors">Investors</option>
+              <option value="Internal Team">Internal Team</option>
+              <option value="Clients">Clients</option>
+              <option value="Analysts">Analysts</option>
+            </select>
+          </div>
+
+          <!-- Framework -->
+          <div class="form-section">
+            <label class="form-label" for="frameworkV1">Framework</label>
+            <select class="select" id="frameworkV1" name="framework">
+              <option value="">None (Auto)</option>
+              <option value="Pyramid Principle">Pyramid Principle</option>
+              <option value="MECE">MECE</option>
+              <option value="2x2 Matrix">2x2 Matrix</option>
+              <option value="Waterfall Chart">Waterfall Chart</option>
+              <option value="SWOT">SWOT Analysis</option>
+            </select>
+          </div>
+
+          <button type="submit" class="btn btn--primary btn--lg btn--full" id="generateBtnV1" disabled>
+            <svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+            </svg>
+            Generate Slide
+          </button>
+        </form>
+      </aside>
+
+      <!-- Preview Panel -->
+      <main class="preview-panel" id="main-content">
+        <div class="slide-preview">
+          <div class="slide-preview__aspect slide-preview--empty" id="previewContainer">
+            <!-- Empty State -->
+            <div id="emptyState">
+              <svg class="empty-state__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                <line x1="9" y1="9" x2="15" y2="9"/>
+                <line x1="9" y1="13" x2="15" y2="13"/>
+                <line x1="9" y1="17" x2="11" y2="17"/>
+              </svg>
+              <p class="empty-state__title">Your slide will appear here</p>
+              <p class="empty-state__text">Fill out the form and click Generate to create your professional consulting slide.</p>
             </div>
-            <div class="doc-body" id="previewBody">
-              <p>Your document content will appear here...</p>
+
+            <!-- Loading Overlay -->
+            <div id="loadingOverlay" class="loading-overlay hidden">
+              <div class="spinner"></div>
+              <p class="loading-text" id="loadingText">Creating your slide...</p>
+              <div class="loading-progress">
+                <div class="loading-progress-bar" id="loadingProgressBar"></div>
+              </div>
+              <p class="loading-steps" id="loadingSteps">Analyzing context...</p>
+              <button type="button" class="btn btn--secondary btn--sm" id="cancelBtn" style="margin-top: 1.5rem;">
+                Cancel
+              </button>
             </div>
-            <div class="doc-footer">
-              <p>Generated by DocuGen</p>
+
+            <!-- Slide Image -->
+            <img id="slideImage" class="slide-preview__image hidden" alt="Generated slide">
+            
+            <!-- Success Animation Overlay -->
+            <div id="successOverlay" class="success-overlay hidden">
+              <div class="success-checkmark">
+                <svg viewBox="0 0 52 52" class="checkmark" aria-hidden="true">
+                  <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
+                  <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+                </svg>
+              </div>
+              <p class="success-text">Slide ready!</p>
             </div>
           </div>
         </div>
 
-        <!-- Export Button -->
-        <button type="button" class="btn btn-secondary btn-large touch-target" id="exportBtn">
-          <span class="btn-text">Export Document</span>
-          <span class="btn-icon" aria-hidden="true">↓</span>
-        </button>
-      </section>
-    </main>
-
-    <!-- Floating Toggle Button -->
-    <button class="fab" id="stepToggle" aria-label="Switch to preview" data-target="preview">
-      <span class="fab-icon" aria-hidden="true">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-          <polyline points="14 2 14 8 20 8"/>
-          <line x1="16" y1="13" x2="8" y2="13"/>
-          <line x1="16" y1="17" x2="8" y2="17"/>
-          <polyline points="10 9 9 9 8 9"/>
-        </svg>
-      </span>
-      <span class="fab-text">Preview</span>
-    </button>
-
-    <!-- Swipe Hint -->
-    <div class="swipe-hint" id="swipeHint" aria-hidden="true">
-      <span class="swipe-hint-text">Swipe for Preview →</span>
+        <!-- Action Bar -->
+        <div class="action-bar" id="actionBar" style="display: none;">
+          <button class="btn btn--secondary" id="regenerateBtn">
+            <svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+              <path d="M21 3v5h-5"/>
+              <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
+              <path d="M8 16H3v5"/>
+            </svg>
+            Regenerate
+          </button>
+          <div class="dropdown">
+            <button class="btn btn--primary" id="downloadBtn" aria-haspopup="menu" aria-expanded="false" aria-controls="downloadMenu">
+              <svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              Download
+              <svg class="btn__icon btn__icon--small" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="m6 9 6 6 6-6"/>
+              </svg>
+            </button>
+            <div class="dropdown-menu" id="downloadMenu" role="menu" aria-labelledby="downloadBtn">
+              <button class="dropdown-item" data-format="png" role="menuitem">
+                <span class="dropdown-icon" aria-hidden="true">🖼️</span>
+                <span class="dropdown-label">PNG Image</span>
+              </button>
+              <button class="dropdown-item" data-format="pptx" role="menuitem">
+                <span class="dropdown-icon" aria-hidden="true">📊</span>
+                <span class="dropdown-label">PowerPoint (.pptx)</span>
+              </button>
+              <button class="dropdown-item" data-format="pdf" role="menuitem">
+                <span class="dropdown-icon" aria-hidden="true">📄</span>
+                <span class="dropdown-label">PDF Document</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </main>
     </div>
+  </div>
 
-    <!-- Bottom Sheet for Export Options -->
-    <div class="bottom-sheet-overlay" id="bottomSheetOverlay" aria-hidden="true"></div>
-    <div class="bottom-sheet" id="bottomSheet" role="dialog" aria-modal="true" aria-labelledby="export-title" hidden>
-      <div class="bottom-sheet-handle" aria-hidden="true"></div>
-      <div class="bottom-sheet-header">
-        <h3 id="export-title" class="bottom-sheet-title">Export Document</h3>
-        <button class="btn btn-icon touch-target" id="closeBottomSheet" aria-label="Close export options">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="18" y1="6" x2="6" y2="18"/>
-            <line x1="6" y1="6" x2="18" y2="18"/>
+  <!-- Toast Container -->
+  <div id="toastContainer"></div>
+
+  <!-- Keyboard Shortcuts Modal -->
+  <div class="modal hidden" id="shortcutsModal" role="dialog" aria-modal="true" aria-labelledby="shortcutsTitle" aria-describedby="shortcutsDesc">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="shortcutsTitle">Keyboard Shortcuts</h3>
+        <p class="sr-only" id="shortcutsDesc">Use Tab to navigate between buttons, Escape to close</p>
+        <button class="modal-close" id="modalClose" aria-label="Close keyboard shortcuts dialog">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M18 6 6 18"/>
+            <path d="m6 6 12 12"/>
           </svg>
         </button>
       </div>
-      <div class="bottom-sheet-content">
-        <button class="export-option touch-target" data-format="pdf">
-          <span class="export-icon">📄</span>
-          <span class="export-info">
-            <span class="export-name">Export as PDF</span>
-            <span class="export-desc">Professional document format</span>
-          </span>
-        </button>
-        <button class="export-option touch-target" data-format="docx">
-          <span class="export-icon">📝</span>
-          <span class="export-info">
-            <span class="export-name">Export as Word</span>
-            <span class="export-desc">Editable .docx format</span>
-          </span>
-        </button>
-        <button class="export-option touch-target" data-format="md">
-          <span class="export-icon">📋</span>
-          <span class="export-info">
-            <span class="export-name">Export as Markdown</span>
-            <span class="export-desc">Plain text with formatting</span>
-          </span>
-        </button>
-        <button class="export-option touch-target" data-format="txt">
-          <span class="export-icon">📃</span>
-          <span class="export-info">
-            <span class="export-name">Export as Text</span>
-            <span class="export-desc">Simple plain text file</span>
-          </span>
-        </button>
+      <div class="modal-body">
+        <div class="shortcut-list">
+          <div class="shortcut-item">
+            <kbd>Ctrl</kbd>+<kbd>Enter</kbd>
+            <span>Generate slide</span>
+          </div>
+          <div class="shortcut-item">
+            <kbd>Ctrl</kbd>+<kbd>R</kbd>
+            <span>Regenerate slide</span>
+          </div>
+          <div class="shortcut-item">
+            <kbd>Ctrl</kbd>+<kbd>D</kbd>
+            <span>Download slide</span>
+          </div>
+          <div class="shortcut-item">
+            <kbd>?</kbd>
+            <span>Show this help</span>
+          </div>
+          <div class="shortcut-item">
+            <kbd>Esc</kbd>
+            <span>Close modal / Cancel</span>
+          </div>
+        </div>
       </div>
     </div>
-
-    <!-- Toast Notification -->
-    <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
   </div>
 
-  <script src="../app.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
