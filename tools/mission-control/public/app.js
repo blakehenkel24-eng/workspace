@@ -9,6 +9,9 @@ class MissionControl {
     this.memories = [];
     this.tasks = [];
     this.files = [];
+    this.agents = [];
+    this.runningAgents = new Map();
+    this.currentCommand = null;
     this.init();
   }
 
@@ -18,6 +21,11 @@ class MissionControl {
     this.setupEventListeners();
     this.loadData();
     this.startAutoRefresh();
+    
+    // Load initial data for new features
+    this.loadTodoistTasks();
+    this.loadProjectContext();
+    this.loadAgents();
   }
 
   // Theme Management
@@ -75,6 +83,10 @@ class MissionControl {
   handleWebSocketMessage(data) {
     if (data.type === 'chat') {
       this.addChatMessage(data.message, data.sender);
+    } else if (data.type === 'agent-update') {
+      this.handleAgentUpdate(data);
+    } else if (data.type === 'agent-complete') {
+      this.handleAgentComplete(data);
     }
   }
 
@@ -84,7 +96,419 @@ class MissionControl {
     }
   }
 
-  // Event Listeners
+  // === COMMAND CENTER ===
+  setupCommandCenterListeners() {
+    // Command input
+    document.getElementById('command-submit').addEventListener('click', () => {
+      this.executeCommand();
+    });
+    document.getElementById('command-input').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') this.executeCommand();
+    });
+
+    // Suggestion buttons
+    document.querySelectorAll('.suggestion-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const intent = e.currentTarget.dataset.intent;
+        const input = document.getElementById('command-input');
+        const suggestions = {
+          'research': 'Research about ',
+          'dev': 'Build a ',
+          'write': 'Write documentation for ',
+          'analyze': 'Analyze the code for '
+        };
+        input.value = suggestions[intent] || '';
+        input.focus();
+      });
+    });
+  }
+
+  async executeCommand() {
+    const input = document.getElementById('command-input');
+    const command = input.value.trim();
+    if (!command) return;
+
+    // Show progress panel
+    this.showCommandProgress();
+    this.addProgressLog('Parsing command...');
+
+    try {
+      const response = await fetch('/api/command', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ command })
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        this.currentCommand = result;
+        document.getElementById('progress-agent-name').textContent = result.agentType;
+        this.addProgressLog(`Spawning ${result.agentType} agent...`);
+        this.updateProgressBar(20);
+        
+        // Start polling for progress
+        this.startProgressPolling(result.agentId);
+      } else {
+        this.addProgressLog(`Error: ${result.error}`, 'error');
+      }
+    } catch (err) {
+      this.addProgressLog(`Error: ${err.message}`, 'error');
+    }
+
+    input.value = '';
+  }
+
+  showCommandProgress() {
+    const progressPanel = document.getElementById('command-progress');
+    progressPanel.classList.remove('hidden');
+    document.getElementById('progress-fill').style.width = '0%';
+    document.getElementById('progress-logs').innerHTML = '';
+    document.querySelector('.progress-status').textContent = 'Running...';
+  }
+
+  hideCommandProgress() {
+    const progressPanel = document.getElementById('command-progress');
+    progressPanel.classList.add('hidden');
+  }
+
+  updateProgressBar(percent) {
+    document.getElementById('progress-fill').style.width = `${percent}%`;
+  }
+
+  addProgressLog(message, type = 'info') {
+    const logs = document.getElementById('progress-logs');
+    const time = new Date().toLocaleTimeString();
+    const entry = document.createElement('div');
+    entry.className = 'progress-log-entry';
+    entry.innerHTML = `<span class="progress-log-time">[${time}]</span> ${this.escapeHtml(message)}`;
+    logs.appendChild(entry);
+    logs.scrollTop = logs.scrollHeight;
+  }
+
+  startProgressPolling(agentId) {
+    const pollInterval = setInterval(async () => {
+      try {
+        const response = await fetch(`/api/agents/${agentId}/status`);
+        const status = await response.json();
+        
+        this.updateProgressBar(status.progress || 0);
+        
+        if (status.logs && status.logs.length > 0) {
+          status.logs.forEach(log => this.addProgressLog(log));
+        }
+        
+        if (status.status === 'completed') {
+          clearInterval(pollInterval);
+          document.querySelector('.progress-status').textContent = 'Completed!';
+          this.addProgressLog('Agent completed successfully!', 'success');
+          this.loadAgents();
+          setTimeout(() => this.hideCommandProgress(), 3000);
+        } else if (status.status === 'error') {
+          clearInterval(pollInterval);
+          document.querySelector('.progress-status').textContent = 'Error';
+          this.addProgressLog('Agent failed: ' + status.error, 'error');
+        }
+      } catch (err) {
+        console.error('Progress polling error:', err);
+      }
+    }, 1000);
+  }
+
+  // === AGENT CONTROL ===
+  setupAgentListeners() {
+    document.getElementById('spawn-research').addEventListener('click', () => {
+      this.spawnAgent('research');
+    });
+    document.getElementById('spawn-dev').addEventListener('click', () => {
+      this.spawnAgent('dev');
+    });
+  }
+
+  async spawnAgent(type) {
+    const task = prompt(`What should the ${type} agent do?`);
+    if (!task) return;
+
+    try {
+      const response = await fetch('/api/agents/spawn', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type, task })
+      });
+      
+      const result = await response.json();
+      if (result.success) {
+        this.showNotification(`${type} agent spawned successfully`);
+        this.loadAgents();
+      } else {
+        this.showNotification(`Failed to spawn agent: ${result.error}`);
+      }
+    } catch (err) {
+      this.showNotification(`Error: ${err.message}`);
+    }
+  }
+
+  async loadAgents() {
+    try {
+      const response = await fetch('/api/agents');
+      const agents = await response.json();
+      this.renderAgents(agents);
+    } catch (err) {
+      console.error('Failed to load agents:', err);
+    }
+  }
+
+  renderAgents(agents) {
+    const runningContainer = document.getElementById('running-agents');
+    const completedContainer = document.getElementById('completed-agents');
+    
+    const running = agents.filter(a => a.status === 'running');
+    const completed = agents.filter(a => a.status === 'completed' || a.status === 'error');
+    
+    if (running.length === 0) {
+      runningContainer.innerHTML = '<p class="empty-state">No active agents</p>';
+    } else {
+      runningContainer.innerHTML = running.map(a => this.renderAgentCard(a)).join('');
+    }
+    
+    if (completed.length === 0) {
+      completedContainer.innerHTML = '<p class="empty-state">No recent completions</p>';
+    } else {
+      completedContainer.innerHTML = completed.slice(0, 5).map(a => this.renderAgentCard(a)).join('');
+    }
+  }
+
+  renderAgentCard(agent) {
+    const statusIcons = {
+      'running': '⏳',
+      'completed': '✅',
+      'error': '❌',
+      'pending': '⏸️'
+    };
+    
+    const time = new Date(agent.createdAt).toLocaleTimeString();
+    
+    return `
+      <div class="agent-card ${agent.status}">
+        <span class="agent-status-icon">${statusIcons[agent.status] || '⏸️'}</span>
+        <div class="agent-info">
+          <span class="agent-name">${agent.type} Agent</span>
+          <span class="agent-task" title="${this.escapeHtml(agent.task)}">${this.escapeHtml(agent.task)}</span>
+        </div>
+        <span class="agent-time">${time}</span>
+      </div>
+    `;
+  }
+
+  handleAgentUpdate(data) {
+    this.loadAgents();
+  }
+
+  handleAgentComplete(data) {
+    this.loadAgents();
+    this.showNotification(`Agent ${data.agentId} completed!`);
+  }
+
+  // === TODOIST INTEGRATION ===
+  setupTodoistListeners() {
+    document.getElementById('todoist-refresh').addEventListener('click', () => {
+      this.loadTodoistTasks();
+    });
+    
+    document.getElementById('todoist-filter').addEventListener('change', () => {
+      this.renderTodoistTasks();
+    });
+    
+    document.getElementById('todoist-add').addEventListener('click', () => {
+      this.addTodoistTask();
+    });
+    
+    document.getElementById('todoist-new-task').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') this.addTodoistTask();
+    });
+  }
+
+  async loadTodoistTasks() {
+    try {
+      const response = await fetch('/api/todoist/tasks');
+      this.todoistTasks = await response.json();
+      this.renderTodoistTasks();
+    } catch (err) {
+      console.error('Failed to load Todoist tasks:', err);
+      document.getElementById('todoist-tasks').innerHTML = 
+        '<p class="empty-state">Failed to load tasks</p>';
+    }
+  }
+
+  renderTodoistTasks() {
+    const container = document.getElementById('todoist-tasks');
+    const filter = document.getElementById('todoist-filter').value;
+    
+    let tasks = this.todoistTasks || [];
+    
+    // Filter out completed tasks and apply section filter
+    tasks = tasks.filter(t => !t.is_completed);
+    
+    if (filter !== 'all') {
+      tasks = tasks.filter(t => {
+        const section = t.section?.name || t.labels?.find(l => 
+          ['Development', 'Research', 'Design'].includes(l)
+        );
+        return section === filter;
+      });
+    }
+    
+    if (tasks.length === 0) {
+      container.innerHTML = '<p class="empty-state">No tasks found</p>';
+      return;
+    }
+    
+    container.innerHTML = tasks.map(t => this.renderTodoistTaskItem(t)).join('');
+    
+    // Add event listeners for checkboxes
+    container.querySelectorAll('.todoist-checkbox').forEach(cb => {
+      cb.addEventListener('change', (e) => {
+        this.completeTodoistTask(e.target.dataset.taskId);
+      });
+    });
+  }
+
+  renderTodoistTaskItem(task) {
+    const section = task.section?.name || task.labels?.find(l => 
+      ['Development', 'Research', 'Design'].includes(l)
+    ) || '';
+    
+    const sectionClass = section.toLowerCase();
+    
+    return `
+      <div class="todoist-task-item" data-task-id="${task.id}">
+        <input type="checkbox" class="todoist-checkbox" data-task-id="${task.id}">
+        <div class="task-content">
+          <span class="task-title">${this.escapeHtml(task.content)}</span>
+          ${section ? `<span class="task-section ${sectionClass}">${section}</span>` : ''}
+        </div>
+      </div>
+    `;
+  }
+
+  async addTodoistTask() {
+    const input = document.getElementById('todoist-new-task');
+    const sectionSelect = document.getElementById('todoist-section');
+    const content = input.value.trim();
+    
+    if (!content) return;
+    
+    try {
+      const response = await fetch('/api/todoist/tasks', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          content,
+          section: sectionSelect.value
+        })
+      });
+      
+      if (response.ok) {
+        input.value = '';
+        this.loadTodoistTasks();
+        this.showNotification('Task added to Todoist');
+      }
+    } catch (err) {
+      this.showNotification(`Error: ${err.message}`);
+    }
+  }
+
+  async completeTodoistTask(taskId) {
+    try {
+      const response = await fetch(`/api/todoist/tasks/${taskId}/complete`, {
+        method: 'POST'
+      });
+      
+      if (response.ok) {
+        this.loadTodoistTasks();
+        this.showNotification('Task completed');
+      }
+    } catch (err) {
+      this.showNotification(`Error: ${err.message}`);
+    }
+  }
+
+  // === PROJECT CONTEXT ===
+  setupProjectListeners() {
+    document.getElementById('open-vscode').addEventListener('click', () => {
+      this.openInVSCode();
+    });
+    document.getElementById('open-folder').addEventListener('click', () => {
+      this.openFolder();
+    });
+  }
+
+  async loadProjectContext() {
+    try {
+      const response = await fetch('/api/project');
+      const project = await response.json();
+      this.renderProjectContext(project);
+    } catch (err) {
+      console.error('Failed to load project context:', err);
+    }
+  }
+
+  renderProjectContext(project) {
+    document.getElementById('project-name').textContent = project.name || 'Unknown Project';
+    document.getElementById('project-branch').textContent = project.branch || 'main';
+    
+    // Render recent commits
+    const commitsContainer = document.getElementById('recent-commits');
+    if (project.commits && project.commits.length > 0) {
+      commitsContainer.innerHTML = project.commits.slice(0, 5).map(c => `
+        <div class="commit-item">
+          <div class="commit-message">${this.escapeHtml(c.message)}</div>
+          <div class="commit-meta">${c.author} • ${this.timeAgo(c.date)}</div>
+        </div>
+      `).join('');
+    } else {
+      commitsContainer.innerHTML = '<p class="empty-state">No recent commits</p>';
+    }
+    
+    // Render recent files
+    const filesContainer = document.getElementById('recent-files');
+    if (project.recentFiles && project.recentFiles.length > 0) {
+      filesContainer.innerHTML = project.recentFiles.slice(0, 5).map(f => `
+        <div class="recent-file-item">
+          <span class="file-name">${this.escapeHtml(f.name)}</span>
+          <span class="file-change ${f.changeType}">${f.changeType}</span>
+        </div>
+      `).join('');
+    } else {
+      filesContainer.innerHTML = '<p class="empty-state">No recent changes</p>';
+    }
+  }
+
+  async openInVSCode() {
+    try {
+      await fetch('/api/project/open', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ editor: 'vscode' })
+      });
+    } catch (err) {
+      console.error('Failed to open VS Code:', err);
+    }
+  }
+
+  async openFolder() {
+    try {
+      await fetch('/api/project/open', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ editor: 'folder' })
+      });
+    } catch (err) {
+      console.error('Failed to open folder:', err);
+    }
+  }
+
+  // === Event Listeners ===
   setupEventListeners() {
     // Theme toggle
     document.getElementById('theme-toggle').addEventListener('click', () => {
@@ -142,6 +566,12 @@ class MissionControl {
         this.handleToolClick(tool);
       });
     });
+
+    // New feature listeners
+    this.setupCommandCenterListeners();
+    this.setupAgentListeners();
+    this.setupTodoistListeners();
+    this.setupProjectListeners();
   }
 
   // Chat Methods
@@ -429,6 +859,7 @@ class MissionControl {
   startAutoRefresh() {
     setInterval(() => {
       this.updateStatus();
+      this.loadAgents();
     }, this.config.refreshInterval * 1000);
   }
 
@@ -454,6 +885,17 @@ class MissionControl {
     return `${hours}h ${minutes}m ${secs}s`;
   }
 
+  timeAgo(date) {
+    const seconds = Math.floor((new Date() - new Date(date)) / 1000);
+    if (seconds < 60) return 'just now';
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) return `${minutes}m ago`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${hours}h ago`;
+    const days = Math.floor(hours / 24);
+    return `${days}d ago`;
+  }
+
   showNotification(message) {
     if (this.config.notifications && 'Notification' in window) {
       if (Notification.permission === 'granted') {
@@ -466,6 +908,30 @@ class MissionControl {
         });
       }
     }
+    
+    // Also show as a toast
+    const toast = document.createElement('div');
+    toast.style.cssText = `
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--accent-primary);
+      color: white;
+      padding: 1rem 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      z-index: 1000;
+      animation: fadeIn 0.3s ease;
+    `;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+      toast.style.opacity = '0';
+      toast.style.transition = 'opacity 0.3s';
+      setTimeout(() => toast.remove(), 300);
+    }, 3000);
+    
     console.log(message);
   }
 }

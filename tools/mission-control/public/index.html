@@ -17,6 +17,139 @@
     </header>
     
     <main class="dashboard">
+      <!-- Command Center Panel -->
+      <section class="panel panel-command-center" data-panel="command-center">
+        <header class="panel-header">
+          <h2>🎯 Command Center</h2>
+        </header>
+        <div class="panel-content">
+          <div class="command-intro">
+            <p>What do you need?</p>
+          </div>
+          <div class="command-input-area">
+            <input type="text" id="command-input" placeholder="e.g., 'Research Node.js best practices' or 'Build a todo app'...">
+            <button id="command-submit" class="btn-primary">Execute</button>
+          </div>
+          <div class="command-suggestions">
+            <span class="suggestion-label">Quick commands:</span>
+            <button class="suggestion-btn" data-intent="research">🔍 Research</button>
+            <button class="suggestion-btn" data-intent="dev">💻 Develop</button>
+            <button class="suggestion-btn" data-intent="write">📝 Write</button>
+            <button class="suggestion-btn" data-intent="analyze">📊 Analyze</button>
+          </div>
+          <div id="command-progress" class="command-progress hidden">
+            <div class="progress-header">
+              <span class="progress-status">Initializing...</span>
+              <span class="progress-agent">Agent: <span id="progress-agent-name">--</span></span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <div class="progress-logs" id="progress-logs"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Agent Control Panel -->
+      <section class="panel panel-agents" data-panel="agents">
+        <header class="panel-header">
+          <h2>🤖 Agent Control</h2>
+        </header>
+        <div class="panel-content">
+          <div class="agent-spawn-buttons">
+            <button id="spawn-research" class="agent-btn agent-research">
+              <span class="agent-icon">🔍</span>
+              <span class="agent-label">Spawn Research Agent</span>
+            </button>
+            <button id="spawn-dev" class="agent-btn agent-dev">
+              <span class="agent-icon">💻</span>
+              <span class="agent-label">Spawn Dev Agent</span>
+            </button>
+          </div>
+          <div class="agents-section">
+            <h3>Running Agents</h3>
+            <div id="running-agents" class="agents-list">
+              <p class="empty-state">No active agents</p>
+            </div>
+          </div>
+          <div class="agents-section">
+            <h3>Recent Completions</h3>
+            <div id="completed-agents" class="agents-list completed">
+              <p class="empty-state">No recent completions</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Todoist Tasks Panel -->
+      <section class="panel panel-todoist" data-panel="todoist">
+        <header class="panel-header">
+          <h2>📋 Todoist Tasks</h2>
+          <div class="panel-actions">
+            <select id="todoist-filter" class="filter-select">
+              <option value="all">All</option>
+              <option value="Development">Development</option>
+              <option value="Research">Research</option>
+              <option value="Design">Design</option>
+            </select>
+            <button id="todoist-refresh" class="btn-icon" title="Refresh">🔄</button>
+          </div>
+        </header>
+        <div class="panel-content">
+          <div id="todoist-tasks" class="tasks-list">
+            <p class="empty-state">Loading tasks...</p>
+          </div>
+          <div class="task-input-area">
+            <input type="text" id="todoist-new-task" placeholder="Add a new task...">
+            <select id="todoist-section">
+              <option value="">No Section</option>
+              <option value="Development">Development</option>
+              <option value="Research">Research</option>
+              <option value="Design">Design</option>
+            </select>
+            <button id="todoist-add" class="btn-primary">Add</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Project Context Panel -->
+      <section class="panel panel-project" data-panel="project">
+        <header class="panel-header">
+          <h2>📁 Project Context</h2>
+        </header>
+        <div class="panel-content">
+          <div class="project-info">
+            <div class="project-header">
+              <span class="project-icon">🗂️</span>
+              <div class="project-details">
+                <span id="project-name" class="project-name">Loading...</span>
+                <span id="project-branch" class="project-branch">--</span>
+              </div>
+            </div>
+          </div>
+          <div class="project-section">
+            <h3>📝 Recent Commits</h3>
+            <div id="recent-commits" class="commits-list">
+              <p class="empty-state">No recent commits</p>
+            </div>
+          </div>
+          <div class="project-section">
+            <h3>🔄 Recent Changes</h3>
+            <div id="recent-files" class="files-list">
+              <p class="empty-state">No recent changes</p>
+            </div>
+          </div>
+          <div class="project-actions">
+            <button id="open-vscode" class="btn-secondary">
+              <span>📝</span> Open in VS Code
+            </button>
+            <button id="open-folder" class="btn-secondary">
+              <span>📂</span> Open Folder
+            </button>
+          </div>
+        </div>
+      </section>
+
       <!-- Chat Panel -->
       <section class="panel panel-chat" data-panel="chat">
         <header class="panel-header">
@@ -126,10 +259,10 @@
         </div>
       </section>
 
-      <!-- Tasks Panel -->
+      <!-- Local Tasks Panel -->
       <section class="panel panel-tasks" data-panel="tasks">
         <header class="panel-header">
-          <h2>✅ Tasks</h2>
+          <h2>✅ Local Tasks</h2>
         </header>
         <div class="panel-content">
           <div id="tasks-list" class="tasks-list">
