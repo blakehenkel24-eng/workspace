@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blake + SAKI Workspace</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .team-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        .avatar.saki {
+            background: linear-gradient(135deg, #7c3aed, #a855f7);
+        }
+        
+        h1 {
+            font-size: 36px;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            color: #94a3b8;
+            font-size: 16px;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 24px;
+            transition: all 0.2s;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        
+        .card:hover {
+            background: rgba(255,255,255,0.08);
+            transform: translateY(-2px);
+            border-color: rgba(37, 99, 235, 0.5);
+        }
+        
+        .card-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+        
+        .card h2 {
+            font-size: 18px;
+            margin-bottom: 8px;
+            color: white;
+        }
+        
+        .card p {
+            color: #94a3b8;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 30px 0 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #22c55e;
+        }
+        
+        .project-list {
+            display: grid;
+            gap: 12px;
+        }
+        
+        .project-item {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .project-info h3 {
+            font-size: 15px;
+            margin-bottom: 4px;
+            color: white;
+        }
+        
+        .project-info p {
+            font-size: 13px;
+            color: #64748b;
+        }
+        
+        .badge {
+            padding: 4px 10px;
+            border-radius: 100px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        
+        .badge.active {
+            background: rgba(34, 197, 94, 0.2);
+            color: #4ade80;
+        }
+        
+        .badge.idea {
+            background: rgba(245, 158, 11, 0.2);
+            color: #fbbf24;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: #64748b;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="team-badge">
+                <div class="avatar">👤</div>
+                <span style="font-size: 24px;">+</span>
+                <div class="avatar saki">⚡</div>
+            </div>
+            <h1>Blake + SAKI Workspace</h1>
+            <p class="subtitle">Building digital products, one step at a time</p>
+        </header>
+        
+        <div class="grid">
+            <a href="kanban-board.html" class="card">
+                <div class="card-icon">📋</div>
+                <h2>Kanban Board</h2>
+                <p>Full project management with all active tasks, backlogs, and completed work</p>
+            </a>
+            
+            <a href="backlog.html" class="card">
+                <div class="card-icon">📊</div>
+                <h2>Master Backlog</h2>
+                <p>68-item strategic roadmap — priorities, timelines, dependencies</p>
+            </a>
+            
+            <a href="products/slidetheory/website/index-v4.html" class="card">
+                <div class="card-icon">🎯</div>
+                <h2>SlideTheory Website</h2>
+                <p>AI-powered slide generation — v4 redesign ready to deploy</p>
+            </a>
+            
+            <a href="products/slidetheory/marketing/" class="card">
+                <div class="card-icon">📢</div>
+                <h2>Marketing</h2>
+                <p>Social media setup, content calendar, launch strategy</p>
+            </a>
+            
+            <a href="products/slidetheory/research/" class="card">
+                <div class="card-icon">🔬</div>
+                <h2>Research</h2>
+                <p>Competitor analysis, pricing strategy, capability research</p>
+            </a>
+            
+            <a href="products/slidetheory/infrastructure/" class="card">
+                <div class="card-icon">⚙️</div>
+                <h2>Infrastructure</h2>
+                <p>Deployment guides, SSH setup, DevOps documentation</p>
+            </a>
+            
+            <a href="general/ideas/" class="card">
+                <div class="card-icon">💡</div>
+                <h2>Idea Repository</h2>
+                <p>Business ideas, content concepts, feature requests, and brainstorming</p>
+            </a>
+            
+            <a href="products/client-hawk/PRODUCT-SPEC.md" class="card">
+                <div class="card-icon">🦅</div>
+                <h2>Client Hawk</h2>
+                <p>Client intelligence tool — product spec complete</p>
+            </a>
+            
+            <a href="#" class="card" style="opacity: 0.5; cursor: not-allowed;">
+                <div class="card-icon">🚀</div>
+                <h2>Future Project #2</h2>
+                <p>Next venture — coming soon</p>
+            </a>
+        </div>
+        
+        <div class="section-title">
+            <span class="status-dot"></span>
+            Active Projects
+        </div>
+        
+        <div class="project-list">
+            <div class="project-item">
+                <div class="project-info">
+                    <h3>SlideTheory</h3>
+                    <p>AI slide generator for consultants — website live, refining branding</p>
+                </div>
+                <span class="badge active">Active</span>
+            </div>
+            
+            <div class="project-item">
+                <div class="project-info">
+                    <h3>Lead Magnet: 7 AI Projects</h3>
+                    <p>Consultant toolkit — draft complete, needs PDF formatting</p>
+                </div>
+                <span class="badge active">In Progress</span>
+            </div>
+            
+            <div class="project-item">
+                <div class="project-info">
+                    <h3>Amazfit Watch Integration</h3>
+                    <p>Health data automation — waiting for device arrival</p>
+                </div>
+                <span class="badge idea">On Hold</span>
+            </div>
+            
+            <div class="project-item">
+                <div class="project-info">
+                    <h3>GitHub Workspace Dashboard</h3>
+                    <p>This page — universal project management system</p>
+                </div>
+                <span class="badge active">Just Launched</span>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Built with ⚡ by Blake + SAKI</p>
+            <p style="margin-top: 8px; opacity: 0.6;">Last updated: February 3, 2026</p>
+        </footer>
+    </div>
+</body>
+</html>

@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SlideTheory Workspace Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .logo {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+            border-radius: 12px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: 800;
+            color: white;
+        }
+        
+        h1 {
+            font-size: 32px;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            color: #94a3b8;
+            font-size: 16px;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        
+        .card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 24px;
+            transition: all 0.2s;
+        }
+        
+        .card:hover {
+            background: rgba(255,255,255,0.08);
+            transform: translateY(-2px);
+            border-color: rgba(37, 99, 235, 0.5);
+        }
+        
+        .card-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+        
+        .card h2 {
+            font-size: 18px;
+            margin-bottom: 8px;
+            color: white;
+        }
+        
+        .card p {
+            color: #94a3b8;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+        
+        .file-list {
+            list-style: none;
+        }
+        
+        .file-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            font-size: 13px;
+            color: #cbd5e1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .file-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .badge {
+            background: rgba(37, 99, 235, 0.2);
+            color: #60a5fa;
+            padding: 2px 8px;
+            border-radius: 100px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        
+        .badge.new {
+            background: rgba(34, 197, 94, 0.2);
+            color: #4ade80;
+        }
+        
+        .section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 30px 0 15px;
+        }
+        
+        .quick-actions {
+            background: rgba(37, 99, 235, 0.1);
+            border: 1px solid rgba(37, 99, 235, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+        
+        .quick-actions h3 {
+            font-size: 16px;
+            margin-bottom: 12px;
+            color: white;
+        }
+        
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        
+        .action-btn {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: #e2e8f0;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .action-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: #64748b;
+            font-size: 13px;
+        }
+        
+        .path-note {
+            background: rgba(0,0,0,0.2);
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-family: 'Monaco', monospace;
+            font-size: 12px;
+            color: #94a3b8;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">ST</div>
+            <h1>SlideTheory Workspace</h1>
+            <p class="subtitle">All your tools, files, and resources in one place</p>
+        </header>
+        
+        <div class="grid">
+            <!-- Project Management -->
+            <div class="card">
+                <div class="card-icon">📋</div>
+                <h2>Project Management</h2>
+                <p>Track tasks, manage workflow, stay organized</p>
+                <ul class="file-list">
+                    <li>
+                        kanban-board.html
+                        <span class="badge new">NEW</span>
+                    </li>
+                    <li>
+                        TODO.md
+                        <span class="badge">Active</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Brand Assets -->
+            <div class="card">
+                <div class="card-icon">🎨</div>
+                <h2>Brand Assets</h2>
+                <p>Logos, favicons, and visual identity files</p>
+                <ul class="file-list">
+                    <li>
+                        logo-concept-1.svg
+                        <span class="badge new">NEW</span>
+                    </li>
+                    <li>
+                        logo-v2-fixed.svg
+                        <span class="badge new">NEW</span>
+                    </li>
+                    <li>
+                        logo-v3-text.svg
+                        <span class="badge new">NEW</span>
+                    </li>
+                    <li>
+                        favicon.svg
+                        <span class="badge">Ready</span>
+                    </li>
+                    <li>
+                        favicon-package/
+                        <span class="badge new">13 files</span>
+                    </li>
+                    <li>
+                        logo-exports/
+                        <span class="badge new">PNGs</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Content & Marketing -->
+            <div class="card">
+                <div class="card-icon">📝</div>
+                <h2>Content & Marketing</h2>
+                <p>Lead magnets, articles, and marketing materials</p>
+                <ul class="file-list">
+                    <li>
+                        lead-magnet-7-ai-projects.md
+                        <span class="badge new">NEW</span>
+                    </li>
+                    <li>
+                        logo-concepts.md
+                        <span class="badge">Reference</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Idea Repository -->
+            <div class="card">
+                <div class="card-icon">💡</div>
+                <h2>Idea Repository</h2>
+                <p>Business ideas, content pipeline, feature requests</p>
+                <ul class="file-list">
+                    <li>
+                        ideas/
+                        <span class="badge new">12 files</span>
+                    </li>
+                    <li>
+                        ideas/business/
+                        <span class="badge new">NEW</span>
+                    </li>
+                    <li>
+                        ideas/content/
+                        <span class="badge new">NEW</span>
+                    </li>
+                    <li>
+                        ideas/features/
+                        <span class="badge new">NEW</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Guides & Documentation -->
+            <div class="card">
+                <div class="card-icon">📚</div>
+                <h2>Guides & Docs</h2>
+                <p>How-tos, deployment guides, references</p>
+                <ul class="file-list">
+                    <li>
+                        FILEZILLA-GUIDE.md
+                        <span class="badge">Essential</span>
+                    </li>
+                    <li>
+                        DEPLOYMENT.md
+                        <span class="badge new">NEW</span>
+                    </li>
+                    <li>
+                        STATUS-REPORT.md
+                        <span class="badge new">NEW</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Website Files -->
+            <div class="card">
+                <div class="card-icon">🌐</div>
+                <h2>Website Files</h2>
+                <p>Live site files and assets</p>
+                <ul class="file-list">
+                    <li>
+                        index-final.html
+                        <span class="badge">LIVE</span>
+                    </li>
+                    <li>
+                        index.html (on VPS)
+                        <span class="badge">Deployed</span>
+                    </li>
+                    <li>
+                        slidetheory.io
+                        <span class="badge" style="background: rgba(34, 197, 94, 0.2); color: #4ade80;">✓ Online</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="section-title">Quick Actions</div>
+        <div class="quick-actions">
+            <h3>What would you like to do?</h3>
+            <div class="action-grid">
+                <button class="action-btn" onclick="alert('Open kanban-board.html in your browser to manage projects')">📋 Open Kanban Board</button>
+                <button class="action-btn" onclick="alert('Use FileZilla to download files from /var/www/slidetheory.io/')">⬇️ Download Files</button>
+                <button class="action-btn" onclick="alert('Review logo files and pick your favorite')">🎨 Review Logos</button>
+                <button class="action-btn" onclick="alert('Open ideas/ directory to browse business ideas')">💡 Browse Ideas</button>
+            </div>
+        </div>
+        
+        <div class="path-note">
+            📁 Workspace Path: /home/node/.openclaw/workspace/projects/slidetheory/
+        </div>
+        
+        <footer>
+            <p>Bookmark this page for quick access to all your tools</p>
+            <p style="margin-top: 8px; opacity: 0.6;">Last updated: February 3, 2026</p>
+        </footer>
+    </div>
+</body>
+</html>

@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kanban Board — Blake + SAKI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+        
+        .subtitle {
+            color: #64748b;
+            font-size: 14px;
+        }
+        
+        .nav {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .nav a {
+            color: #64748b;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 14px;
+        }
+        
+        .nav a:hover {
+            color: #60a5fa;
+        }
+        
+        .board {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        @media (max-width: 1024px) {
+            .board {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 640px) {
+            .board {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .column {
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+            padding: 16px;
+            min-height: 400px;
+        }
+        
+        .column.drag-over {
+            background: rgba(59, 130, 246, 0.1);
+            border: 2px dashed rgba(59, 130, 246, 0.5);
+        }
+        
+        .column-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .column-title {
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .column-count {
+            background: rgba(255,255,255,0.1);
+            padding: 2px 8px;
+            border-radius: 100px;
+            font-size: 12px;
+        }
+        
+        .column.backlog .column-title { color: #94a3b8; }
+        .column.in-progress .column-title { color: #60a5fa; }
+        .column.review .column-title { color: #fbbf24; }
+        .column.done .column-title { color: #4ade80; }
+        
+        .card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
+            cursor: grab;
+            position: relative;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        
+        .card.dragging {
+            opacity: 0.5;
+            cursor: grabbing;
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 6px;
+        }
+        
+        .card-project {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        
+        .card-project.slidetheory { background: rgba(37, 99, 235, 0.2); color: #60a5fa; }
+        .card-project.workspace { background: rgba(124, 58, 237, 0.2); color: #a78bfa; }
+        .card-project.infrastructure { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+        .card-project.content { background: rgba(34, 197, 94, 0.2); color: #4ade80; }
+        .card-project.future { background: rgba(100, 116, 139, 0.2); color: #94a3b8; }
+        
+        .card-title {
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        
+        .card-desc {
+            font-size: 11px;
+            color: #64748b;
+            line-height: 1.4;
+        }
+        
+        .delete-btn {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: none;
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-size: 10px;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        
+        .card:hover .delete-btn {
+            opacity: 1;
+        }
+        
+        .delete-btn:hover {
+            background: rgba(239, 68, 68, 0.4);
+        }
+        
+        .add-card-btn {
+            width: 100%;
+            padding: 8px;
+            background: rgba(255,255,255,0.05);
+            border: 1px dashed rgba(255,255,255,0.2);
+            border-radius: 6px;
+            color: #64748b;
+            font-size: 12px;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: all 0.2s;
+        }
+        
+        .add-card-btn:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: rgba(255,255,255,0.3);
+            color: #94a3b8;
+        }
+        
+        .save-indicator {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(34, 197, 94, 0.9);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .save-indicator.show {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <a href="index.html">← Dashboard</a>
+        <a href="backlog.html">Backlog View →</a>
+    </div>
+    
+    <header>
+        <h1>📋 Kanban Board</h1>
+        <p class="subtitle">Drag cards between columns. Click × to delete.</p>
+    </header>
+    
+    <div class="board">
+        <!-- BACKLOG -->
+        <div class="column backlog" data-column="backlog">
+            <div class="column-header">
+                <span class="column-title">📥 Backlog</span>
+                <span class="column-count" id="count-backlog">0</span>
+            </div>
+            <div class="cards-container" id="backlog"></div>
+            <button class="add-card-btn" onclick="addCard('backlog')">+ Add Card</button>
+        </div>
+        
+        <!-- IN PROGRESS -->
+        <div class="column in-progress" data-column="in-progress">
+            <div class="column-header">
+                <span class="column-title">⚡ In Progress</span>
+                <span class="column-count" id="count-in-progress">0</span>
+            </div>
+            <div class="cards-container" id="in-progress"></div>
+            <button class="add-card-btn" onclick="addCard('in-progress')">+ Add Card</button>
+        </div>
+        
+        <!-- REVIEW -->
+        <div class="column review" data-column="review">
+            <div class="column-header">
+                <span class="column-title">👀 Review</span>
+                <span class="column-count" id="count-review">0</span>
+            </div>
+            <div class="cards-container" id="review"></div>
+            <button class="add-card-btn" onclick="addCard('review')">+ Add Card</button>
+        </div>
+        
+        <!-- DONE -->
+        <div class="column done" data-column="done">
+            <div class="column-header">
+                <span class="column-title">✅ Done</span>
+                <span class="column-count" id="count-done">0</span>
+            </div>
+            <div class="cards-container" id="done"></div>
+            <button class="add-card-btn" onclick="addCard('done')">+ Add Card</button>
+        </div>
+    </div>
+    
+    <div class="save-indicator" id="save-indicator">💾 Saved to localStorage</div>
+    
+    <script>
+        // Default cards data
+        const defaultCards = {
+            backlog: [
+                { project: 'slidetheory', title: 'Mobile responsive improvements', desc: 'Hero text too large, demo section needs work' },
+                { project: 'slidetheory', title: 'SEO optimization', desc: 'Structured data, sitemap, Open Graph images' },
+                { project: 'slidetheory', title: 'Resources section', desc: 'Articles, downloads, gated content hub' },
+                { project: 'slidetheory', title: 'Stripe payment integration', desc: 'For when product is ready to sell' },
+                { project: 'content', title: 'Article: "How I Use Claude for Consulting"', desc: 'Personal workflow breakdown, authentic voice' },
+                { project: 'content', title: 'Reddit posting strategy', desc: 'r/consulting soft promo approach' },
+                { project: 'infrastructure', title: 'OpenClaw memory config', desc: 'Enable memory flush, session memory search' },
+                { project: 'future', title: 'AI business idea #2', desc: 'Explore "Prompt Engineer as a Service"' }
+            ],
+            'in-progress': [
+                { project: 'slidetheory', title: 'Final logo selection', desc: 'Review v2-fixed vs v3-text, pick winner' },
+                { project: 'slidetheory', title: 'Upload favicon to site', desc: 'Package ready, needs deployment' },
+                { project: 'slidetheory', title: 'Lead magnet PDF conversion', desc: '7 AI Projects — markdown to designed PDF' },
+                { project: 'workspace', title: 'GitHub workspace dashboard', desc: 'Universal project management system ✅ LIVE' },
+                { project: 'workspace', title: 'Kanban board', desc: 'Drag-and-drop project tracker ✅ DONE' },
+                { project: 'infrastructure', title: 'Hybrid work system', desc: 'Cron + clawlist + background agents ✅ ACTIVE' }
+            ],
+            review: [
+                { project: 'slidetheory', title: 'Website v2 (live)', desc: 'slidetheory.io with email capture ✅ NEEDS: mobile fix' },
+                { project: 'content', title: '3 AI Business Ideas', desc: 'Prompt Engineer Service, Due Diligence Scanner, Team Training ✅ REVIEW' },
+                { project: 'future', title: 'Amazfit watch integration', desc: 'Research complete, waiting for device arrival ⏸️' }
+            ],
+            done: [
+                { project: 'slidetheory', title: 'Website live', desc: 'slidetheory.io deployed, DNS configured' },
+                { project: 'slidetheory', title: 'Email capture working', desc: 'Formspree connected, tested, receiving submissions' },
+                { project: 'slidetheory', title: 'Logo concepts (3 versions)', desc: 'SVG + PNG exports created' },
+                { project: 'slidetheory', title: 'Favicon package (13 files)', desc: 'All sizes, Apple touch, Android, PWA ready' },
+                { project: 'workspace', title: 'Idea repository (12 files)', desc: 'Organized by category with tagging system' },
+                { project: 'infrastructure', title: 'FileZilla guide', desc: 'Complete VPS file transfer reference' },
+                { project: 'infrastructure', title: 'Skills loaded (7 total)', desc: 'frontend-design, artifacts-builder, github, clawlist, etc.' },
+                { project: 'workspace', title: 'GitHub repo created', desc: 'blakehenkel24-eng/workspace ✅ LIVE' },
+                { project: 'workspace', title: 'GitHub Pages active', desc: 'Dashboard hosted, bookmark ready' },
+                { project: 'content', title: 'Lead magnet draft', desc: '7 Enterprise AI Projects — content complete' },
+                { project: 'infrastructure', title: 'Heartbeat optimized', desc: '1 hour intervals, Claude Haiku, cost-conscious' },
+                { project: 'infrastructure', title: 'Morning cron job', desc: '7:24 AM updates — weather, news, work summary' }
+            ]
+        };
+        
+        // Load cards from localStorage or use defaults
+        function loadCards() {
+            const saved = localStorage.getItem('kanban-cards');
+            return saved ? JSON.parse(saved) : defaultCards;
+        }
+        
+        // Save cards to localStorage
+        function saveCards() {
+            const data = {};
+            ['backlog', 'in-progress', 'review', 'done'].forEach(col => {
+                const container = document.getElementById(col);
+                data[col] = Array.from(container.children).map(card => ({
+                    project: card.dataset.project,
+                    title: card.querySelector('.card-title').textContent,
+                    desc: card.querySelector('.card-desc').textContent
+                }));
+            });
+            localStorage.setItem('kanban-cards', JSON.stringify(data));
+            
+            // Show save indicator
+            const indicator = document.getElementById('save-indicator');
+            indicator.classList.add('show');
+            setTimeout(() => indicator.classList.remove('show'), 2000);
+            
+            updateCounts();
+        }
+        
+        // Update column counts
+        function updateCounts() {
+            ['backlog', 'in-progress', 'review', 'done'].forEach(col => {
+                const count = document.getElementById(col).children.length;
+                document.getElementById(`count-${col}`).textContent = count;
+            });
+        }
+        
+        // Create card element
+        function createCard(data, columnId) {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.draggable = true;
+            card.dataset.project = data.project;
+            
+            card.innerHTML = `
+                <div class="card-header">
+                    <span class="card-project ${data.project}">${data.project}</span>
+                    <button class="delete-btn" onclick="deleteCard(this)">×</button>
+                </div>
+                <div class="card-title">${data.title}</div>
+                <div class="card-desc">${data.desc}</div>
+            `;
+            
+            // Drag events
+            card.addEventListener('dragstart', (e) => {
+                e.dataTransfer.setData('text/plain', columnId);
+                e.dataTransfer.setData('card-html', card.outerHTML);
+                card.classList.add('dragging');
+            });
+            
+            card.addEventListener('dragend', () => {
+                card.classList.remove('dragging');
+            });
+            
+            return card;
+        }
+        
+        // Delete card
+        function deleteCard(btn) {
+            if (confirm('Delete this card?')) {
+                btn.closest('.card').remove();
+                saveCards();
+            }
+        }
+        
+        // Add new card
+        function addCard(columnId) {
+            const title = prompt('Card title:');
+            if (!title) return;
+            
+            const desc = prompt('Description (optional):') || '';
+            const project = prompt('Project (slidetheory/workspace/infrastructure/content/future):') || 'slidetheory';
+            
+            const card = createCard({ project, title, desc }, columnId);
+            document.getElementById(columnId).appendChild(card);
+            saveCards();
+        }
+        
+        // Initialize board
+        function initBoard() {
+            const cards = loadCards();
+            
+            Object.keys(cards).forEach(columnId => {
+                const container = document.getElementById(columnId);
+                cards[columnId].forEach(cardData => {
+                    container.appendChild(createCard(cardData, columnId));
+                });
+            });
+            
+            updateCounts();
+            setupDropZones();
+        }
+        
+        // Setup drop zones
+        function setupDropZones() {
+            document.querySelectorAll('.column').forEach(column => {
+                column.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    column.classList.add('drag-over');
+                });
+                
+                column.addEventListener('dragleave', () => {
+                    column.classList.remove('drag-over');
+                });
+                
+                column.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    column.classList.remove('drag-over');
+                    
+                    const fromColumn = e.dataTransfer.getData('text/plain');
+                    const toColumn = column.dataset.column;
+                    
+                    if (fromColumn === toColumn) return;
+                    
+                    // Find dragged card
+                    const draggedCard = document.querySelector('.card.dragging');
+                    if (draggedCard) {
+                        document.getElementById(toColumn).appendChild(draggedCard);
+                        saveCards();
+                    }
+                });
+            });
+        }
+        
+        // Initialize on load
+        initBoard();
+    </script>
+</body>
+</html>

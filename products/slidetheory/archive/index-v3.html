@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SlideTheory — AI-Powered Slides for Strategy Consultants</title>
+    <meta name="description" content="Generate McKinsey, Bain, BCG-quality slides in seconds. Built for strategy consultants and PE professionals.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --primary: #0f172a;
+            --accent: #0066cc;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --bg: #f1f5f9;
+            --white: #ffffff;
+            --border: #cbd5e1;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.5;
+            color: var(--text);
+            background: var(--white);
+        }
+
+        .bg-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(0, 102, 204, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(0, 166, 81, 0.02) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            padding: 16px 40px;
+        }
+
+        .nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--primary);
+            letter-spacing: -0.5px;
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+
+        .nav-cta {
+            background: var(--accent);
+            color: white !important;
+            padding: 10px 20px;
+            border-radius: 8px;
+        }
+
+        /* Hero */
+        .hero {
+            padding: 140px 40px 60px;
+            text-align: center;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 102, 204, 0.1);
+            color: var(--accent);
+            padding: 8px 16px;
+            border-radius: 100px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .hero h1 {
+            font-size: 52px;
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -2px;
+            max-width: 800px;
+            margin: 0 auto 20px;
+        }
+
+        .hero h1 span {
+            color: var(--accent);
+        }
+
+        .hero-subtitle {
+            font-size: 20px;
+            color: var(--text-light);
+            max-width: 600px;
+            margin: 0 auto 32px;
+        }
+
+        .hero-ctas {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary:hover {
+            background: #0052a3;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--text);
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            border: 1px solid var(--border);
+        }
+
+        /* Demo Section */
+        .demo-section {
+            padding: 40px 40px 80px;
+        }
+
+        .demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .demo-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .demo-header h2 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .demo-header p {
+            color: var(--text-light);
+            font-size: 16px;
+        }
+
+        .demo-flow {
+            display: grid;
+            grid-template-columns: 360px 80px 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+
+        /* Input Panel */
+        .input-panel {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-panel h3 {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--accent);
+        }
+
+        .input-field {
+            margin-bottom: 16px;
+        }
+
+        .input-field label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .input-field select,
+        .input-field input,
+        .input-field textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+            background: #f8fafc;
+            color: var(--text);
+        }
+
+        .input-field textarea {
+            min-height: 60px;
+            resize: none;
+            line-height: 1.5;
+        }
+
+        /* Readonly but clickable */
+        .input-field select[readonly],
+        .input-field input[readonly],
+        .input-field textarea[readonly] {
+            background: #f8fafc;
+            cursor: pointer;
+            pointer-events: auto;
+        }
+
+        .input-field select option:disabled {
+            color: #999;
+        }
+
+        .optional-label {
+            font-weight: 400;
+            color: var(--text-light);
+        }
+
+        /* Arrow */
+        .demo-arrow {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 200px;
+        }
+
+        .arrow-box {
+            background: linear-gradient(135deg, var(--accent), #3b82f6);
+            color: white;
+            padding: 16px 12px;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 600;
+            box-shadow: 0 10px 20px rgba(0, 102, 204, 0.3);
+        }
+
+        .arrow-box .icon {
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+
+        /* Clean Windows Slide Preview */
+        .slide-container {
+            background: #e5e7eb;
+            border-radius: 8px;
+            padding: 1px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .windows-titlebar {
+            background: #f9fafb;
+            padding: 8px 12px;
+            border-radius: 8px 8px 0 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid #d1d5db;
+        }
+
+        .window-controls {
+            display: flex;
+            gap: 6px;
+        }
+
+        .win-btn {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 1px solid #d1d5db;
+        }
+
+        .win-btn.min { background: white; }
+        .win-btn.max { background: white; }
+        .win-btn.close { background: #ef4444; border-color: #dc2626; }
+
+        .window-title {
+            flex: 1;
+            text-align: center;
+            font-size: 12px;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .slide-content-box {
+            background: white;
+            padding: 28px;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .slide-main-title {
+            color: #0066cc;
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .slide-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 28px;
+        }
+
+        .slide-col h4 {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--text);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .slide-col ul {
+            list-style: none;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .slide-col li {
+            margin-bottom: 10px;
+            padding-left: 14px;
+            position: relative;
+        }
+
+        .slide-col li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        .slide-col li strong {
+            font-weight: 600;
+        }
+
+        .framework-box {
+            background: #059669;
+            color: white;
+            padding: 10px 14px;
+            font-size: 11px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+
+        .framework-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+        }
+
+        .framework-cell {
+            border: 1px solid #d1d5db;
+            padding: 10px 8px;
+            font-size: 10px;
+            text-align: center;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f9fafb;
+            border-radius: 4px;
+            line-height: 1.4;
+        }
+
+        /* Features */
+        .features {
+            padding: 80px 40px;
+            background: linear-gradient(180deg, var(--bg) 0%, white 100%);
+        }
+
+        .section-title {
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto 48px;
+        }
+
+        .section-title h2 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .section-title p {
+            color: var(--text-light);
+            font-size: 17px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 28px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .feature-icon {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, var(--accent), #3b82f6);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            margin-bottom: 16px;
+        }
+
+        .feature-card h3 {
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .feature-card p {
+            font-size: 14px;
+            color: var(--text-light);
+            line-height: 1.5;
+        }
+
+        /* Stats */
+        .stats {
+            padding: 60px 40px;
+            background: var(--primary);
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .stat h4 {
+            font-size: 36px;
+            font-weight: 800;
+            color: #60a5fa;
+            margin-bottom: 8px;
+        }
+
+        .stat p {
+            font-size: 14px;
+            color: #94a3b8;
+        }
+
+        /* CTA */
+        .cta {
+            padding: 80px 40px;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta h2 {
+            font-size: 36px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 12px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta p {
+            font-size: 17px;
+            color: #94a3b8;
+            margin-bottom: 32px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .signup-form {
+            max-width: 480px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            font-size: 15px;
+            background: rgba(255,255,255,0.05);
+            color: white;
+        }
+
+        .form-group input::placeholder {
+            color: #64748b;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .submit-btn:hover {
+            background: #3b82f6;
+        }
+
+        .privacy {
+            font-size: 13px;
+            color: #64748b;
+            margin-top: 12px;
+        }
+
+        /* Footer */
+        footer {
+            padding: 32px 40px;
+            background: var(--primary);
+            color: #64748b;
+            text-align: center;
+            font-size: 14px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .demo-flow {
+                grid-template-columns: 1fr;
+            }
+            .demo-arrow {
+                padding: 20px 0;
+                transform: rotate(90deg);
+            }
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .slide-columns {
+                grid-template-columns: 1fr;
+            }
+            .hero h1 {
+                font-size: 36px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-pattern"></div>
+
+    <nav>
+        <div class="nav-inner">
+            <div class="logo">Slide<span>Theory</span></div>
+            <div class="nav-links">
+                <a href="#demo">How It Works</a>
+                <a href="#features">Features</a>
+                <a href="#signup" class="nav-cta">Get Early Access</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-badge">⚡ Now in early access</div>
+        <h1>Consultant-quality slides in <span>30 seconds</span></h1>
+        <p class="hero-subtitle">Generate McKinsey, Bain, BCG-style presentations with AI. Built for strategy consultants and PE professionals.</p>
+        
+        <div class="hero-ctas">
+            <a href="#signup" class="btn-primary">Get Free Early Access →</a>
+            <a href="#demo" class="btn-secondary">See How It Works</a>
+        </div>
+    </section>
+
+    <section class="demo-section" id="demo">
+        <div class="demo-container">
+            <div class="demo-header">
+                <h2>Input → AI Generation → Consultant-Quality Slide</h2>
+                <p>Describe what you need. SlideTheory structures it like a top-tier consulting firm would.</p>
+            </div>
+
+            <div class="demo-flow">
+                <!-- INPUT PANEL - Simplified + Readonly -->
+                <div class="input-panel">
+                    <h3>INPUT</h3>
+
+                    <div class="input-field">
+                        <label>Slide Type</label>
+                        <select onclick="this.showPicker()" readonly>
+                            <option selected>Executive Summary</option>
+                            <option>Recommendation</option>
+                            <option>Market Analysis</option>
+                            <option>Framework / 2x2</option>
+                            <option>General (No Template)</option>
+                        </select>
+                    </div>
+
+                    <div class="input-field">
+                        <label>Audience</label>
+                        <select onclick="this.showPicker()" readonly>
+                            <option selected>C-Suite / Board</option>
+                            <option>Management / Working Team</option>
+                            <option>Educational / Internal</option>
+                        </select>
+                    </div>
+
+                    <div class="input-field">
+                        <label>Slide Format</label>
+                        <div style="display: flex; gap: 16px; padding: 10px 0;">
+                            <label style="display: flex; align-items: center; gap: 6px; font-weight: 500; text-transform: none; cursor: pointer;">
+                                <input type="radio" name="format" checked style="width: auto;"> Presentation (less text)
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 6px; font-weight: 500; text-transform: none; cursor: pointer;">
+                                <input type="radio" name="format" style="width: auto;"> Read / Email (more detail)
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="input-field">
+                        <label>Context / Description</label>
+                        <textarea readonly>Healthcare company evaluating expansion into outpatient surgery centers. Need to assess market opportunities, competitive landscape, and develop investment thesis.</textarea>
+                    </div>
+
+                    <div class="input-field">
+                        <label><span class="optional-label">Data / Info (Optional)</span></label>
+                        <textarea readonly>Market growing 12% annually. Top 3 competitors control 65% share. Patient surveys show strong demand for outpatient procedures.</textarea>
+                    </div>
+
+                    <div class="input-field">
+                        <label><span class="optional-label">Key Takeaway (Optional)</span></label>
+                        <input type="text" value="Targeted expansion into high-demand markets with differentiated service offering" readonly>
+                    </div>
+                </div>
+
+                <!-- ARROW -->
+                <div class="demo-arrow">
+                    <div class="arrow-box">
+                        <div class="icon">⚡</div>
+                        AI
+                        <br>
+                        Generates
+                    </div>
+                </div>
+
+                <!-- CLEAN WINDOWS SLIDE - Generic Example -->
+                <div class="slide-container">
+                    <div class="windows-titlebar">
+                        <div class="window-controls">
+                            <div class="win-btn min"></div>
+                            <div class="win-btn max"></div>
+                            <div class="win-btn close"></div>
+                        </div>
+                        <div class="window-title">SlideTheory_Generated.pptx - PowerPoint</div>
+                    </div>
+
+                    <div class="slide-content-box">
+                        <div class="slide-main-title">Strategic expansion into outpatient surgery centers presents a compelling growth opportunity rooted in market demand and competitive positioning</div>
+
+                        <div class="slide-columns">
+                            <div class="slide-col">
+                                <h4>Market Assessment</h4>
+                                <ul>
+                                    <li><strong>12% annual growth</strong> in outpatient procedures, driven by cost advantages and patient preference</li>
+                                    <li><strong>Top 3 competitors</strong> control 65% market share, indicating consolidation opportunity</li>
+                                    <li><strong>Patient surveys</strong> reveal strong unmet demand for convenient, high-quality outpatient care</li>
+                                    <li><strong>Regulatory tailwinds</strong> favor shift from inpatient to outpatient settings</li>
+                                    <li><strong>Technology advances</strong> enabling broader range of procedures in outpatient setting</li>
+                                </ul>
+                            </div>
+
+                            <div class="slide-col">
+                                <h4>Strategic Framework</h4>
+                                <div class="framework-box">Where to Play → How to Win → Investment Thesis</div>
+                                <div class="framework-grid">
+                                    <div class="framework-cell">Which geographic markets offer highest growth?</div>
+                                    <div class="framework-cell">What service mix differentiates vs. competitors?</div>
+                                    <div class="framework-cell">Which physician partnerships are critical?</div>
+                                    <div class="framework-cell">What capital investment is required?</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" id="features">
+        <div class="section-title">
+            <h2>Built for the way consultants work</h2>
+            <p>From AI generation to proven frameworks — tools that actually save hours.</p>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🤖</div>
+                <h3>AI Slide Generation</h3>
+                <p>Describe what you need, get a consultant-quality slide in 30 seconds. Trained on MBB best practices.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📋</div>
+                <h3>Proven Frameworks</h3>
+                <p>Executive summaries, recommendations, situation analyses — structures that work at top firms.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3>Workflow Automations</h3>
+                <p>Save hours on data processing and formatting with AI-powered automations.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="stats">
+        <div class="stats-grid">
+            <div class="stat">
+                <h4>30s</h4>
+                <p>Average generation time</p>
+            </div>
+            <div class="stat">
+                <h4>50+</h4>
+                <p>Proven frameworks</p>
+            </div>
+            <div class="stat">
+                <h4>98%</h4>
+                <p>Less formatting time</p>
+            </div>
+            <div class="stat">
+                <h4>MBB</h4>
+                <p>Quality standard</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta" id="signup">
+        <h2>Get early access to SlideTheory</h2>
+        <p>Join strategy consultants from top firms. Free resources + early product access.</p>
+
+        <form class="signup-form" id="signupForm">
+            <div class="form-group">
+                <input type="email" placeholder="Work email" required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <input type="text" placeholder="Company" required>
+                </div>
+
+                <div class="form-group">
+                    <select required>
+                        <option value="" disabled selected>Select role</option>
+                        <option>Consultant / Associate</option>
+                        <option>Manager / Director</option>
+                        <option>C-Suite / Partner</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">Get Free Access →</button>
+            
+            <p class="privacy">No spam. Unsubscribe anytime.</p>
+        </form>
+    </section>
+
+    <footer>
+        <p>© 2026 SlideTheory. Built for consultants who move fast.</p>
+    </footer>
+
+    <script>
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Thanks for signing up! Check your email for early access.');
+            this.reset();
+        });
+    </script>
+</body>
+</html>

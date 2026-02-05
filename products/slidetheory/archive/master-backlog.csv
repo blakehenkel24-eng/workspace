@@ -1,0 +1,72 @@
+ID,Category,Priority,Task,Description,Status,Estimated Effort,Dependencies,Notes
+P-001,PRODUCT,P0,Implement core slide editor,Build the foundational drag-and-drop slide editing interface with basic shapes/text,In Progress,3 weeks,,Critical MVP feature
+P-002,PRODUCT,P0,Export to PDF/PPTX,Allow users to export presentations to common formats,Not Started,1 week,P-001,Required for user value
+P-003,PRODUCT,P0,User authentication system,Implement signup/login with email/password and social auth,In Progress,1 week,,Blocking most features
+P-004,PRODUCT,P1,Template gallery,Create 20+ starter templates across categories,Not Started,2 weeks,P-001,Key differentiator
+P-005,PRODUCT,P1,Real-time collaboration,Multi-user editing with cursors and presence,Not Started,3 weeks,P-003,P-003 required first
+P-006,PRODUCT,P1,Animation system,Slide transitions and element animations,Not Started,2 weeks,P-001,Competitive feature
+P-007,PRODUCT,P2,AI content assistant,Generate slide content from prompts,Not Started,2 weeks,P-001,"GPT/Claude integration"
+P-008,PRODUCT,P2,Presentation analytics,Track views time spent per slide,Not Started,1 week,P-003,Enterprise feature
+P-009,PRODUCT,P2,Mobile responsive viewer,Optimized viewing experience on mobile devices,Not Started,1 week,P-002,Sharing feature
+P-010,PRODUCT,P3,Voice narration,Record and sync audio to slides,Not Started,3 weeks,P-006,Nice-to-have
+I-001,INFRASTRUCTURE,P0,Production hosting setup,Deploy on Vercel/Netlify with custom domain,In Progress,3 days,,Go live requirement
+I-002,INFRASTRUCTURE,P0,SSL certificates,Configure HTTPS for all domains,In Progress,1 day,I-001,Security baseline
+I-003,INFRASTRUCTURE,P1,CDN for assets,CloudFront/Cloudflare for image/asset delivery,Not Started,2 days,I-001,Performance
+I-004,INFRASTRUCTURE,P1,Database setup,PostgreSQL on RDS/Supabase with backups,In Progress,2 days,,Core data layer
+I-005,INFRASTRUCTURE,P2,File storage,S3/Blob storage for user uploads,Not Started,1 day,I-001,Asset storage
+I-006,INFRASTRUCTURE,P2,Redis caching,Session and query caching layer,Not Started,1 day,I-004,Performance boost
+I-007,INFRASTRUCTURE,P2,Domain consolidation,Transfer all domains to single registrar,Not Started,3 days,,Ops cleanup
+I-008,INFRASTRUCTURE,P3,Multi-region failover,Geographic redundancy for 99.9% uptime,Not Started,1 week,I-001,Enterprise SLA
+D-001,DEVOPS,P0,Git repository setup,Initialize repo with proper branching strategy,Completed,1 day,,Done
+D-002,DEVOPS,P0,CI/CD pipeline,Automated test and deploy on push,In Progress,2 days,D-001,Essential workflow
+D-003,DEVOPS,P1,Automated testing,Jest/Cypress test suite with coverage,In Progress,3 days,D-002,Quality gate
+D-004,DEVOPS,P1,Staging environment,Pre-production deployment for QA,Not Started,2 days,I-001,D-002,Safe testing
+D-005,DEVOPS,P2,Infrastructure as Code,Terraform/Pulumi for infra management,Not Started,3 days,I-004,Reproducibility
+D-006,DEVOPS,P2,Monitoring dashboard,Datadog/New Relic for app metrics,Not Started,2 days,D-004,Observability
+D-007,DEVOPS,P2,Error tracking,Sentry integration for crash reporting,Not Started,1 day,I-001,Debug assistance
+D-008,DEVOPS,P3,Chaos engineering,Automated failure testing,Not Started,2 weeks,D-006,Mature practice
+M-001,MARKETING,P0,Brand identity finalization,Logo color palette typography guidelines,In Progress,1 week,,Foundation
+M-002,MARKETING,P0,Website launch page,Coming soon with email capture,In Progress,3 days,I-001,Lead gen start
+M-003,MARKETING,P1,Twitter/X presence,Consistent posting schedule and engagement,Not Started,ongoing,M-001,Community building
+M-004,MARKETING,P1,LinkedIn company page,B2B presence and thought leadership,Not Started,1 day,M-001,Professional network
+M-005,MARKETING,P1,Product Hunt launch prep,Gallery materials and launch strategy,Not Started,2 weeks,P-002,Launch event
+M-006,MARKETING,P2,Content calendar,Weekly blog/video schedule,Not Started,1 week,M-003,Consistency
+M-007,MARKETING,P2,SEO optimization,Technical SEO and content strategy,Not Started,2 weeks,M-002,Organic growth
+M-008,MARKETING,P2,Influencer partnerships,Collaborate with productivity/design YouTubers,Not Started,2 weeks,M-001,Reach expansion
+M-009,MARKETING,P3,Podcast sponsorship,Sponsor relevant business/tech podcasts,Not Started,3 weeks,M-001,Paid acquisition
+M-010,MARKETING,P3,Conference presence,Sponsor or exhibit at SaaS conferences,Not Started,1 month,M-001,High-touch
+S-001,SALES,P0,Stripe integration,Payment processing for subscriptions,Not Started,3 days,P-003,Revenue
+S-002,SALES,P0,Pricing page design,Tiered pricing structure and comparison,Not Started,2 days,M-002,Conversion
+S-003,SALES,P1,Free trial system,14-day trial with feature gating,Not Started,3 days,S-001,Funnel entry
+S-004,SALES,P1,Self-serve onboarding,Guided setup for new users,Not Started,1 week,P-003,Activation
+S-005,SALES,P1,Email nurture sequences,Drip campaigns for trial users,Not Started,1 week,S-003,Conversion
+S-006,SALES,P2,Affiliate program,Partner commission structure,Not Started,2 weeks,S-001,Channel expansion
+S-007,SALES,P2,Enterprise sales deck,Materials for larger deals,Not Started,3 days,M-001,B2B sales
+S-008,SALES,P2,CRM setup,HubSpot/ Salesforce for lead management,Not Started,2 days,S-005,Sales ops
+S-009,SALES,P3,Custom enterprise pricing,Volume discounts and custom terms,Not Started,1 week,S-007,Big deals
+O-001,OPERATIONS,P0,Legal entity setup,LLC formation and EIN,Not Started,3 days,,Business foundation
+O-002,OPERATIONS,P0,Privacy policy & ToS,Legal documents for website,Not Started,2 days,O-001,Compliance
+O-003,OPERATIONS,P1,Accounting system,QuickBooks/Xero setup and chart of accounts,Not Started,2 days,O-001,Finance
+O-004,OPERATIONS,P1,Expense tracking,Process for categorizing business expenses,Not Started,1 day,O-003,Bookkeeping
+O-005,OPERATIONS,P2,Team wiki/Notion,Documentation and SOPs,Not Started,3 days,,Knowledge base
+O-006,OPERATIONS,P2,Customer support system,Help Scout/Zendesk for tickets,Not Started,2 days,P-003,Support ops
+O-007,OPERATIONS,P2,Internal automation,Zapier/Make workflows for repetitive tasks,Not Started,1 week,O-005,Efficiency
+O-008,OPERATIONS,P3,Hiring playbook,Interview process and job templates,Not Started,3 days,O-005,Growth prep
+R-001,RESEARCH,P1,Competitor analysis,Deep dive into Pitch Beautiful.ai Gamma,Not Started,1 week,,Market intel
+R-002,RESEARCH,P1,User interviews,10+ potential customer discovery calls,Not Started,2 weeks,,Validation
+R-003,RESEARCH,P1,Pricing research,Analysis of market pricing benchmarks,Not Started,3 days,S-002,Strategy input
+R-004,RESEARCH,P2,TAM/SAM/SOM calculation,Market sizing for investor materials,Not Started,2 days,R-001,Fundraising
+R-005,RESEARCH,P2,Feature prioritization survey,User input on roadmap priorities,Not Started,1 week,R-002,Data-driven
+R-006,RESEARCH,P2,AI tools landscape,Research AI presentation tools for integration ideas,Not Started,4 days,,Innovation
+R-007,RESEARCH,P3,International expansion,Research EU/Asia market opportunities,Not Started,2 weeks,R-004,Future growth
+R-008,RESEARCH,P3,Vertical market analysis,Industry-specific template opportunities,Not Started,1 week,R-002,Niche markets
+C-001,CONTENT,P1,Launch blog post,Product announcement and origin story,Not Started,2 days,M-002,Launch content
+C-002,CONTENT,P1,How-to video series,5 tutorial videos for YouTube,Not Started,2 weeks,P-004,Education
+C-003,CONTENT,P1,Lead magnet: Template bundle,Free 5-template download for emails,Not Started,1 week,P-004,List building
+C-004,CONTENT,P2,Weekly tips newsletter,Curated design/presentation tips,Not Started,ongoing,C-003,Engagement
+C-005,CONTENT,P2,Case studies,3 customer success stories,Not Started,3 weeks,P-008,Social proof
+C-006,CONTENT,P2,Comparison guides,SlideTheory vs competitors,Not Started,1 week,R-001,SEO/positioning
+C-007,CONTENT,P2,Webinar series,Monthly live demos and Q&A,Not Started,2 weeks,P-001,Engagement
+C-008,CONTENT,P3,Podcast guesting,Appear on relevant business podcasts,Not Started,ongoing,C-001,Authority building
+C-009,CONTENT,P3,E-book: Better Presentations,Comprehensive guide lead magnet,Not Started,2 weeks,C-003,Premium content
+C-010,CONTENT,P3,Design system documentation,Public design resources for community,Not Started,1 week,M-001,Community value
