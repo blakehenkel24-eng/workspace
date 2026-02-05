@@ -32,10 +32,36 @@ const cacheService = require('./cache-service');
 const performanceMonitor = require('./performance-monitor');
 const assetOptimizer = require('./asset-optimizer');
 
+// Advanced AI Features
+const {
+  suggestTemplates,
+  generateDeckFromDocument,
+  recommendVisualizations,
+  rewriteContent,
+  createStoryFlow,
+  generateSpeakerNotes,
+  anticipateQuestions,
+  translateContent,
+  generateSpeakerNotesForDeck,
+  translateDeck
+} = require('./ai-advanced');
+
 module.exports = {
   // AI
   generateSlideContent,
   generateFallbackContent,
+  
+  // Advanced AI
+  suggestTemplates,
+  generateDeckFromDocument,
+  recommendVisualizations,
+  rewriteContent,
+  createStoryFlow,
+  generateSpeakerNotes,
+  anticipateQuestions,
+  translateContent,
+  generateSpeakerNotesForDeck,
+  translateDeck,
   
   // Slide Rendering
   renderSlideToImage,

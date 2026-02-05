@@ -16,6 +16,7 @@ const fileRoutes = require('./file-routes');
 const progressRoutes = require('./progress-routes');
 const performanceRoutes = require('./performance-routes');
 const analyticsRoutes = require('./analytics-routes');
+const aiAdvancedRoutes = require('./ai-advanced-routes');
 
 // Mount routes
 router.use(healthRoutes);
@@ -26,6 +27,7 @@ router.use(exportRoutes);
 router.use('/progress', progressRoutes);
 router.use(performanceRoutes);
 router.use(analyticsRoutes);
+router.use(aiAdvancedRoutes);
 
 // Static file serving routes (mounted at root level in server)
 module.exports = {
