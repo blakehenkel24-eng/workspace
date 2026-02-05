@@ -1,7 +1,20 @@
 /**
  * SlideTheory v2.0 - Frontend Application
  * MBB-Inspired Slide Generation with Knowledge Base
+ * Enhanced with: Auto-save, Undo/Redo, Compare View, Skeleton Loading
  */
+
+// ============================================
+// CONFIGURATION
+// ============================================
+
+const CONFIG = {
+  MAX_INPUT_LENGTH: 10000,
+  LONG_INPUT_THRESHOLD: 3000,
+  AUTOSAVE_DELAY: 2000,
+  AUTOSAVE_KEY: 'slidetheory_draft_v2',
+  MAX_HISTORY_SIZE: 50
+};
 
 // ============================================
 // STATE MANAGEMENT
@@ -11,10 +24,20 @@ const state = {
   version: 'v2',
   isGenerating: false,
   currentSlide: null,
-  presentationMode: 'presentation', // 'presentation' or 'read'
+  previousSlide: null, // For compare view
+  presentationMode: 'presentation',
   templates: {},
   currentJobId: null,
-  progressEventSource: null
+  progressEventSource: null,
+  
+  // Undo/Redo history
+  history: [],
+  historyIndex: -1,
+  isUndoingRedoing: false,
+  
+  // Auto-save
+  autosaveTimer: null,
+  hasUnsavedChanges: false
 };
 
 // ============================================
@@ -44,6 +67,9 @@ const v2Elements = {
   toggles: {
     presentation: document.getElementById('modePresentationV2'),
     read: document.getElementById('modeReadV2')
+  },
+  warnings: {
+    context: document.getElementById('contextWarning')
   }
 };
 
@@ -69,11 +95,13 @@ const v1Elements = {
 const sharedElements = {
   previewContainer: document.getElementById('previewContainer'),
   emptyState: document.getElementById('emptyState'),
+  skeletonState: document.getElementById('skeletonState'),
   loadingOverlay: document.getElementById('loadingOverlay'),
   loadingSteps: document.getElementById('loadingSteps'),
   slideImage: document.getElementById('slideImage'),
   actionBar: document.getElementById('actionBar'),
   regenerateBtn: document.getElementById('regenerateBtn'),
+  compareBtn: document.getElementById('compareBtn'),
   downloadBtn: document.getElementById('downloadBtn'),
   downloadMenu: document.getElementById('downloadMenu'),
   errorContainer: document.getElementById('errorContainer'),
@@ -83,7 +111,24 @@ const sharedElements = {
   versionBtns: document.querySelectorAll('.version-btn'),
   toggleVersionBtn: document.getElementById('toggleVersionBtn'),
   statusAnnouncer: document.getElementById('statusAnnouncer'),
-  successOverlay: document.getElementById('successOverlay')
+  successOverlay: document.getElementById('successOverlay'),
+  truncatedNotice: document.getElementById('truncatedNotice'),
+  
+  // New elements
+  recoveryBanner: document.getElementById('recoveryBanner'),
+  discardRecoveryBtn: document.getElementById('discardRecoveryBtn'),
+  restoreRecoveryBtn: document.getElementById('restoreRecoveryBtn'),
+  autosaveIndicator: document.getElementById('autosaveIndicator'),
+  autosaveText: document.getElementById('autosaveText'),
+  undoBtn: document.getElementById('undoBtn'),
+  redoBtn: document.getElementById('redoBtn'),
+  resetBtn: document.getElementById('resetBtn'),
+  compareModal: document.getElementById('compareModal'),
+  compareModalClose: document.getElementById('compareModalClose'),
+  compareCloseBtn: document.getElementById('compareCloseBtn'),
+  compareUseOldBtn: document.getElementById('compareUseOldBtn'),
+  compareOldImage: document.getElementById('compareOldImage'),
+  compareNewImage: document.getElementById('compareNewImage')
 };
 
 // ============================================
@@ -128,24 +173,26 @@ function trapFocus(element) {
   });
 }
 
-// Store the element that had focus before modal opened
 let lastFocusedElement = null;
 
 function openModal(modalElement) {
   lastFocusedElement = document.activeElement;
   modalElement.classList.remove('hidden');
   trapFocus(modalElement);
-  // Focus the first focusable element (usually the close button)
   const firstFocusable = modalElement.querySelector('button, [href], input, select, textarea');
   if (firstFocusable) {
     firstFocusable.focus();
   }
 }
 
-function closeModalFunc() {
-  sharedElements.shortcutsModal?.classList.add('hidden');
-  sharedElements.downloadMenu?.classList.remove('open');
-  // Return focus to the element that opened the modal
+function closeModalFunc(modalElement = null) {
+  if (modalElement) {
+    modalElement.classList.add('hidden');
+  } else {
+    sharedElements.shortcutsModal?.classList.add('hidden');
+    sharedElements.compareModal?.classList.add('hidden');
+    sharedElements.downloadMenu?.classList.remove('open');
+  }
   if (lastFocusedElement) {
     lastFocusedElement.focus();
   }
@@ -158,7 +205,6 @@ function closeModalFunc() {
 function announceStatus(message) {
   if (sharedElements.statusAnnouncer) {
     sharedElements.statusAnnouncer.textContent = message;
-    // Clear after announcement to prevent repetition
     setTimeout(() => {
       if (sharedElements.statusAnnouncer) {
         sharedElements.statusAnnouncer.textContent = '';
@@ -174,9 +220,11 @@ function announceStatus(message) {
 async function init() {
   await loadV2Templates();
   setupEventListeners();
+  setupAutoSave();
+  setupHistory();
   validateV2Form();
+  checkForRecoveredData();
   
-  // Check URL for version preference
   const params = new URLSearchParams(window.location.search);
   if (params.get('version') === 'v1') {
     switchVersion('v1');
@@ -199,6 +247,370 @@ async function loadV2Templates() {
 }
 
 // ============================================
+// AUTO-SAVE FUNCTIONALITY
+// ============================================
+
+function setupAutoSave() {
+  const inputs = [
+    v2Elements.slideType,
+    v2Elements.audience,
+    v2Elements.keyTakeaway,
+    v2Elements.context,
+    v2Elements.dataInput
+  ];
+  
+  inputs.forEach(input => {
+    if (input) {
+      input.addEventListener('input', () => {
+        state.hasUnsavedChanges = true;
+        scheduleAutoSave();
+      });
+      input.addEventListener('change', () => {
+        state.hasUnsavedChanges = true;
+        saveToLocalStorage();
+      });
+    }
+  });
+}
+
+function scheduleAutoSave() {
+  updateAutosaveIndicator('saving');
+  
+  if (state.autosaveTimer) {
+    clearTimeout(state.autosaveTimer);
+  }
+  
+  state.autosaveTimer = setTimeout(() => {
+    saveToLocalStorage();
+  }, CONFIG.AUTOSAVE_DELAY);
+}
+
+function saveToLocalStorage() {
+  try {
+    const data = {
+      version: state.version,
+      slideType: v2Elements.slideType?.value || '',
+      audience: v2Elements.audience?.value || '',
+      keyTakeaway: v2Elements.keyTakeaway?.value || '',
+      context: v2Elements.context?.value || '',
+      dataInput: v2Elements.dataInput?.value || '',
+      presentationMode: state.presentationMode,
+      timestamp: Date.now()
+    };
+    
+    localStorage.setItem(CONFIG.AUTOSAVE_KEY, JSON.stringify(data));
+    state.hasUnsavedChanges = false;
+    updateAutosaveIndicator('saved');
+  } catch (error) {
+    console.error('Failed to auto-save:', error);
+    updateAutosaveIndicator('error');
+  }
+}
+
+function updateAutosaveIndicator(status) {
+  if (!sharedElements.autosaveIndicator || !sharedElements.autosaveText) return;
+  
+  sharedElements.autosaveIndicator.classList.remove('saving', 'saved', 'error');
+  
+  switch (status) {
+    case 'saving':
+      sharedElements.autosaveIndicator.classList.add('saving');
+      sharedElements.autosaveText.textContent = 'Saving...';
+      break;
+    case 'saved':
+      sharedElements.autosaveIndicator.classList.add('saved');
+      sharedElements.autosaveText.textContent = 'Auto-saved';
+      break;
+    case 'error':
+      sharedElements.autosaveIndicator.classList.add('error');
+      sharedElements.autosaveText.textContent = 'Save failed';
+      break;
+    default:
+      sharedElements.autosaveText.textContent = 'Auto-save';
+  }
+}
+
+function checkForRecoveredData() {
+  try {
+    const saved = localStorage.getItem(CONFIG.AUTOSAVE_KEY);
+    if (saved) {
+      const data = JSON.parse(saved);
+      const age = Date.now() - data.timestamp;
+      
+      // Only show recovery if data is less than 7 days old and not empty
+      if (age < 7 * 24 * 60 * 60 * 1000 && hasFormData(data)) {
+        showRecoveryBanner(data);
+      }
+    }
+  } catch (error) {
+    console.error('Failed to check for recovered data:', error);
+  }
+}
+
+function hasFormData(data) {
+  return data.slideType || data.keyTakeaway || data.context;
+}
+
+function showRecoveryBanner(data) {
+  if (!sharedElements.recoveryBanner) return;
+  
+  sharedElements.recoveryBanner.classList.remove('hidden');
+  
+  sharedElements.discardRecoveryBtn?.addEventListener('click', () => {
+    localStorage.removeItem(CONFIG.AUTOSAVE_KEY);
+    sharedElements.recoveryBanner.classList.add('hidden');
+    showToast('Recovered data discarded', 'info');
+  });
+  
+  sharedElements.restoreRecoveryBtn?.addEventListener('click', () => {
+    restoreFormData(data);
+    sharedElements.recoveryBanner.classList.add('hidden');
+    showToast('Previous session restored', 'success');
+  });
+}
+
+function restoreFormData(data) {
+  if (data.version === 'v1') {
+    switchVersion('v1');
+    v1Elements.slideType.value = data.slideType || '';
+    v1Elements.context.value = data.context || '';
+    v1Elements.dataPoints.value = data.dataInput || '';
+    v1Elements.audience.value = data.audience || '';
+    validateV1Form();
+  } else {
+    v2Elements.slideType.value = data.slideType || '';
+    v2Elements.audience.value = data.audience || '';
+    v2Elements.keyTakeaway.value = data.keyTakeaway || '';
+    v2Elements.context.value = data.context || '';
+    v2Elements.dataInput.value = data.dataInput || '';
+    setPresentationMode(data.presentationMode || 'presentation');
+    validateV2Form();
+    updateCharCounters();
+  }
+  
+  pushToHistory();
+}
+
+function updateCharCounters() {
+  updateCharCounter(v2Elements.keyTakeaway, v2Elements.counters.keyTakeaway, 150);
+  updateCharCounter(v2Elements.context, v2Elements.counters.context, 10000);
+  checkLongInput(v2Elements.context, v2Elements.warnings.context);
+}
+
+// ============================================
+// UNDO/REDO HISTORY
+// ============================================
+
+function setupHistory() {
+  const inputs = [
+    v2Elements.slideType,
+    v2Elements.audience,
+    v2Elements.keyTakeaway,
+    v2Elements.context,
+    v2Elements.dataInput
+  ];
+  
+  inputs.forEach(input => {
+    if (input) {
+      input.addEventListener('change', () => {
+        if (!state.isUndoingRedoing) {
+          pushToHistory();
+        }
+      });
+    }
+  });
+  
+  // Initial state
+  pushToHistory();
+  
+  // Button handlers
+  sharedElements.undoBtn?.addEventListener('click', undo);
+  sharedElements.redoBtn?.addEventListener('click', redo);
+  sharedElements.resetBtn?.addEventListener('click', resetForm);
+}
+
+function getFormState() {
+  return {
+    version: state.version,
+    slideType: v2Elements.slideType?.value || '',
+    audience: v2Elements.audience?.value || '',
+    keyTakeaway: v2Elements.keyTakeaway?.value || '',
+    context: v2Elements.context?.value || '',
+    dataInput: v2Elements.dataInput?.value || '',
+    presentationMode: state.presentationMode
+  };
+}
+
+function pushToHistory() {
+  const currentState = getFormState();
+  
+  // Don't push duplicate states
+  if (state.historyIndex >= 0) {
+    const lastState = state.history[state.historyIndex];
+    if (JSON.stringify(lastState) === JSON.stringify(currentState)) {
+      return;
+    }
+  }
+  
+  // Remove any future history if we're in the middle
+  if (state.historyIndex < state.history.length - 1) {
+    state.history = state.history.slice(0, state.historyIndex + 1);
+  }
+  
+  state.history.push(currentState);
+  
+  // Limit history size
+  if (state.history.length > CONFIG.MAX_HISTORY_SIZE) {
+    state.history.shift();
+  } else {
+    state.historyIndex++;
+  }
+  
+  updateHistoryButtons();
+}
+
+function undo() {
+  if (state.historyIndex > 0) {
+    state.historyIndex--;
+    restoreHistoryState(state.history[state.historyIndex]);
+    showToast('Undo', 'info');
+  }
+}
+
+function redo() {
+  if (state.historyIndex < state.history.length - 1) {
+    state.historyIndex++;
+    restoreHistoryState(state.history[state.historyIndex]);
+    showToast('Redo', 'info');
+  }
+}
+
+function restoreHistoryState(historyState) {
+  state.isUndoingRedoing = true;
+  
+  if (historyState.version !== state.version) {
+    switchVersion(historyState.version);
+  }
+  
+  if (historyState.version === 'v1') {
+    v1Elements.slideType.value = historyState.slideType || '';
+    v1Elements.context.value = historyState.context || '';
+    v1Elements.dataPoints.value = historyState.dataInput || '';
+    v1Elements.audience.value = historyState.audience || '';
+    validateV1Form();
+  } else {
+    v2Elements.slideType.value = historyState.slideType || '';
+    v2Elements.audience.value = historyState.audience || '';
+    v2Elements.keyTakeaway.value = historyState.keyTakeaway || '';
+    v2Elements.context.value = historyState.context || '';
+    v2Elements.dataInput.value = historyState.dataInput || '';
+    setPresentationMode(historyState.presentationMode || 'presentation');
+    validateV2Form();
+    updateCharCounters();
+  }
+  
+  updateHistoryButtons();
+  
+  setTimeout(() => {
+    state.isUndoingRedoing = false;
+  }, 0);
+}
+
+function updateHistoryButtons() {
+  if (sharedElements.undoBtn) {
+    sharedElements.undoBtn.disabled = state.historyIndex <= 0;
+  }
+  if (sharedElements.redoBtn) {
+    sharedElements.redoBtn.disabled = state.historyIndex >= state.history.length - 1;
+  }
+}
+
+function resetForm() {
+  if (confirm('Reset all form fields? This cannot be undone.')) {
+    v2Form?.reset();
+    v1Form?.reset();
+    pushToHistory();
+    validateV2Form();
+    validateV1Form();
+    showToast('Form reset', 'info');
+  }
+}
+
+// ============================================
+// LONG INPUT HANDLING
+// ============================================
+
+function checkLongInput(input, warningElement) {
+  if (!input || !warningElement) return;
+  
+  const length = input.value.length;
+  
+  if (length > CONFIG.LONG_INPUT_THRESHOLD) {
+    warningElement.classList.remove('hidden');
+  } else {
+    warningElement.classList.add('hidden');
+  }
+}
+
+function truncateIfNeeded(text, maxLength = CONFIG.MAX_INPUT_LENGTH) {
+  if (text.length <= maxLength) return { text, wasTruncated: false };
+  
+  // Try to truncate at a sentence boundary
+  const truncated = text.substring(0, maxLength);
+  const lastSentence = truncated.lastIndexOf('.');
+  const lastParagraph = truncated.lastIndexOf('\n\n');
+  const lastBreak = Math.max(lastSentence, lastParagraph);
+  
+  if (lastBreak > maxLength * 0.8) {
+    return { 
+      text: truncated.substring(0, lastBreak + 1), 
+      wasTruncated: true 
+    };
+  }
+  
+  return { text: truncated, wasTruncated: true };
+}
+
+function showTruncatedNotice() {
+  if (sharedElements.truncatedNotice) {
+    sharedElements.truncatedNotice.classList.remove('hidden');
+    setTimeout(() => {
+      sharedElements.truncatedNotice?.classList.add('hidden');
+    }, 5000);
+  }
+}
+
+// ============================================
+// COMPARE VIEW
+// ============================================
+
+function showCompareView() {
+  if (!state.previousSlide || !state.currentSlide) return;
+  
+  sharedElements.compareOldImage.src = state.previousSlide.imageUrl;
+  sharedElements.compareNewImage.src = state.currentSlide.imageUrl;
+  
+  openModal(sharedElements.compareModal);
+}
+
+function useOldVersion() {
+  if (!state.previousSlide) return;
+  
+  // Swap current and previous
+  const temp = state.currentSlide;
+  state.currentSlide = state.previousSlide;
+  state.previousSlide = temp;
+  
+  // Update display
+  sharedElements.slideImage.src = state.currentSlide.imageUrl;
+  sharedElements.compareOldImage.src = state.previousSlide.imageUrl;
+  sharedElements.compareNewImage.src = state.currentSlide.imageUrl;
+  
+  showToast('Restored previous version', 'success');
+  closeModalFunc(sharedElements.compareModal);
+}
+
+// ============================================
 // EVENT LISTENERS
 // ============================================
 
@@ -215,21 +627,34 @@ function setupEventListeners() {
   
   // V2 Form
   v2Form?.addEventListener('submit', handleV2Submit);
-  v2Elements.slideType?.addEventListener('change', updateSlideTypeHint);
-  v2Elements.audience?.addEventListener('change', validateV2Form);
+  v2Elements.slideType?.addEventListener('change', () => {
+    updateSlideTypeHint();
+    pushToHistory();
+  });
+  v2Elements.audience?.addEventListener('change', () => {
+    validateV2Form();
+    pushToHistory();
+  });
   v2Elements.keyTakeaway?.addEventListener('input', () => {
     updateCharCounter(v2Elements.keyTakeaway, v2Elements.counters.keyTakeaway, 150);
     validateV2Form();
   });
   v2Elements.context?.addEventListener('input', () => {
-    updateCharCounter(v2Elements.context, v2Elements.counters.context, 2000);
+    updateCharCounter(v2Elements.context, v2Elements.counters.context, 10000);
+    checkLongInput(v2Elements.context, v2Elements.warnings.context);
     validateV2Form();
   });
   v2Elements.dataFile?.addEventListener('change', handleFileUpload);
   
   // Presentation mode toggles
-  v2Elements.toggles.presentation?.addEventListener('click', () => setPresentationMode('presentation'));
-  v2Elements.toggles.read?.addEventListener('click', () => setPresentationMode('read'));
+  v2Elements.toggles.presentation?.addEventListener('click', () => {
+    setPresentationMode('presentation');
+    pushToHistory();
+  });
+  v2Elements.toggles.read?.addEventListener('click', () => {
+    setPresentationMode('read');
+    pushToHistory();
+  });
   
   // V1 Form (legacy)
   v1Form?.addEventListener('submit', handleV1Submit);
@@ -251,14 +676,14 @@ function setupEventListeners() {
     }
   });
   
+  sharedElements.compareBtn?.addEventListener('click', showCompareView);
+  
   sharedElements.downloadBtn?.addEventListener('click', (e) => {
     e.stopPropagation();
     const isOpen = sharedElements.downloadMenu?.classList.toggle('open');
-    // Update aria-expanded attribute
     sharedElements.downloadBtn?.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
   });
 
-  // Keyboard navigation for dropdown menu
   sharedElements.downloadMenu?.addEventListener('keydown', (e) => {
     const items = sharedElements.downloadMenu.querySelectorAll('[role="menuitem"]');
     const currentIndex = Array.from(items).indexOf(document.activeElement);
@@ -284,7 +709,6 @@ function setupEventListeners() {
       handleDownload(item.dataset.format);
       sharedElements.downloadMenu?.classList.remove('open');
       sharedElements.downloadBtn?.setAttribute('aria-expanded', 'false');
-      // Return focus to download button
       sharedElements.downloadBtn?.focus();
     });
   });
@@ -301,11 +725,40 @@ function setupEventListeners() {
     }
   });
   
-  sharedElements.modalClose?.addEventListener('click', closeModalFunc);
-  sharedElements.shortcutsModal?.querySelector('.modal-backdrop')?.addEventListener('click', closeModalFunc);
+  sharedElements.modalClose?.addEventListener('click', () => closeModalFunc(sharedElements.shortcutsModal));
+  sharedElements.shortcutsModal?.querySelector('.modal-backdrop')?.addEventListener('click', () => closeModalFunc(sharedElements.shortcutsModal));
+  
+  // Compare modal
+  sharedElements.compareModalClose?.addEventListener('click', () => closeModalFunc(sharedElements.compareModal));
+  sharedElements.compareCloseBtn?.addEventListener('click', () => closeModalFunc(sharedElements.compareModal));
+  sharedElements.compareUseOldBtn?.addEventListener('click', useOldVersion);
+  sharedElements.compareModal?.querySelector('.modal-backdrop')?.addEventListener('click', () => closeModalFunc(sharedElements.compareModal));
   
   // Keyboard shortcuts
   document.addEventListener('keydown', handleKeyboard);
+  
+  // Empty state quick templates
+  document.querySelectorAll('.empty-state__template-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const template = btn.dataset.template;
+      const takeaway = btn.dataset.takeaway;
+      
+      v2Elements.slideType.value = template;
+      v2Elements.keyTakeaway.value = takeaway;
+      v2Elements.audience.value = 'C-Suite/Board';
+      v2Elements.context.value = `This slide presents ${template.toLowerCase()} information for stakeholder review. Key insights and strategic recommendations are highlighted.`;
+      
+      updateSlideTypeHint();
+      updateCharCounters();
+      validateV2Form();
+      pushToHistory();
+      
+      showToast('Template applied! Press Ctrl+Enter to generate.', 'success');
+    });
+  });
+  
+  // Cancel button
+  document.getElementById('cancelBtn')?.addEventListener('click', cancelGeneration);
 }
 
 // ============================================
@@ -315,16 +768,13 @@ function setupEventListeners() {
 function switchVersion(version) {
   state.version = version;
   
-  // Update toggle buttons
   sharedElements.versionBtns.forEach(btn => {
     btn.classList.toggle('active', btn.dataset.version === version);
   });
   
-  // Show/hide forms
   v2Form?.classList.toggle('hidden', version !== 'v2');
   v1Form?.classList.toggle('hidden', version !== 'v1');
   
-  // Update URL
   const url = new URL(window.location);
   if (version === 'v1') {
     url.searchParams.set('version', 'v1');
@@ -333,12 +783,12 @@ function switchVersion(version) {
   }
   window.history.replaceState({}, '', url);
   
-  // Update toggle button text
   if (sharedElements.toggleVersionBtn) {
     sharedElements.toggleVersionBtn.innerHTML = `<span style="font-size: 11px; font-weight: 600;">${version === 'v2' ? 'V1' : 'V2'}</span>`;
     sharedElements.toggleVersionBtn.title = `Switch to ${version === 'v2' ? 'v1' : 'v2'}`;
   }
   
+  pushToHistory();
   showToast(`Switched to ${version.toUpperCase()}`, 'success');
 }
 
@@ -355,11 +805,13 @@ function setPresentationMode(mode) {
 // ============================================
 
 function validateV2Form() {
+  const contextResult = truncateIfNeeded(v2Elements.context?.value || '');
+  
   const isValid = 
     v2Elements.slideType?.value &&
     v2Elements.audience?.value &&
     v2Elements.keyTakeaway?.value.length >= 5 &&
-    v2Elements.context?.value.length >= 10;
+    contextResult.text.length >= 10;
   
   if (v2Elements.generateBtn) {
     v2Elements.generateBtn.disabled = !isValid || state.isGenerating;
@@ -409,11 +861,11 @@ function handleFileUpload(e) {
   if (file && v2Elements.fileName) {
     v2Elements.fileName.textContent = file.name;
     
-    // Read file content
     const reader = new FileReader();
     reader.onload = (event) => {
       if (v2Elements.dataInput) {
         v2Elements.dataInput.value = event.target.result;
+        pushToHistory();
       }
     };
     reader.readAsText(file);
@@ -430,13 +882,19 @@ async function handleV2Submit(e) {
   
   clearError();
   
+  // Handle long inputs
+  const contextResult = truncateIfNeeded(v2Elements.context.value);
+  if (contextResult.wasTruncated) {
+    showTruncatedNotice();
+  }
+  
   const requestData = {
     slideType: v2Elements.slideType.value,
     audience: v2Elements.audience.value,
-    context: v2Elements.context.value,
+    context: contextResult.text,
     keyTakeaway: v2Elements.keyTakeaway.value,
     presentationMode: state.presentationMode,
-    dataInput: v2Elements.dataInput.value
+    dataInput: truncateIfNeeded(v2Elements.dataInput.value).text
   };
   
   startLoading();
@@ -451,22 +909,23 @@ async function handleV2Submit(e) {
     const data = await response.json();
     
     if (!data.success) {
-      throw new Error(data.message || 'Failed to generate slide');
+      // Handle missing/broken data gracefully
+      if (data.missingFields || data.partialData) {
+        showWarning('Some data was missing', data.message || 'Using available information to generate slide.');
+      } else {
+        throw new Error(data.message || 'Failed to generate slide');
+      }
     }
     
-    // Store job ID for progress tracking and cancellation
     state.currentJobId = data.jobId;
-    
-    // Connect to SSE for progress updates
     connectProgressSSE(data.jobId);
-    
-    // Wait for generation to complete via SSE
-    // The SSE connection will handle progress updates
-    // We poll for completion
     await waitForCompletion(data.jobId);
     
     displaySlide(data);
     showToast('Slide generated successfully!', 'success');
+    
+    // Clear auto-save on successful generation
+    localStorage.removeItem(CONFIG.AUTOSAVE_KEY);
     
   } catch (error) {
     if (error.message !== 'Request cancelled') {
@@ -480,12 +939,8 @@ async function handleV2Submit(e) {
   }
 }
 
-/**
- * Wait for job completion by polling
- */
 async function waitForCompletion(jobId, maxAttempts = 60) {
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
-    // Check if cancelled
     if (!state.isGenerating) {
       throw new Error('Request cancelled');
     }
@@ -500,11 +955,7 @@ async function waitForCompletion(jobId, maxAttempts = 60) {
 // PROGRESS TRACKING (SSE)
 // ============================================
 
-/**
- * Connect to SSE endpoint for progress updates
- */
 function connectProgressSSE(jobId) {
-  // Close any existing connection
   closeProgressSSE();
   
   const evtSource = new EventSource(`/api/progress/${jobId}`);
@@ -521,15 +972,11 @@ function connectProgressSSE(jobId) {
   
   evtSource.addEventListener('error', (error) => {
     console.error('SSE error:', error);
-    // Don't close on error - let it retry
   });
   
   return evtSource;
 }
 
-/**
- * Close SSE connection
- */
 function closeProgressSSE() {
   if (state.progressEventSource) {
     state.progressEventSource.close();
@@ -537,9 +984,6 @@ function closeProgressSSE() {
   }
 }
 
-/**
- * Handle progress update from SSE
- */
 function handleProgressUpdate(data) {
   const { type, percent, stepLabel, estimateSeconds } = data;
   
@@ -549,10 +993,8 @@ function handleProgressUpdate(data) {
       break;
       
     case 'progress':
-      // Update progress bar
       updateProgressBar(percent);
       
-      // Update loading text
       if (stepLabel && sharedElements.loadingSteps) {
         let text = stepLabel;
         if (estimateSeconds && estimateSeconds > 0) {
@@ -568,8 +1010,7 @@ function handleProgressUpdate(data) {
       
     case 'error':
       closeProgressSSE();
-      showError('Generation Failed', data.error || 'Unknown error');
-      stopLoading();
+      showWarning('Generation Warning', data.error || 'Some elements may be missing from the slide.');
       break;
       
     case 'cancelled':
@@ -580,9 +1021,6 @@ function handleProgressUpdate(data) {
   }
 }
 
-/**
- * Update progress bar visual
- */
 function updateProgressBar(percent) {
   const progressBar = document.getElementById('loadingProgressBar');
   if (progressBar) {
@@ -590,9 +1028,6 @@ function updateProgressBar(percent) {
   }
 }
 
-/**
- * Cancel current generation
- */
 async function cancelGeneration() {
   if (!state.currentJobId) return;
   
@@ -666,10 +1101,8 @@ async function handleV1Submit(e) {
 function startLoading() {
   state.isGenerating = true;
 
-  // Announce loading state to screen readers
   announceStatus('Generating slide, please wait...');
 
-  // Update button
   const btn = state.version === 'v2' ? v2Elements.generateBtn : v1Elements.generateBtn;
   const icon = state.version === 'v2' ? v2Elements.generateIcon : null;
   const text = state.version === 'v2' ? v2Elements.generateText : null;
@@ -678,13 +1111,21 @@ function startLoading() {
   if (text) text.textContent = 'Generating...';
   if (icon) icon.classList.add('spinning');
 
-  // Show loading overlay
+  // Show skeleton first, then loading overlay
   sharedElements.emptyState?.classList.add('hidden');
   sharedElements.slideImage?.classList.add('hidden');
-  sharedElements.loadingOverlay?.classList.remove('hidden');
+  sharedElements.skeletonState?.classList.remove('hidden');
+  sharedElements.loadingOverlay?.classList.add('hidden');
   sharedElements.actionBar.style.display = 'none';
+  
+  // After a brief delay, show the loading overlay with progress
+  setTimeout(() => {
+    if (state.isGenerating) {
+      sharedElements.skeletonState?.classList.add('hidden');
+      sharedElements.loadingOverlay?.classList.remove('hidden');
+    }
+  }, 800);
 
-  // Animate loading steps
   let stepIndex = 0;
   if (sharedElements.loadingSteps) {
     sharedElements.loadingSteps.textContent = loadingStepMessages[0];
@@ -698,7 +1139,6 @@ function startLoading() {
 function stopLoading() {
   state.isGenerating = false;
   
-  // Reset button
   const btn = state.version === 'v2' ? v2Elements.generateBtn : v1Elements.generateBtn;
   const icon = state.version === 'v2' ? v2Elements.generateIcon : null;
   const text = state.version === 'v2' ? v2Elements.generateText : null;
@@ -707,7 +1147,7 @@ function stopLoading() {
   if (text) text.textContent = 'Generate Slide';
   if (icon) icon.classList.remove('spinning');
   
-  // Hide loading
+  sharedElements.skeletonState?.classList.add('hidden');
   sharedElements.loadingOverlay?.classList.add('hidden');
   
   if (loadingStepInterval) {
@@ -721,17 +1161,25 @@ function stopLoading() {
 // ============================================
 
 function displaySlide(data) {
+  // Store previous slide for compare view
+  if (state.currentSlide) {
+    state.previousSlide = state.currentSlide;
+  }
+  
   state.currentSlide = data;
 
   sharedElements.slideImage.src = data.imageUrl;
   sharedElements.slideImage.classList.remove('hidden');
   sharedElements.previewContainer.classList.remove('slide-preview--empty');
   sharedElements.actionBar.style.display = 'flex';
+  
+  // Show compare button if we have a previous version
+  if (state.previousSlide && sharedElements.compareBtn) {
+    sharedElements.compareBtn.style.display = 'inline-flex';
+  }
 
-  // Show success animation
   showSuccessAnimation();
 
-  // Announce completion to screen readers
   announceStatus('Slide generated successfully!');
 
   stopLoading();
@@ -740,7 +1188,6 @@ function displaySlide(data) {
 function showSuccessAnimation() {
   if (sharedElements.successOverlay) {
     sharedElements.successOverlay.classList.remove('hidden');
-    // Hide after animation completes
     setTimeout(() => {
       if (sharedElements.successOverlay) {
         sharedElements.successOverlay.classList.add('hidden');
@@ -752,6 +1199,7 @@ function showSuccessAnimation() {
 function showEmptyState() {
   sharedElements.slideImage?.classList.add('hidden');
   sharedElements.emptyState?.classList.remove('hidden');
+  sharedElements.skeletonState?.classList.add('hidden');
   sharedElements.previewContainer?.classList.add('slide-preview--empty');
   sharedElements.actionBar.style.display = 'none';
 }
@@ -790,7 +1238,7 @@ async function downloadPNG() {
     window.URL.revokeObjectURL(url);
     showToast('PNG download started!', 'success');
   } catch (error) {
-    showError('Download Failed', 'Could not download the slide.');
+    showWarning('Download Issue', 'Could not download the slide. Please try again.');
   }
 }
 
@@ -816,7 +1264,6 @@ async function downloadExport(format) {
       throw new Error(data.message || `Failed to generate ${format}`);
     }
     
-    // Download file
     const fileResponse = await fetch(data.downloadUrl);
     const blob = await fileResponse.blob();
     const url = window.URL.createObjectURL(blob);
@@ -832,7 +1279,7 @@ async function downloadExport(format) {
     showToast(`${format.toUpperCase()} download started!`, 'success');
     
   } catch (error) {
-    showError('Export Failed', error.message);
+    showWarning('Export Issue', error.message);
   }
 }
 
@@ -851,8 +1298,27 @@ function showError(title, message) {
   `;
   sharedElements.errorContainer.classList.remove('hidden');
 
-  // Announce error to screen readers
   announceStatus(`Error: ${title}. ${message}`);
+}
+
+function showWarning(title, message) {
+  if (!sharedElements.errorContainer) return;
+
+  sharedElements.errorContainer.innerHTML = `
+    <div class="alert" role="alert" aria-live="polite" style="
+      padding: var(--space-4);
+      border-radius: var(--radius-md);
+      border-left: 3px solid var(--warning-500);
+      margin-bottom: var(--space-4);
+      background: var(--warning-50);
+    ">
+      <div class="alert__title" style="font-weight: var(--font-semibold); font-size: var(--text-sm); margin-bottom: var(--space-1); color: var(--warning-700);">${title}</div>
+      <div class="alert__message" style="font-size: var(--text-sm); color: var(--warning-600);">${message}</div>
+    </div>
+  `;
+  sharedElements.errorContainer.classList.remove('hidden');
+
+  announceStatus(`Warning: ${title}. ${message}`);
 }
 
 function clearError() {
@@ -871,15 +1337,9 @@ function showToast(message, type = 'success') {
   toast.setAttribute('aria-live', 'polite');
   sharedElements.toastContainer.appendChild(toast);
 
-  // Announce toast to screen readers
   announceStatus(message);
 
   setTimeout(() => toast.remove(), 3000);
-}
-
-// Legacy closeModal - kept for compatibility, use closeModalFunc instead
-function closeModal() {
-  closeModalFunc();
 }
 
 // ============================================
@@ -909,6 +1369,28 @@ function handleKeyboard(e) {
     downloadPNG();
   }
   
+  // Undo: Ctrl+Z
+  if (e.ctrlKey && e.key === 'z' && !e.shiftKey) {
+    e.preventDefault();
+    undo();
+  }
+  
+  // Redo: Ctrl+Y or Ctrl+Shift+Z
+  if ((e.ctrlKey && e.key === 'y') || (e.ctrlKey && e.shiftKey && e.key === 'z')) {
+    e.preventDefault();
+    redo();
+  }
+  
+  // Compare: Ctrl+Shift+C
+  if (e.ctrlKey && e.shiftKey && e.key === 'C') {
+    e.preventDefault();
+    if (state.previousSlide) {
+      showCompareView();
+    } else {
+      showToast('No previous version to compare', 'info');
+    }
+  }
+  
   // Help: ?
   if (e.key === '?' && !e.ctrlKey && !e.shiftKey) {
     e.preventDefault();
@@ -918,7 +1400,6 @@ function handleKeyboard(e) {
   // Close modal: Esc
   if (e.key === 'Escape') {
     closeModalFunc();
-    // Also close dropdown menu
     sharedElements.downloadMenu?.classList.remove('open');
     sharedElements.downloadBtn?.setAttribute('aria-expanded', 'false');
   }
