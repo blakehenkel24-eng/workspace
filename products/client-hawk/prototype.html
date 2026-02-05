@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Hawk — AI-Powered Client Intelligence</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --hawk-navy: #0f172a;
+            --hawk-slate: #334155;
+            --hawk-gray: #64748b;
+            --hawk-light: #f1f5f9;
+            --hawk-white: #ffffff;
+            --hawk-accent: #3b82f6;
+            --hawk-success: #10b981;
+            --hawk-warning: #f59e0b;
+            --hawk-danger: #ef4444;
+            --hawk-purple: #8b5cf6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--hawk-light);
+            color: var(--hawk-navy);
+            line-height: 1.5;
+        }
+
+        /* Header */
+        .header {
+            background: var(--hawk-white);
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0 24px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 20px;
+            color: var(--hawk-navy);
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--hawk-navy) 0%, var(--hawk-accent) 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 4px;
+        }
+
+        .nav-tab {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--hawk-gray);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .nav-tab:hover {
+            background: var(--hawk-light);
+            color: var(--hawk-slate);
+        }
+
+        .nav-tab.active {
+            background: var(--hawk-navy);
+            color: white;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .search-box {
+            width: 280px;
+            padding: 8px 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            background: var(--hawk-light);
+        }
+
+        .notification-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 18px;
+            height: 18px;
+            background: var(--hawk-danger);
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Layout */
+        .app-container {
+            display: flex;
+            margin-top: 64px;
+            min-height: calc(100vh - 64px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--hawk-white);
+            border-right: 1px solid #e2e8f0;
+            padding: 24px;
+            position: fixed;
+            height: calc(100vh - 64px);
+            overflow-y: auto;
+        }
+
+        .sidebar-section {
+            margin-bottom: 32px;
+        }
+
+        .sidebar-title {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--hawk-gray);
+            margin-bottom: 12px;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            color: var(--hawk-slate);
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 4px;
+        }
+
+        .sidebar-item:hover {
+            background: var(--hawk-light);
+        }
+
+        .sidebar-item.active {
+            background: #eff6ff;
+            color: var(--hawk-accent);
+            font-weight: 500;
+        }
+
+        .sidebar-icon {
+            width: 20px;
+            height: 20px;
+            opacity: 0.7;
+        }
+
+        .sidebar-badge {
+            margin-left: auto;
+            background: var(--hawk-danger);
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 32px;
+        }
+
+        /* Page Header */
+        .page-header {
+            margin-bottom: 32px;
+        }
+
+        .page-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--hawk-navy);
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            font-size: 16px;
+            color: var(--hawk-gray);
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: var(--hawk-white);
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: var(--hawk-gray);
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--hawk-navy);
+            margin-bottom: 4px;
+        }
+
+        .stat-change {
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .stat-change.positive {
+            color: var(--hawk-success);
+        }
+
+        .stat-change.negative {
+            color: var(--hawk-danger);
+        }
+
+        /* Briefing Feed */
+        .briefing-container {
+            background: var(--hawk-white);
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+        }
+
+        .briefing-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .briefing-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .briefing-date {
+            font-size: 14px;
+            color: var(--hawk-gray);
+        }
+
+        .briefing-filters {
+            display: flex;
+            gap: 8px;
+        }
+
+        .filter-btn {
+            padding: 6px 14px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--hawk-gray);
+            background: white;
+            cursor: pointer;
+        }
+
+        .filter-btn.active {
+            background: var(--hawk-navy);
+            color: white;
+            border-color: var(--hawk-navy);
+        }
+
+        /* News Card */
+        .news-card {
+            padding: 24px;
+            border-bottom: 1px solid #e2e8f0;
+            transition: background 0.2s;
+        }
+
+        .news-card:last-child {
+            border-bottom: none;
+        }
+
+        .news-card:hover {
+            background: #fafafa;
+        }
+
+        .news-card.urgent {
+            border-left: 4px solid var(--hawk-danger);
+            padding-left: 20px;
+        }
+
+        .news-card.positive {
+            border-left: 4px solid var(--hawk-success);
+            padding-left: 20px;
+        }
+
+        .news-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .client-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            background: #eff6ff;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--hawk-accent);
+        }
+
+        .client-badge.urgent {
+            background: #fef2f2;
+            color: var(--hawk-danger);
+        }
+
+        .sentiment-badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .sentiment-badge.positive {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .sentiment-badge.negative {
+            background: #fef2f2;
+            color: #991b1b;
+        }
+
+        .sentiment-badge.neutral {
+            background: #f1f5f9;
+            color: var(--hawk-gray);
+        }
+
+        .news-time {
+            margin-left: auto;
+            font-size: 13px;
+            color: var(--hawk-gray);
+        }
+
+        .news-title {
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--hawk-navy);
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .news-summary {
+            font-size: 14px;
+            color: var(--hawk-slate);
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        .news-quote {
+            background: var(--hawk-light);
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            color: var(--hawk-slate);
+            border-left: 3px solid var(--hawk-accent);
+            margin-bottom: 12px;
+            font-style: italic;
+        }
+
+        .ai-suggestion {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            background: #fefce8;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #854d0e;
+            margin-bottom: 12px;
+        }
+
+        .ai-icon {
+            width: 16px;
+            height: 16px;
+        }
+
+        .news-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            padding: 8px 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--hawk-slate);
+            background: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .action-btn:hover {
+            background: var(--hawk-light);
+        }
+
+        .action-btn.primary {
+            background: var(--hawk-navy);
+            color: white;
+            border-color: var(--hawk-navy);
+        }
+
+        .action-btn.primary:hover {
+            background: var(--hawk-slate);
+        }
+
+        /* Client List View */
+        .client-list {
+            display: grid;
+            gap: 16px;
+        }
+
+        .client-card {
+            background: var(--hawk-white);
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .client-card:hover {
+            border-color: var(--hawk-accent);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .client-logo {
+            width: 56px;
+            height: 56px;
+            background: var(--hawk-light);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--hawk-navy);
+        }
+
+        .client-info {
+            flex: 1;
+        }
+
+        .client-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--hawk-navy);
+            margin-bottom: 4px;
+        }
+
+        .client-meta {
+            font-size: 13px;
+            color: var(--hawk-gray);
+        }
+
+        .client-stats {
+            display: flex;
+            gap: 24px;
+        }
+
+        .client-stat {
+            text-align: center;
+        }
+
+        .client-stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--hawk-navy);
+        }
+
+        .client-stat-label {
+            font-size: 12px;
+            color: var(--hawk-gray);
+        }
+
+        .client-alerts {
+            display: flex;
+            gap: 8px;
+        }
+
+        .alert-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .alert-dot.critical {
+            background: var(--hawk-danger);
+        }
+
+        .alert-dot.warning {
+            background: var(--hawk-warning);
+        }
+
+        .alert-dot.info {
+            background: var(--hawk-accent);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">
+            <div class="logo-icon">🦅</div>
+            <span>Client Hawk</span>
+        </div>
+        
+        <nav class="nav-tabs">
+            <div class="nav-tab active">Briefing</div>
+            <div class="nav-tab">Clients</div>
+            <div class="nav-tab">Keywords</div>
+            <div class="nav-tab">Analytics</div>
+        </nav>
+        
+        <div class="header-actions">
+            <input type="text" class="search-box" placeholder="Search clients, news, keywords...">
+            <button class="notification-btn">
+                🔔
+                <span class="notification-badge">3</span>
+            </button>
+        </div>
+    </header>
+
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-title">Your Briefing</div>
+                <div class="sidebar-item active">
+                    <span>📰</span>
+                    <span>Today</span>
+                    <span class="sidebar-badge">5</span>
+                </div>
+                <div class="sidebar-item">
+                    <span>⭐</span>
+                    <span>Saved Items</span>
+                    <span class="sidebar-badge">12</span>
+                </div>
+                <div class="sidebar-item">
+                    <span>📊</span>
+                    <span>Trending</span>
+                </div>
+                <div class="sidebar-item">
+                    <span>🔍</span>
+                    <span>Deep Research</span>
+                </div>
+            </div>
+            
+            <div class="sidebar-section">
+                <div class="sidebar-title">Priority Clients</div>
+                <div class="sidebar-item">
+                    <span>🏢</span>
+                    <span>Acme Corp</span>
+                    <span class="sidebar-badge">2</span>
+                </div>
+                <div class="sidebar-item">
+                    <span>⚡</span>
+                    <span>TechFlow Inc</span>
+                </div>
+                <div class="sidebar-item">
+                    <span>🏥</span>
+                    <span>HealthFirst</span>
+                    <span class="sidebar-badge">1</span>
+                </div>
+                <div class="sidebar-item">
+                    <span>💰</span>
+                    <span>Atlas Ventures</span>
+                </div>
+            </div>
+            
+            <div class="sidebar-section">
+                <div class="sidebar-title">Teams</div>
+                <div class="sidebar-item">
+                    <span>👥</span>
+                    <span>PE Diligence</span>
+                </div>
+                <div class="sidebar-item">
+                    <span>👥</span>
+                    <span>Client Success</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="page-header">
+                <h1 class="page-title">Your Morning Briefing</h1>
+                <p class="page-subtitle">February 4, 2026 • 5 updates across 3 clients</p>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats-bar">
+                <div class="stat-card">
+                    <div class="stat-label">Active Clients</div>
+                    <div class="stat-value">24</div>
+                    <div class="stat-change positive">+2 this week</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Mentions Today</div>
+                    <div class="stat-value">47</div>
+                    <div class="stat-change positive">+12% vs yesterday</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">High Priority</div>
+                    <div class="stat-value">3</div>
+                    <div class="stat-change negative">Requires action</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Time Saved</div>
+                    <div class="stat-value">8.5h</div>
+                    <div class="stat-change positive">This week</div>
+                </div>
+            </div>
+
+            <!-- Briefing Feed -->
+            <div class="briefing-container">
+                <div class="briefing-header">
+                    <div>
+                        <div class="briefing-title">Today's Intelligence</div>
+                        <div class="briefing-date">Curated at 7:00 AM CST</div>
+                    </div>
+                    <div class="briefing-filters">
+                        <button class="filter-btn active">All</button>
+                        <button class="filter-btn">Urgent</button>
+                        <button class="filter-btn">Funding</button>
+                        <button class="filter-btn">Leadership</button>
+                    </div>
+                </div>
+
+                <!-- News Card 1: Urgent -->
+                <div class="news-card urgent">
+                    <div class="news-header">
+                        <span class="client-badge urgent">⚠️ Atlas Ventures</span>
+                        <span class="sentiment-badge negative">Negative</span>
+                        <span class="news-time">2 hours ago</span>
+                    </div>
+                    <h3 class="news-title">Portfolio Company Data Breach Affects 2M Users</h3>
+                    <p class="news-summary">
+                        CyberSecurity Inc, a portfolio company of Atlas Ventures, disclosed a data breach affecting 2 million users. 
+                        The breach occurred in late January and was discovered during routine security audits. Stock down 8% in pre-market.
+                    </p>
+                    <div class="news-quote">
+                        "We take full responsibility and have engaged leading cybersecurity firms to investigate..." — CEO, CyberSecurity Inc
+                    </div>
+                    <div class="ai-suggestion">
+                        <span class="ai-icon">💡</span>
+                        <strong>AI Suggestion:</strong> Call Atlas partner Sarah Chen today. Offer crisis communications support and diligence review of their portfolio.
+                    </div>
+                    <div class="news-actions">
+                        <button class="action-btn primary">📧 Draft Email</button>
+                        <button class="action-btn">📎 Save</button>
+                        <button class="action-btn">↗️ Read Full</button>
+                        <button class="action-btn">✓ Mark Read</button>
+                    </div>
+                </div>
+
+                <!-- News Card 2: Positive -->
+                <div class="news-card positive">
+                    <div class="news-header">
+                        <span class="client-badge">TechFlow Inc</span>
+                        <span class="sentiment-badge positive">Positive</span>
+                        <span class="news-time">4 hours ago</span>
+                    </div>
+                    <h3 class="news-title">TechFlow Announces $45M Series C Led by Andreessen Horowitz</h3>
+                    <p class="news-summary">
+                        TechFlow Inc raised $45M in Series C funding to expand their AI-powered supply chain platform. 
+                        The round values the company at $280M. Funds will be used for geographic expansion and team growth.
+                    </p>
+                    <div class="ai-suggestion">
+                        <span class="ai-icon">💡</span>
+                        <strong>AI Suggestion:</strong> Congratulate CEO Mark Johnson. Perfect time to discuss scaling their legal infrastructure for international expansion.
+                    </div>
+                    <div class="news-actions">
+                        <button class="action-btn primary">🎉 Send Congrats</button>
+                        <button class="action-btn">📎 Save</button>
+                        <button class="action-btn">↗️ Read Full</button>
+                    </div>
+                </div>
+
+                <!-- News Card 3 -->
+                <div class="news-card">
+                    <div class="news-header">
+                        <span class="client-badge">Acme Corp</span>
+                        <span class="sentiment-badge neutral">Neutral</span>
+                        <span class="news-time">6 hours ago</span>
+                    </div>
+                    <h3 class="news-title">Acme Corp Appoints Former Amazon VP as New CTO</h3>
+                    <p class="news-summary">
+                        Acme Corp announced the appointment of Jennifer Walsh, former Amazon VP of Engineering, as their new Chief Technology Officer. 
+                        Walsh brings 15 years of experience in cloud infrastructure and will focus on modernizing Acme's tech stack.
+                    </p>
+                    <div class="ai-suggestion">
+                        <span class="ai-icon">💡</span>
+                        <strong>AI Suggestion:</strong> New CTO often means new vendor evaluations. Reach out to introduce your services in 2 weeks after she's settled.
+                    </div>
+                    <div class="news-actions">
+                        <button class="action-btn">📎 Save</button>
+                        <button class="action-btn">↗️ Read Full</button>
+                        <button class="action-btn">✓ Mark Read</button>
+                    </div>
+                </div>
+
+                <!-- News Card 4 -->
+                <div class="news-card">
+                    <div class="news-header">
+                        <span class="client-badge">HealthFirst</span>
+                        <span class="sentiment-badge positive">Positive</span>
+                        <span class="news-time">8 hours ago</span>
+                    </div>
+                    <h3 class="news-title">HealthFirst Partners with Mayo Clinic for Specialized Care Network</h3>
+                    <p class="news-summary">
+                        HealthFirst and Mayo Clinic announced a strategic partnership to create a specialized care network. 
+                        The collaboration will focus on cardiology and oncology services across the Midwest region.
+                    </p>
+                    <div class="news-actions">
+                        <button class="action-btn">📎 Save</button>
+                        <button class="action-btn">↗️ Read Full</button>
+                        <button class="action-btn">✓ Mark Read</button>
+                    </div>
+                </div>
+
+                <!-- News Card 5 -->
+                <div class="news-card">
+                    <div class="news-header">
+                        <span class="client-badge">Atlas Ventures</span>
+                        <span class="sentiment-badge positive">Positive</span>
+                        <span class="news-time">12 hours ago</span>
+                    </div>
+                    <h3 class="news-title">Atlas Ventures Closes $500M Fund V, Largest to Date</h3>
+                    <p class="news-summary">
+                        Atlas Ventures announced the close of their fifth fund at $500M, exceeding their $400M target. 
+                        The fund will focus on enterprise SaaS and fintech investments in North America.
+                    </p>
+                    <div class="ai-suggestion">
+                        <span class="ai-icon">💡</span>
+                        <strong>AI Suggestion:</strong> New fund means new investments. Atlas will be doing more deals — perfect time to strengthen relationship.
+                    </div>
+                    <div class="news-actions">
+                        <button class="action-btn primary">📧 Schedule Call</button>
+                        <button class="action-btn">📎 Save</button>
+                        <button class="action-btn">↗️ Read Full</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Client List Preview (Hidden by default, shows Clients tab) -->
+            <div class="client-list" style="display: none;">
+                <div class="client-card">
+                    <div class="client-logo">A</div>
+                    <div class="client-info">
+                        <div class="client-name">Acme Corp</div>
+                        <div class="client-meta">Technology • $50M Revenue • Chicago, IL</div>
+                    </div>
+                    <div class="client-stats">
+                        <div class="client-stat">
+                            <div class="client-stat-value">12</div>
+                            <div class="client-stat-label">Mentions</div>
+                        </div>
+                        <div class="client-stat">
+                            <div class="client-stat-value">3</div>
+                            <div class="client-stat-label">This week</div>
+                        </div>
+                    </div>
+                    <div class="client-alerts">
+                        <span class="alert-dot info"></span>
+                    </div>
+                </div>
+
+                <div class="client-card">
+                    <div class="client-logo">T</div>
+                    <div class="client-info">
+                        <div class="client-name">TechFlow Inc</div>
+                        <div class="client-meta">SaaS • $12M Revenue • San Francisco, CA</div>
+                    </div>
+                    <div class="client-stats">
+                        <div class="client-stat">
+                            <div class="client-stat-value">28</div>
+                            <div class="client-stat-label">Mentions</div>
+                        </div>
+                        <div class="client-stat">
+                            <div class="client-stat-value">8</div>
+                            <div class="client-stat-label">This week</div>
+                        </div>
+                    </div>
+                    <div class="client-alerts">
+                        <span class="alert-dot warning"></span>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

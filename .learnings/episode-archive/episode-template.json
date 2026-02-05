@@ -1,0 +1,61 @@
+{
+  "_description": "SAKI Episode Template - Copy this structure for manual episode creation",
+  "_version": "1.0",
+  
+  "id": "ep-<timestamp>-<random>",
+  "timestamp": "2026-02-04T14:00:00.000Z",
+  "date": "2026-02-04",
+  "type": "coding|content|strategy|error|comm|research|automation|meta",
+  
+  "context": {
+    "task": "Brief description of the task",
+    "userRequest": "What the user actually asked",
+    "sessionId": "session identifier",
+    "channel": "telegram|discord|cli|etc",
+    "toolsAvailable": ["read", "write", "edit"],
+    "constraints": ["time limit", "tech stack", "user preferences"]
+  },
+  
+  "actions": [
+    {
+      "timestamp": "2026-02-04T14:01:00.000Z",
+      "tool": "toolName",
+      "description": "What was done",
+      "success": true,
+      "error": null,
+      "duration": 5
+    }
+  ],
+  
+  "decisions": [
+    {
+      "timestamp": "2026-02-04T14:02:00.000Z",
+      "point": "What decision was made",
+      "confidence": "high|medium|low|guess",
+      "reasoning": "Why this decision was made",
+      "alternatives": ["option1", "option2"]
+    }
+  ],
+  
+  "outcome": {
+    "status": "success|partial|failure|unknown",
+    "userSatisfied": true|false|null,
+    "deliverables": ["file1.js", "file2.md"],
+    "completionPercent": 100
+  },
+  
+  "lessons": {
+    "whatWorked": ["Thing that went well"],
+    "whatFailed": ["Thing that didn't work"],
+    "whatToImprove": ["Area for improvement"],
+    "patternsIdentified": ["Pattern noticed"]
+  },
+  
+  "metadata": {
+    "toolCount": 5,
+    "duration": 300,
+    "retries": 0,
+    "errors": [],
+    "tags": ["tag1", "tag2"]
+  }
+}

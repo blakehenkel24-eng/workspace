@@ -6,14 +6,14 @@
 - **Schedule:**
   - Wakes: 6:30 AM
   - Commute: 7-8 AM
-  - Work: 8 AM-5 PM (Inspire11 - tech consulting, PE diligence)
+  - Work: 8 AM-5 PM (tech consulting, PE diligence)
   - Home: ~6 PM
   - Gym: 6:30-7 PM
   - Available on train/gym for quick ideas
 
 ## Context
 
-**Work:** Technology consultant at Inspire11, 1 year out of college. Does private equity technology diligence — reviewing acquisition targets' tech/infrastructure/apps for risk assessment.
+**Work:** Technology consultant, 1 year out of college. Does private equity technology diligence — reviewing acquisition targets' tech/infrastructure/apps for risk assessment.
 
 **Background:**
 - Tech + consulting background

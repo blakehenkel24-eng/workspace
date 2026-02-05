@@ -1,0 +1,764 @@
+{
+  "timestamp": "2026-02-05T02:20:05.682Z",
+  "totalFiles": 121,
+  "status": "QUOTA_EXCEEDED - Migration pending",
+  "folderStructure": {
+    "01 - Research & Analysis": [
+      {
+        "path": "notion-export/🚀 SlideTheory/Marketing/Competitor-Intel.md",
+        "fullPath": "/home/node/.openclaw/workspace/notion-export/🚀 SlideTheory/Marketing/Competitor-Intel.md",
+        "size": 8454,
+        "priority": false
+      },
+      {
+        "path": "notion-export/🚀 SlideTheory/Marketing/Content-Strategy.md",
+        "fullPath": "/home/node/.openclaw/workspace/notion-export/🚀 SlideTheory/Marketing/Content-Strategy.md",
+        "size": 5586,
+        "priority": false
+      },
+      {
+        "path": "notion-export/🚀 SlideTheory/Marketing/SEO-Keywords.md",
+        "fullPath": "/home/node/.openclaw/workspace/notion-export/🚀 SlideTheory/Marketing/SEO-Keywords.md",
+        "size": 6666,
+        "priority": false
+      },
+      {
+        "path": "products/slidetheory/marketing/article-claude-consulting.md",
+        "fullPath": "/home/node/.openclaw/workspace/products/slidetheory/marketing/article-claude-consulting.md",
+        "size": 8880,
+        "priority": false
+      },
+      {
+        "path": "products/slidetheory/marketing/first-posts.md",
+        "fullPath": "/home/node/.openclaw/workspace/products/slidetheory/marketing/first-posts.md",
+        "size": 39787,
+        "priority": false
+      },
+      {
+        "path": "products/slidetheory/marketing/formspree-alternatives.md",
+        "fullPath": "/home/node/.openclaw/workspace/products/slidetheory/marketing/formspree-alternatives.md",
+        "size": 8520,
+        "priority": false
+      },
+      {
+        "path": "products/slidetheory/marketing/launch-posts-linkedin.md",
+        "fullPath": "/home/node/.openclaw/workspace/products/slidetheory/marketing/launch-posts-linkedin.md",
+        "size": 7522,
+        "priority": false
+      },
+      {
+        "path": "products/slidetheory/marketing/launch-posts-twitter.md",
+        "fullPath": "/home/node/.openclaw/workspace/products/slidetheory/marketing/launch-posts-twitter.md",
+        "size": 3573,
+        "priority": false
+      },
+      {
+        "path": "products/slidetheory/marketing/posting-schedule.md",
+        "fullPath": "/home/node/.openclaw/workspace/products/slidetheory/marketing/posting-schedule.md",
+        "size": 9661,
+        "priority": false
+      },
+      {
+        "path": "products/slidetheory/research/competitor-business-models.md",
+        "fullPath": "/home/node/.openclaw/workspace/products/slidetheory/research/competitor-business-models.md",
+        "size": 12387,
+        "priority": false
+      },
+      {
+        "path": "products/slidetheory/research/competitor-gaps.md",
+        "fullPath": "/home/node/.openclaw/workspace/products/slidetheory/research/competitor-gaps.md",
+        "size": 13603,
+        "priority": false
+      },
+      {
+        "path": "products/slidetheory/research/competitor-marketing.md",
+        "fullPath": "/home/node/.openclaw/workspace/products/slidetheory/research/competitor-marketing.md",
+        "size": 11794,
+        "priority": false
+      },
+      {
+        "path": "products/slidetheory/research/competitor-products.md",
+        "fullPath": "/home/node/.openclaw/workspace/products/slidetheory/research/competitor-products.md",
+        "size": 10676,
+        "priority": false
+      },
+      {
+        "path": "products/slidetheory/research/competitor-websites.md",
+        "fullPath": "/home/node/.openclaw/workspace/products/slidetheory/research/competitor-websites.md",
+        "size": 10772,
+        "priority": false
+      },
+      {
+        "path": "products/slidetheory/research/content-strategy.md",
+        "fullPath": "/home/node/.openclaw/workspace/products/slidetheory/research/content-strategy.md",
+        "size": 21699,
+        "priority": false
+      },
+      {
+        "path": "products/slidetheory/research/on-page-seo.md",
+        "fullPath": "/home/node/.openclaw/workspace/products/slidetheory/research/on-page-seo.md",
+        "size": 22505,
+        "priority": false
+      },
+      {
+        "path": "products/slidetheory/research/seo-keywords.md",
+        "fullPath": "/home/node/.openclaw/workspace/products/slidetheory/research/seo-keywords.md",
+        "size": 15139,
+        "priority": false
+      },
+      {
+        "path": "products/slidetheory/research/seo-priority-matrix.md",
+        "fullPath": "/home/node/.openclaw/workspace/products/slidetheory/research/seo-priority-matrix.md",
+        "size": 19195,
+        "priority": false
+      },
+      {
+        "path": "products/slidetheory/research/technical-seo.md",
+        "fullPath": "/home/node/.openclaw/workspace/products/slidetheory/research/technical-seo.md",
+        "size": 17778,
+        "priority": false
+      },
+      {
+        "path": "research/KIMI-ROUTING.md",
+        "fullPath": "/home/node/.openclaw/workspace/research/KIMI-ROUTING.md",
+        "size": 3487,
+        "priority": false
+      }
+    ],
+    "02 - Product Specs & Roadmaps": [
+      {
+        "path": "products/slidetheory/MVP-SPEC.md",
+        "fullPath": "/home/node/.openclaw/workspace/products/slidetheory/MVP-SPEC.md",
+        "size": 2573,
+        "priority": true
+      },
+      {
+        "path": "products/slidetheory/PRODUCT-SPEC.md",
+        "fullPath": "/home/node/.openclaw/workspace/products/slidetheory/PRODUCT-SPEC.md",
+        "size": 4431,
+        "priority": true
+      },
+      {
+        "path": "notion-export/🚀 SlideTheory/Product-Roadmap.md",
+        "fullPath": "/home/node/.openclaw/workspace/notion-export/🚀 SlideTheory/Product-Roadmap.md",
+        "size": 5812,
+        "priority": false
+      },
+      {
+        "path": "products/client-hawk/PRODUCT-SPEC.md",
+        "fullPath": "/home/node/.openclaw/workspace/products/client-hawk/PRODUCT-SPEC.md",
+        "size": 43741,
+        "priority": false
+      },
+      {
+        "path": "products/slidetheory/FUTURE-SPEC.md",
+        "fullPath": "/home/node/.openclaw/workspace/products/slidetheory/FUTURE-SPEC.md",
+        "size": 3372,
+        "priority": false
+      },
+      {
+        "path": "products/slidetheory/mvp/build/CHANGELOG.md",
+        "fullPath": "/home/node/.openclaw/workspace/products/slidetheory/mvp/build/CHANGELOG.md",
+        "size": 4655,
+        "priority": false
+      },
+      {
+        "path": "products/slidetheory/mvp/build/COMPLETION_SUMMARY.md",
+        "fullPath": "/home/node/.openclaw/workspace/products/slidetheory/mvp/build/COMPLETION_SUMMARY.md",
+        "size": 4981,
+        "priority": false
+      },
+      {
+        "path": "products/slidetheory/mvp/build/PHASE2_SUMMARY.md",
+        "fullPath": "/home/node/.openclaw/workspace/products/slidetheory/mvp/build/PHASE2_SUMMARY.md",
+        "size": 5294,
+        "priority": false
+      },
+      {
+        "path": "products/slidetheory/mvp/design/components.md",
+        "fullPath": "/home/node/.openclaw/workspace/products/slidetheory/mvp/design/components.md",
+        "size": 13240,
+        "priority": false
+      },
+      {
+        "path": "products/slidetheory/mvp/design/user-flow.md",
+        "fullPath": "/home/node/.openclaw/workspace/products/slidetheory/mvp/design/user-flow.md",
+        "size": 13020,
+        "priority": false
+      },
+      {
+        "path": "products/slidetheory/mvp/design/wireframes.md",
+        "fullPath": "/home/node/.openclaw/workspace/products/slidetheory/mvp/design/wireframes.md",
+        "size": 8561,
+        "priority": false
+      },
+      {
+        "path": "products/slidetheory/mvp/SPEC.md",
+        "fullPath": "/home/node/.openclaw/workspace/products/slidetheory/mvp/SPEC.md",
+        "size": 14013,
+        "priority": false
+      }
+    ],
+    "03 - Guides & Documentation": [
+      {
+        "path": "HEARTBEAT.md",
+        "fullPath": "/home/node/.openclaw/workspace/HEARTBEAT.md",
+        "size": 519,
+        "priority": true
+      },
+      {
+        "path": "products/slidetheory/mvp/build/API.md",
+        "fullPath": "/home/node/.openclaw/workspace/products/slidetheory/mvp/build/API.md",
+        "size": 7300,
+        "priority": true
+      },
+      {
+        "path": "products/slidetheory/mvp/build/DEPLOYMENT.md",
+        "fullPath": "/home/node/.openclaw/workspace/products/slidetheory/mvp/build/DEPLOYMENT.md",
+        "size": 5392,
+        "priority": true
+      },
+      {
+        "path": "products/slidetheory/mvp/build/README.md",
+        "fullPath": "/home/node/.openclaw/workspace/products/slidetheory/mvp/build/README.md",
+        "size": 8230,
+        "priority": true
+      },
+      {
+        "path": "products/slidetheory/mvp/build/TESTING.md",
+        "fullPath": "/home/node/.openclaw/workspace/products/slidetheory/mvp/build/TESTING.md",
+        "size": 11569,
+        "priority": true
+      },
+      {
+        "path": "archive/2026-02/mbb-slide-generator/README.md",
+        "fullPath": "/home/node/.openclaw/workspace/archive/2026-02/mbb-slide-generator/README.md",
+        "size": 1435,
+        "priority": false
+      },
+      {
+        "path": "CLAWDEX-SCAN-RESULTS.md",
+        "fullPath": "/home/node/.openclaw/workspace/CLAWDEX-SCAN-RESULTS.md",
+        "size": 2120,
+        "priority": false
+      },
+      {
+        "path": "CLEANUP-REPORT.md",
+        "fullPath": "/home/node/.openclaw/workspace/CLEANUP-REPORT.md",
+        "size": 3089,
+        "priority": false
+      },
+      {
+        "path": "DOCS_TO_IMPLEMENT/Kimi_Agent_Guide to Powerful OpenClaw Agent/architecture_framework_design_guide.md",
+        "fullPath": "/home/node/.openclaw/workspace/DOCS_TO_IMPLEMENT/Kimi_Agent_Guide to Powerful OpenClaw Agent/architecture_framework_design_guide.md",
+        "size": 95784,
+        "priority": false
+      },
+      {
+        "path": "DOCS_TO_IMPLEMENT/Kimi_Agent_Guide to Powerful OpenClaw Agent/learning_self_improvement_guide.md",
+        "fullPath": "/home/node/.openclaw/workspace/DOCS_TO_IMPLEMENT/Kimi_Agent_Guide to Powerful OpenClaw Agent/learning_self_improvement_guide.md",
+        "size": 44545,
+        "priority": false
+      },
+      {
+        "path": "DOCS_TO_IMPLEMENT/Kimi_Agent_Guide to Powerful OpenClaw Agent/monetization_value_creation_guide.md",
+        "fullPath": "/home/node/.openclaw/workspace/DOCS_TO_IMPLEMENT/Kimi_Agent_Guide to Powerful OpenClaw Agent/monetization_value_creation_guide.md",
+        "size": 37520,
+        "priority": false
+      },
+      {
+        "path": "DOCS_TO_IMPLEMENT/Kimi_Agent_Guide to Powerful OpenClaw Agent/OPENCLAW_MASTER_GUIDE.md",
+        "fullPath": "/home/node/.openclaw/workspace/DOCS_TO_IMPLEMENT/Kimi_Agent_Guide to Powerful OpenClaw Agent/OPENCLAW_MASTER_GUIDE.md",
+        "size": 44019,
+        "priority": false
+      },
+      {
+        "path": "DOCS_TO_IMPLEMENT/Kimi_Agent_Guide to Powerful OpenClaw Agent/proactivity_autonomy_guide.md",
+        "fullPath": "/home/node/.openclaw/workspace/DOCS_TO_IMPLEMENT/Kimi_Agent_Guide to Powerful OpenClaw Agent/proactivity_autonomy_guide.md",
+        "size": 56598,
+        "priority": false
+      },
+      {
+        "path": "DOCS_TO_IMPLEMENT/Kimi_Agent_Guide to Powerful OpenClaw Agent/prompt_engineering_guide.md",
+        "fullPath": "/home/node/.openclaw/workspace/DOCS_TO_IMPLEMENT/Kimi_Agent_Guide to Powerful OpenClaw Agent/prompt_engineering_guide.md",
+        "size": 44949,
+        "priority": false
+      },
+      {
+        "path": "DOCS_TO_IMPLEMENT/Kimi_Agent_Guide to Powerful OpenClaw Agent/skill_systems_guide.md",
+        "fullPath": "/home/node/.openclaw/workspace/DOCS_TO_IMPLEMENT/Kimi_Agent_Guide to Powerful OpenClaw Agent/skill_systems_guide.md",
+        "size": 93358,
+        "priority": false
+      },
+      {
+        "path": "GOOGLE-MIGRATION-PLAN.md",
+        "fullPath": "/home/node/.openclaw/workspace/GOOGLE-MIGRATION-PLAN.md",
+        "size": 4495,
+        "priority": false
+      },
+      {
+        "path": "MASTER_GUIDE/architecture_framework_design_guide.md",
+        "fullPath": "/home/node/.openclaw/workspace/MASTER_GUIDE/architecture_framework_design_guide.md",
+        "size": 95784,
+        "priority": false
+      },
+      {
+        "path": "MASTER_GUIDE/learning_self_improvement_guide.md",
+        "fullPath": "/home/node/.openclaw/workspace/MASTER_GUIDE/learning_self_improvement_guide.md",
+        "size": 44545,
+        "priority": false
+      },
+      {
+        "path": "MASTER_GUIDE/monetization_value_creation_guide.md",
+        "fullPath": "/home/node/.openclaw/workspace/MASTER_GUIDE/monetization_value_creation_guide.md",
+        "size": 37520,
+        "priority": false
+      },
+      {
+        "path": "MASTER_GUIDE/OPENCLAW_MASTER_GUIDE.md",
+        "fullPath": "/home/node/.openclaw/workspace/MASTER_GUIDE/OPENCLAW_MASTER_GUIDE.md",
+        "size": 44019,
+        "priority": false
+      },
+      {
+        "path": "MASTER_GUIDE/proactivity_autonomy_guide.md",
+        "fullPath": "/home/node/.openclaw/workspace/MASTER_GUIDE/proactivity_autonomy_guide.md",
+        "size": 56598,
+        "priority": false
+      },
+      {
+        "path": "MASTER_GUIDE/prompt_engineering_guide.md",
+        "fullPath": "/home/node/.openclaw/workspace/MASTER_GUIDE/prompt_engineering_guide.md",
+        "size": 44949,
+        "priority": false
+      },
+      {
+        "path": "MASTER_GUIDE/skill_systems_guide.md",
+        "fullPath": "/home/node/.openclaw/workspace/MASTER_GUIDE/skill_systems_guide.md",
+        "size": 93358,
+        "priority": false
+      },
+      {
+        "path": "notion-export/README-SETUP.md",
+        "fullPath": "/home/node/.openclaw/workspace/notion-export/README-SETUP.md",
+        "size": 5882,
+        "priority": false
+      },
+      {
+        "path": "products/slidetheory/marketing/formspree-setup.md",
+        "fullPath": "/home/node/.openclaw/workspace/products/slidetheory/marketing/formspree-setup.md",
+        "size": 6767,
+        "priority": false
+      },
+      {
+        "path": "products/slidetheory/marketing/social-media-setup.md",
+        "fullPath": "/home/node/.openclaw/workspace/products/slidetheory/marketing/social-media-setup.md",
+        "size": 26101,
+        "priority": false
+      },
+      {
+        "path": "products/slidetheory/mvp/build/TROUBLESHOOTING.md",
+        "fullPath": "/home/node/.openclaw/workspace/products/slidetheory/mvp/build/TROUBLESHOOTING.md",
+        "size": 6446,
+        "priority": false
+      },
+      {
+        "path": "projects/slidetheory/general/ideas/archive/README.md",
+        "fullPath": "/home/node/.openclaw/workspace/projects/slidetheory/general/ideas/archive/README.md",
+        "size": 736,
+        "priority": false
+      },
+      {
+        "path": "projects/slidetheory/general/ideas/business/partnerships.md",
+        "fullPath": "/home/node/.openclaw/workspace/projects/slidetheory/general/ideas/business/partnerships.md",
+        "size": 2620,
+        "priority": false
+      },
+      {
+        "path": "projects/slidetheory/general/ideas/business/README.md",
+        "fullPath": "/home/node/.openclaw/workspace/projects/slidetheory/general/ideas/business/README.md",
+        "size": 582,
+        "priority": false
+      },
+      {
+        "path": "projects/slidetheory/general/ideas/business/revenue-streams.md",
+        "fullPath": "/home/node/.openclaw/workspace/projects/slidetheory/general/ideas/business/revenue-streams.md",
+        "size": 2986,
+        "priority": false
+      },
+      {
+        "path": "projects/slidetheory/general/ideas/content/article-ideas.md",
+        "fullPath": "/home/node/.openclaw/workspace/projects/slidetheory/general/ideas/content/article-ideas.md",
+        "size": 3552,
+        "priority": false
+      },
+      {
+        "path": "projects/slidetheory/general/ideas/content/lead-magnets.md",
+        "fullPath": "/home/node/.openclaw/workspace/projects/slidetheory/general/ideas/content/lead-magnets.md",
+        "size": 902,
+        "priority": false
+      },
+      {
+        "path": "projects/slidetheory/general/ideas/content/README.md",
+        "fullPath": "/home/node/.openclaw/workspace/projects/slidetheory/general/ideas/content/README.md",
+        "size": 444,
+        "priority": false
+      },
+      {
+        "path": "projects/slidetheory/general/ideas/features/core-features.md",
+        "fullPath": "/home/node/.openclaw/workspace/projects/slidetheory/general/ideas/features/core-features.md",
+        "size": 3843,
+        "priority": false
+      },
+      {
+        "path": "projects/slidetheory/general/ideas/features/integrations.md",
+        "fullPath": "/home/node/.openclaw/workspace/projects/slidetheory/general/ideas/features/integrations.md",
+        "size": 932,
+        "priority": false
+      },
+      {
+        "path": "projects/slidetheory/general/ideas/features/README.md",
+        "fullPath": "/home/node/.openclaw/workspace/projects/slidetheory/general/ideas/features/README.md",
+        "size": 643,
+        "priority": false
+      },
+      {
+        "path": "projects/slidetheory/general/ideas/features/templates.md",
+        "fullPath": "/home/node/.openclaw/workspace/projects/slidetheory/general/ideas/features/templates.md",
+        "size": 1072,
+        "priority": false
+      },
+      {
+        "path": "projects/slidetheory/general/ideas/README.md",
+        "fullPath": "/home/node/.openclaw/workspace/projects/slidetheory/general/ideas/README.md",
+        "size": 2117,
+        "priority": false
+      },
+      {
+        "path": "projects/slidetheory/logo-concepts.md",
+        "fullPath": "/home/node/.openclaw/workspace/projects/slidetheory/logo-concepts.md",
+        "size": 923,
+        "priority": false
+      },
+      {
+        "path": "projects/slidetheory/README.md",
+        "fullPath": "/home/node/.openclaw/workspace/projects/slidetheory/README.md",
+        "size": 4050,
+        "priority": false
+      },
+      {
+        "path": "projects/slidetheory/TODO.md",
+        "fullPath": "/home/node/.openclaw/workspace/projects/slidetheory/TODO.md",
+        "size": 1126,
+        "priority": false
+      },
+      {
+        "path": "skills/self-improving-agent-1-0-1/references/hooks-setup.md",
+        "fullPath": "/home/node/.openclaw/workspace/skills/self-improving-agent-1-0-1/references/hooks-setup.md",
+        "size": 4867,
+        "priority": false
+      },
+      {
+        "path": "WORKSPACE-AUDIT.md",
+        "fullPath": "/home/node/.openclaw/workspace/WORKSPACE-AUDIT.md",
+        "size": 5172,
+        "priority": false
+      }
+    ],
+    "04 - Project Knowledge": [
+      {
+        "path": "AGENTS.md",
+        "fullPath": "/home/node/.openclaw/workspace/AGENTS.md",
+        "size": 7805,
+        "priority": true
+      },
+      {
+        "path": "MEMORY.md",
+        "fullPath": "/home/node/.openclaw/workspace/MEMORY.md",
+        "size": 4517,
+        "priority": true
+      },
+      {
+        "path": "SOUL.md",
+        "fullPath": "/home/node/.openclaw/workspace/SOUL.md",
+        "size": 1665,
+        "priority": true
+      },
+      {
+        "path": "TOOLS.md",
+        "fullPath": "/home/node/.openclaw/workspace/TOOLS.md",
+        "size": 851,
+        "priority": true
+      },
+      {
+        "path": "USER.md",
+        "fullPath": "/home/node/.openclaw/workspace/USER.md",
+        "size": 1345,
+        "priority": true
+      },
+      {
+        "path": ".learnings/ARCHITECTURE_SUMMARY.md",
+        "fullPath": "/home/node/.openclaw/workspace/.learnings/ARCHITECTURE_SUMMARY.md",
+        "size": 10707,
+        "priority": false
+      },
+      {
+        "path": ".learnings/behavior-updates.md",
+        "fullPath": "/home/node/.openclaw/workspace/.learnings/behavior-updates.md",
+        "size": 1212,
+        "priority": false
+      },
+      {
+        "path": ".learnings/ERRORS.md",
+        "fullPath": "/home/node/.openclaw/workspace/.learnings/ERRORS.md",
+        "size": 755,
+        "priority": false
+      },
+      {
+        "path": ".learnings/FEATURE_REQUESTS.md",
+        "fullPath": "/home/node/.openclaw/workspace/.learnings/FEATURE_REQUESTS.md",
+        "size": 474,
+        "priority": false
+      },
+      {
+        "path": ".learnings/LEARNING_SUMMARY.md",
+        "fullPath": "/home/node/.openclaw/workspace/.learnings/LEARNING_SUMMARY.md",
+        "size": 7157,
+        "priority": false
+      },
+      {
+        "path": ".learnings/learning-loop.md",
+        "fullPath": "/home/node/.openclaw/workspace/.learnings/learning-loop.md",
+        "size": 7954,
+        "priority": false
+      },
+      {
+        "path": ".learnings/LEARNINGS.md",
+        "fullPath": "/home/node/.openclaw/workspace/.learnings/LEARNINGS.md",
+        "size": 1152,
+        "priority": false
+      },
+      {
+        "path": ".learnings/PROACTIVITY_SUMMARY.md",
+        "fullPath": "/home/node/.openclaw/workspace/.learnings/PROACTIVITY_SUMMARY.md",
+        "size": 6413,
+        "priority": false
+      },
+      {
+        "path": ".learnings/PROMPT_ENGINEERING_SUMMARY.md",
+        "fullPath": "/home/node/.openclaw/workspace/.learnings/PROMPT_ENGINEERING_SUMMARY.md",
+        "size": 5360,
+        "priority": false
+      },
+      {
+        "path": ".learnings/SKILL_SYSTEMS_SUMMARY.md",
+        "fullPath": "/home/node/.openclaw/workspace/.learnings/SKILL_SYSTEMS_SUMMARY.md",
+        "size": 8305,
+        "priority": false
+      },
+      {
+        "path": ".learnings/SKILL-TEMPLATE.md",
+        "fullPath": "/home/node/.openclaw/workspace/.learnings/SKILL-TEMPLATE.md",
+        "size": 3407,
+        "priority": false
+      },
+      {
+        "path": ".learnings/weekly-patterns.md",
+        "fullPath": "/home/node/.openclaw/workspace/.learnings/weekly-patterns.md",
+        "size": 1527,
+        "priority": false
+      },
+      {
+        "path": "IDENTITY.md",
+        "fullPath": "/home/node/.openclaw/workspace/IDENTITY.md",
+        "size": 364,
+        "priority": false
+      },
+      {
+        "path": "memory/SEMANTIC-MEMORY.md",
+        "fullPath": "/home/node/.openclaw/workspace/memory/SEMANTIC-MEMORY.md",
+        "size": 3393,
+        "priority": false
+      },
+      {
+        "path": "notion-export/🎯 Goals/2026-Goals.md",
+        "fullPath": "/home/node/.openclaw/workspace/notion-export/🎯 Goals/2026-Goals.md",
+        "size": 4679,
+        "priority": false
+      },
+      {
+        "path": "notion-export/🎯 Goals/Monthly-Checkin-Template.md",
+        "fullPath": "/home/node/.openclaw/workspace/notion-export/🎯 Goals/Monthly-Checkin-Template.md",
+        "size": 1981,
+        "priority": false
+      },
+      {
+        "path": "notion-export/🎯 Goals/Quarterly-Review-Template.md",
+        "fullPath": "/home/node/.openclaw/workspace/notion-export/🎯 Goals/Quarterly-Review-Template.md",
+        "size": 2547,
+        "priority": false
+      },
+      {
+        "path": "notion-export/🏠 Home.md",
+        "fullPath": "/home/node/.openclaw/workspace/notion-export/🏠 Home.md",
+        "size": 3510,
+        "priority": false
+      },
+      {
+        "path": "notion-export/💡 Ideas/Brain-Dump.md",
+        "fullPath": "/home/node/.openclaw/workspace/notion-export/💡 Ideas/Brain-Dump.md",
+        "size": 1259,
+        "priority": false
+      },
+      {
+        "path": "notion-export/💡 Ideas/Business-Ideas.md",
+        "fullPath": "/home/node/.openclaw/workspace/notion-export/💡 Ideas/Business-Ideas.md",
+        "size": 2456,
+        "priority": false
+      },
+      {
+        "path": "notion-export/💡 Ideas/Meeting-Notes-Template.md",
+        "fullPath": "/home/node/.openclaw/workspace/notion-export/💡 Ideas/Meeting-Notes-Template.md",
+        "size": 1264,
+        "priority": false
+      },
+      {
+        "path": "notion-export/💪 Health/Gym-Split.md",
+        "fullPath": "/home/node/.openclaw/workspace/notion-export/💪 Health/Gym-Split.md",
+        "size": 4110,
+        "priority": false
+      },
+      {
+        "path": "notion-export/💪 Health/Nutrition.md",
+        "fullPath": "/home/node/.openclaw/workspace/notion-export/💪 Health/Nutrition.md",
+        "size": 2598,
+        "priority": false
+      },
+      {
+        "path": "notion-export/💪 Health/Sleep-Recovery.md",
+        "fullPath": "/home/node/.openclaw/workspace/notion-export/💪 Health/Sleep-Recovery.md",
+        "size": 3370,
+        "priority": false
+      },
+      {
+        "path": "notion-export/💪 Health/Weekly-Checkin.md",
+        "fullPath": "/home/node/.openclaw/workspace/notion-export/💪 Health/Weekly-Checkin.md",
+        "size": 2882,
+        "priority": false
+      },
+      {
+        "path": "notion-export/💼 Work/Career-Growth.md",
+        "fullPath": "/home/node/.openclaw/workspace/notion-export/💼 Work/Career-Growth.md",
+        "size": 5015,
+        "priority": false
+      },
+      {
+        "path": "notion-export/💼 Work/Consulting-Skills.md",
+        "fullPath": "/home/node/.openclaw/workspace/notion-export/💼 Work/Consulting-Skills.md",
+        "size": 5416,
+        "priority": false
+      },
+      {
+        "path": "notion-export/💼 Work/Inspire11.md",
+        "fullPath": "/home/node/.openclaw/workspace/notion-export/💼 Work/Inspire11.md",
+        "size": 3040,
+        "priority": false
+      },
+      {
+        "path": "notion-export/🧠 Learning/Coding-Progress.md",
+        "fullPath": "/home/node/.openclaw/workspace/notion-export/🧠 Learning/Coding-Progress.md",
+        "size": 3212,
+        "priority": false
+      },
+      {
+        "path": "notion-export/🧠 Learning/Courses.md",
+        "fullPath": "/home/node/.openclaw/workspace/notion-export/🧠 Learning/Courses.md",
+        "size": 1938,
+        "priority": false
+      },
+      {
+        "path": "notion-export/🧠 Learning/Reading-List.md",
+        "fullPath": "/home/node/.openclaw/workspace/notion-export/🧠 Learning/Reading-List.md",
+        "size": 2036,
+        "priority": false
+      },
+      {
+        "path": "notion-export/🧠 Learning/Skill-Tracker.md",
+        "fullPath": "/home/node/.openclaw/workspace/notion-export/🧠 Learning/Skill-Tracker.md",
+        "size": 3385,
+        "priority": false
+      },
+      {
+        "path": "SKILL-INVENTORY.md",
+        "fullPath": "/home/node/.openclaw/workspace/SKILL-INVENTORY.md",
+        "size": 2095,
+        "priority": false
+      },
+      {
+        "path": "skills/self-improving-agent-1-0-1/assets/LEARNINGS.md",
+        "fullPath": "/home/node/.openclaw/workspace/skills/self-improving-agent-1-0-1/assets/LEARNINGS.md",
+        "size": 1152,
+        "priority": false
+      },
+      {
+        "path": "skills/self-improving-agent-1-0-1/assets/SKILL-TEMPLATE.md",
+        "fullPath": "/home/node/.openclaw/workspace/skills/self-improving-agent-1-0-1/assets/SKILL-TEMPLATE.md",
+        "size": 3407,
+        "priority": false
+      },
+      {
+        "path": "skills/self-improving-agent-1-0-1/references/examples.md",
+        "fullPath": "/home/node/.openclaw/workspace/skills/self-improving-agent-1-0-1/references/examples.md",
+        "size": 8291,
+        "priority": false
+      },
+      {
+        "path": "skills/self-improving-agent-1-0-1/SKILL.md",
+        "fullPath": "/home/node/.openclaw/workspace/skills/self-improving-agent-1-0-1/SKILL.md",
+        "size": 14437,
+        "priority": false
+      }
+    ],
+    "05 - Daily Notes & Logs": [
+      {
+        "path": "memory/2026-02-03.md",
+        "fullPath": "/home/node/.openclaw/workspace/memory/2026-02-03.md",
+        "size": 1469,
+        "priority": false
+      },
+      {
+        "path": "memory/2026-02-04.md",
+        "fullPath": "/home/node/.openclaw/workspace/memory/2026-02-04.md",
+        "size": 1160,
+        "priority": false
+      },
+      {
+        "path": "memory/2026-02-05.md",
+        "fullPath": "/home/node/.openclaw/workspace/memory/2026-02-05.md",
+        "size": 1245,
+        "priority": false
+      }
+    ]
+  },
+  "priorityFiles": [
+    "products/slidetheory/PRODUCT-SPEC.md",
+    "products/slidetheory/MVP-SPEC.md",
+    "products/slidetheory/mvp/build/README.md",
+    "products/slidetheory/mvp/build/API.md",
+    "products/slidetheory/mvp/build/DEPLOYMENT.md",
+    "products/slidetheory/mvp/build/TESTING.md",
+    "MEMORY.md",
+    "HEARTBEAT.md",
+    "AGENTS.md",
+    "TOOLS.md",
+    "USER.md",
+    "SOUL.md"
+  ],
+  "summary": {
+    "01 - Research & Analysis": 20,
+    "02 - Product Specs & Roadmaps": 12,
+    "03 - Guides & Documentation": 44,
+    "04 - Project Knowledge": 42,
+    "05 - Daily Notes & Logs": 3
+  }
+}
