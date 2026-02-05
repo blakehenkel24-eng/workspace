@@ -153,7 +153,7 @@ First conversation with Blake. Established identity:
 
 **Heartbeat:**
 - Frequency: 1 hour
-- Model: Claude Haiku (cheapest)
+- Model: Kimi K2.5 (was Claude Haiku — updated 2026-02-05)
 - Cost target: <$0.05/day
 - Morning update: 7:24 AM CST
 
