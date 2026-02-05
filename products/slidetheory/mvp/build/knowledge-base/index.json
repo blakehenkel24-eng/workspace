@@ -1,0 +1,71 @@
+{
+  "name": "SlideTheory Knowledge Base",
+  "version": "1.0",
+  "description": "MBB-inspired slide templates for consulting-grade presentation generation",
+  "sources": [
+    "reference-decks/mckinsey-tech-trends-2022.pdf",
+    "reference-decks/mckinsey-top-trends-exec-summary.pdf"
+  ],
+  "templates": [
+    {
+      "id": "mckinsey-executive-summary",
+      "file": "templates/mckinsey-executive-summary.json",
+      "slideType": "executive-summary",
+      "name": "McKinsey Executive Summary",
+      "bestFor": ["opening slides", "key findings", "executive overviews"],
+      "audience": ["C-Suite", "Board", "PE Investors"]
+    },
+    {
+      "id": "mckinsey-trend-analysis",
+      "file": "templates/mckinsey-trend-analysis.json",
+      "slideType": "horizontal-flow",
+      "name": "McKinsey Trend Analysis",
+      "bestFor": ["trend analysis", "market mapping", "competitive positioning", "technology assessment"],
+      "audience": ["C-Suite", "Strategy Teams", "Investors"]
+    },
+    {
+      "id": "mckinsey-timeline",
+      "file": "templates/mckinsey-timeline.json",
+      "slideType": "horizontal-flow",
+      "name": "McKinsey Timeline/Historical",
+      "bestFor": ["historical context", "industry evolution", "technology progression", "economic trends"],
+      "audience": ["C-Suite", "Board", "External Clients"]
+    },
+    {
+      "id": "mckinsey-market-comparison",
+      "file": "templates/mckinsey-market-comparison.json",
+      "slideType": "graph-chart",
+      "name": "McKinsey Market Comparison",
+      "bestFor": ["market comparisons", "sector analysis", "performance tracking", "investment analysis"],
+      "audience": ["Investors", "Strategy Teams", "C-Suite"]
+    }
+  ],
+  "designPrinciples": {
+    "typography": {
+      "titleSize": "24-28px",
+      "bodySize": "14px",
+      "captionSize": "10-11px",
+      "fontFamily": "Clean sans-serif (system default)"
+    },
+    "spacing": {
+      "slidePadding": "40px",
+      "sectionGap": "20px",
+      "elementGap": "15px"
+    },
+    "color": {
+      "primary": "#1a1a1a",
+      "accent": "#0066cc",
+      "secondary": "#666666",
+      "background": "#ffffff"
+    }
+  },
+  "usageRules": {
+    "content": "Use templates for STRUCTURE ONLY - never extract or copy actual content from reference decks",
+    "attribution": "Templates inspired by McKinsey consulting methodology",
+    "audienceAdaptation": {
+      "C-Suite": "More whitespace, bigger insights, less detail",
+      "PE Investors": "Data-heavy, financial metrics, clear ROI",
+      "Working Teams": "More detail, actionable items, implementation notes"
+    }
+  }
+}

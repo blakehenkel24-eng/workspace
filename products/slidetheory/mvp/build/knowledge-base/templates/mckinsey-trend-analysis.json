@@ -1,0 +1,80 @@
+{
+  "name": "McKinsey Trend Analysis",
+  "source": "reference-decks/mckinsey-tech-trends-2022.pdf",
+  "slideType": "horizontal-flow",
+  "description": "Multi-trend comparison showing relationships between innovation, interest, investment, and adoption",
+  "layout": {
+    "grid": {
+      "columns": 12,
+      "rows": 10
+    },
+    "zones": [
+      {
+        "name": "title",
+        "type": "header",
+        "position": { "colStart": 1, "colEnd": 12, "rowStart": 1, "rowEnd": 2 },
+        "style": {
+          "fontSize": "24px",
+          "fontWeight": "bold",
+          "borderBottom": "2px solid #1a1a1a",
+          "paddingBottom": "10px"
+        }
+      },
+      {
+        "name": "main-chart",
+        "type": "scatter-plot",
+        "position": { "colStart": 1, "colEnd": 8, "rowStart": 2, "rowEnd": 9 },
+        "style": {
+          "backgroundColor": "#ffffff",
+          "border": "1px solid #e0e0e0"
+        }
+      },
+      {
+        "name": "trend-list",
+        "type": "vertical-list",
+        "position": { "colStart": 8, "colEnd": 12, "rowStart": 2, "rowEnd": 9 },
+        "style": {
+          "fontSize": "12px",
+          "lineHeight": 1.8
+        }
+      },
+      {
+        "name": "footnote",
+        "type": "caption",
+        "position": { "colStart": 1, "colEnd": 12, "rowStart": 9, "rowEnd": 10 },
+        "style": {
+          "fontSize": "10px",
+          "color": "#999999",
+          "borderTop": "1px solid #e0e0e0",
+          "paddingTop": "8px"
+        }
+      }
+    ]
+  },
+  "chartSpecifications": {
+    "type": "scatter-plot",
+    "xAxis": { "label": "Innovation Score", "min": 0, "max": 1 },
+    "yAxis": { "label": "Interest Score", "min": 0, "max": 1 },
+    "bubbleSize": "Investment ($B)",
+    "colorScale": "Adoption Rate",
+    "annotations": ["quadrant labels", "trend names", "key insights"]
+  },
+  "typography": {
+    "title": { "fontSize": "24px", "fontWeight": "bold" },
+    "axisLabels": { "fontSize": "12px", "color": "#666666" },
+    "dataLabels": { "fontSize": "10px" },
+    "footnotes": { "fontSize": "9px", "color": "#888888" }
+  },
+  "colorPalette": {
+    "primary": "#1a1a1a",
+    "gridLines": "#e0e0e0",
+    "bubbleColors": ["#0066cc", "#5cb85c", "#f0ad4e", "#d9534f"],
+    "background": "#ffffff"
+  },
+  "usageGuidelines": {
+    "bestFor": ["trend analysis", "market mapping", "competitive positioning", "technology assessment"],
+    "audience": ["C-Suite", "Strategy Teams", "Investors"],
+    "contentLength": "Up to 15 data points with labels",
+    "dataTypes": ["scatter plots", "bubble charts", "quadrant matrices"]
+  }
+}

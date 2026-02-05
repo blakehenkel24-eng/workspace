@@ -1,0 +1,83 @@
+{
+  "name": "McKinsey Market Comparison",
+  "source": "reference-decks/mckinsey-top-trends-exec-summary.pdf",
+  "slideType": "graph-chart",
+  "description": "Comparative bar chart showing market data across categories or time periods",
+  "layout": {
+    "grid": {
+      "columns": 12,
+      "rows": 8
+    },
+    "zones": [
+      {
+        "name": "title",
+        "type": "header",
+        "position": { "colStart": 1, "colEnd": 10, "rowStart": 1, "rowEnd": 2 },
+        "style": {
+          "fontSize": "22px",
+          "fontWeight": "bold"
+        }
+      },
+      {
+        "name": "chart",
+        "type": "bar-chart",
+        "position": { "colStart": 1, "colEnd": 9, "rowStart": 2, "rowEnd": 8 },
+        "style": {
+          "padding": "15px"
+        }
+      },
+      {
+        "name": "legend",
+        "type": "legend",
+        "position": { "colStart": 9, "colEnd": 12, "rowStart": 2, "rowEnd": 6 },
+        "style": {
+          "fontSize": "12px",
+          "backgroundColor": "#f8f9fa",
+          "padding": "15px",
+          "borderRadius": "4px"
+        }
+      },
+      {
+        "name": "source",
+        "type": "caption",
+        "position": { "colStart": 1, "colEnd": 12, "rowStart": 8, "rowEnd": 9 },
+        "style": {
+          "fontSize": "9px",
+          "color": "#999999",
+          "fontStyle": "italic"
+        }
+      }
+    ]
+  },
+  "chartSpecifications": {
+    "type": "grouped-bar-chart",
+    "orientation": "vertical",
+    "bars": ["2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "2019", "2020"],
+    "series": ["Information Technology", "Health", "Real Estate", "Materials", "Energy"],
+    "yAxis": { "label": "% Change", "format": "percentage" },
+    "colors": ["#0066cc", "#5cb85c", "#f0ad4e", "#d9534f", "#9b59b6"],
+    "annotations": ["key peaks", "significant changes"]
+  },
+  "typography": {
+    "title": { "fontSize": "22px", "fontWeight": "bold" },
+    "axisLabels": { "fontSize": "11px", "color": "#666666" },
+    "dataLabels": { "fontSize": "10px" },
+    "legend": { "fontSize": "11px" },
+    "source": { "fontSize": "9px", "color": "#888888" }
+  },
+  "colorPalette": {
+    "primary": "#0066cc",
+    "secondary": "#5cb85c",
+    "tertiary": "#f0ad4e",
+    "quaternary": "#d9534f",
+    "quinary": "#9b59b6",
+    "background": "#ffffff",
+    "grid": "#f0f0f0"
+  },
+  "usageGuidelines": {
+    "bestFor": ["market comparisons", "sector analysis", "performance tracking", "investment analysis"],
+    "audience": ["Investors", "Strategy Teams", "C-Suite"],
+    "contentLength": "5-10 categories, 3-5 data series",
+    "dataTypes": ["bar charts", "column charts", "grouped comparisons"]
+  }
+}

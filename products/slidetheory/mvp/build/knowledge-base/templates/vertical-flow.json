@@ -1,0 +1,235 @@
+{
+  "id": "vertical-flow",
+  "name": "Vertical Flow",
+  "description": "Top-to-bottom hierarchy for org charts, decision trees, cascading strategies, or waterfall logic. Inspired by McKinsey waterfall charts and decision frameworks.",
+  "structure": {
+    "grid": {
+      "columns": 12,
+      "gutter": "24px",
+      "margin": "80px"
+    },
+    "zones": [
+      {
+        "id": "title-area",
+        "type": "header",
+        "gridColumn": "1 / -1",
+        "gridRow": "1",
+        "height": "auto",
+        "padding": "60px 80px 24px",
+        "borderBottom": "3px solid #0d2137"
+      },
+      {
+        "id": "hierarchy-container",
+        "type": "content-flow",
+        "gridColumn": "1 / -1",
+        "gridRow": "2",
+        "layout": "vertical",
+        "direction": "top-to-bottom",
+        "gap": "32px",
+        "padding": "40px 80px",
+        "alignItems": "center"
+      },
+      {
+        "id": "footer",
+        "type": "footer",
+        "gridColumn": "1 / -1",
+        "gridRow": "3",
+        "position": "absolute",
+        "bottom": "24px",
+        "left": "80px",
+        "right": "80px",
+        "borderTop": "1px solid #e4e4e7",
+        "paddingTop": "24px"
+      }
+    ],
+    "levelCard": {
+      "width": "100%",
+      "maxWidth": "800px",
+      "minHeight": "auto",
+      "padding": "24px 32px",
+      "borderRadius": "8px",
+      "position": "relative"
+    },
+    "branches": {
+      "enabled": true,
+      "position": "below",
+      "splitDirection": "horizontal",
+      "connectorStyle": "line",
+      "branchAngle": 45
+    }
+  },
+  "typography": {
+    "h1": {
+      "fontSize": "52px",
+      "fontWeight": "700",
+      "color": "#0d2137",
+      "lineHeight": "1.15",
+      "letterSpacing": "-0.02em"
+    },
+    "h2": {
+      "fontSize": "24px",
+      "fontWeight": "600",
+      "color": "#0d2137",
+      "lineHeight": "1.3"
+    },
+    "body": {
+      "fontSize": "16px",
+      "fontWeight": "400",
+      "color": "#52525b",
+      "lineHeight": "1.5"
+    },
+    "levelLabel": {
+      "fontSize": "12px",
+      "fontWeight": "700",
+      "textTransform": "uppercase",
+      "letterSpacing": "0.15em",
+      "color": "#2563eb",
+      "marginBottom": "8px"
+    },
+    "footer": {
+      "fontSize": "14px",
+      "fontWeight": "400",
+      "color": "#a1a1aa"
+    }
+  },
+  "design": {
+    "colorPalette": {
+      "primary": "#0d2137",
+      "secondary": "#334e68",
+      "tertiary": "#486581",
+      "accent": "#2563eb",
+      "background": "#ffffff",
+      "surface": "#f4f4f5",
+      "surfaceDark": "#e4e4e7",
+      "textPrimary": "#18181b",
+      "textSecondary": "#52525b"
+    },
+    "levelStyles": [
+      {
+        "level": 1,
+        "backgroundColor": "#0d2137",
+        "color": "#ffffff",
+        "width": "60%",
+        "borderLeft": "none",
+        "elevation": "high"
+      },
+      {
+        "level": 2,
+        "backgroundColor": "#334e68",
+        "color": "#ffffff",
+        "width": "75%",
+        "borderLeft": "4px solid #0d2137",
+        "elevation": "medium"
+      },
+      {
+        "level": 3,
+        "backgroundColor": "#f4f4f5",
+        "color": "#18181b",
+        "width": "90%",
+        "borderLeft": "4px solid #334e68",
+        "elevation": "low"
+      },
+      {
+        "level": 4,
+        "backgroundColor": "#ffffff",
+        "color": "#52525b",
+        "width": "100%",
+        "borderLeft": "4px solid #9fb3c8",
+        "border": "1px solid #e4e4e7",
+        "elevation": "none"
+      }
+    ],
+    "connector": {
+      "type": "vertical-line",
+      "color": "#334e68",
+      "width": "2px",
+      "branchLines": {
+        "enabled": true,
+        "color": "#334e68",
+        "width": "2px"
+      }
+    },
+    "branchNode": {
+      "shape": "circle",
+      "size": "48px",
+      "backgroundColor": "#2563eb",
+      "color": "#ffffff",
+      "fontSize": "18px",
+      "fontWeight": "700"
+    }
+  },
+  "variants": {
+    "waterfall": {
+      "showValues": true,
+      "showCumulative": true,
+      "barStyle": "stepped",
+      "colorPositive": "#16a34a",
+      "colorNegative": "#dc2626"
+    },
+    "org-chart": {
+      "showTitles": true,
+      "showReports": true,
+      "cardStyle": "portrait",
+      "photoPlaceholder": false
+    },
+    "decision-tree": {
+      "showCriteria": true,
+      "branchLabels": true,
+      "yesNoStyle": true,
+      "colorBranches": true
+    },
+    "cascade": {
+      "showPercentages": true,
+      "showContributions": true,
+      "barStyle": "continuous"
+    }
+  },
+  "audienceAdaptations": {
+    "c-suite": {
+      "maxLevels": 3,
+      "showLabels": true,
+      "showValues": true,
+      "whitespaceRatio": 0.35,
+      "emphasizeTopLevel": true
+    },
+    "board": {
+      "maxLevels": 4,
+      "showLabels": true,
+      "showValues": true,
+      "whitespaceRatio": 0.3
+    },
+    "external-client": {
+      "maxLevels": 4,
+      "showLabels": true,
+      "showValues": false,
+      "whitespaceRatio": 0.25
+    },
+    "internal-team": {
+      "maxLevels": 5,
+      "showLabels": true,
+      "showValues": true,
+      "showDetails": true,
+      "whitespaceRatio": 0.2
+    },
+    "pe-investors": {
+      "maxLevels": 3,
+      "showLabels": true,
+      "showValues": true,
+      "showMetrics": true,
+      "whitespaceRatio": 0.25
+    }
+  },
+  "presentationMode": {
+    "presentation": {
+      "detailLevel": "summary",
+      "maxLevels": 3,
+      "animate": true,
+      "reveal": "top-down"
+    },
+    "read": {
+      "detailLevel": "full",
+      "maxLevels": 5,
+      "animate": false
+    }
+  }
+}

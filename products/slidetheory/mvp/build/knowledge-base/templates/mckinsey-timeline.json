@@ -1,0 +1,90 @@
+{
+  "name": "McKinsey Timeline/Historical",
+  "source": "reference-decks/mckinsey-top-trends-exec-summary.pdf",
+  "slideType": "horizontal-flow",
+  "description": "Historical timeline showing technological advancement and economic impact over centuries",
+  "layout": {
+    "grid": {
+      "columns": 12,
+      "rows": 8
+    },
+    "zones": [
+      {
+        "name": "header",
+        "type": "title",
+        "position": { "colStart": 1, "colEnd": 12, "rowStart": 1, "rowEnd": 2 },
+        "style": {
+          "fontSize": "24px",
+          "fontWeight": "bold",
+          "marginBottom": "15px"
+        }
+      },
+      {
+        "name": "quote",
+        "type": "callout",
+        "position": { "colStart": 1, "colEnd": 5, "rowStart": 2, "rowEnd": 3 },
+        "style": {
+          "fontStyle": "italic",
+          "color": "#0066cc",
+          "borderLeft": "3px solid #0066cc",
+          "paddingLeft": "15px",
+          "fontSize": "14px"
+        }
+      },
+      {
+        "name": "timeline-chart",
+        "type": "line-chart",
+        "position": { "colStart": 1, "colEnd": 12, "rowStart": 3, "rowEnd": 7 },
+        "style": {
+          "backgroundColor": "#f8f9fa",
+          "padding": "20px"
+        }
+      },
+      {
+        "name": "milestones",
+        "type": "annotation",
+        "position": { "colStart": 1, "colEnd": 12, "rowStart": 7, "rowEnd": 8 },
+        "style": {
+          "display": "flex",
+          "justifyContent": "space-between",
+          "fontSize": "11px",
+          "color": "#666666"
+        }
+      }
+    ]
+  },
+  "chartSpecifications": {
+    "type": "log-scale-line-chart",
+    "xAxis": { 
+      "type": "time",
+      "range": "1000-2050",
+      "keyEvents": ["First Industrial Revolution", "Second Industrial Revolution", "Third Industrial Revolution", "Fourth Industrial Revolution"]
+    },
+    "yAxis": { 
+      "type": "log",
+      "label": "GDP Per Capita (Indexed)",
+      "min": 0.1,
+      "max": 1000
+    },
+    "lines": ["World", "China", "Germany", "Great Britain"],
+    "annotations": ["Steam Engine 1769", "Internal Combustion 1867", "Internet 1970s"]
+  },
+  "typography": {
+    "title": { "fontSize": "24px", "fontWeight": "bold" },
+    "quote": { "fontSize": "14px", "fontStyle": "italic" },
+    "axisLabels": { "fontSize": "11px" },
+    "annotations": { "fontSize": "10px", "color": "#0066cc" }
+  },
+  "colorPalette": {
+    "primary": "#1a1a1a",
+    "lines": ["#0066cc", "#d9534f", "#5cb85c", "#f0ad4e"],
+    "grid": "#e0e0e0",
+    "background": "#f8f9fa"
+  },
+  "usageGuidelines": {
+    "bestFor": ["historical context", "industry evolution", "technology progression", "economic trends"],
+    "audience": ["C-Suite", "Board", "External Clients"],
+    "contentLength": "Key milestones with dates + 3-5 trend lines",
+    "dataTypes": ["line charts", "log-scale charts", "annotated timelines"]
+  }
+}
