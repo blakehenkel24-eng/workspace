@@ -36,11 +36,25 @@
       font-weight: 600;
       color: #fff;
       text-decoration: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .nav-logo:hover {
+      opacity: 0.9;
     }
 
     .nav-logo-accent {
       color: #3b82f6;
       font-weight: 700;
+    }
+
+    .nav-logo .version-badge {
+      margin-left: 8px;
+      font-size: 11px;
+      padding: 2px 8px;
+      background: rgba(59, 130, 246, 0.2);
+      color: #3b82f6;
+      border-radius: 4px;
     }
 
     .nav-links {
@@ -100,7 +114,6 @@
       box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
     }
 
-    /* Mobile Menu Toggle */
     .mobile-menu-toggle {
       display: none;
       flex-direction: column;
@@ -131,7 +144,6 @@
       transform: rotate(-45deg) translate(5px, -5px);
     }
 
-    /* Mobile Navigation */
     @media (max-width: 768px) {
       .mobile-menu-toggle {
         display: flex;
@@ -185,35 +197,37 @@
       }
     }
 
-    /* Page Content Styles */
-    .howitworks-page {
-      min-height: 100vh;
+    .page-app {
       background: #0f172a;
+      min-height: 100vh;
     }
 
-    .howitworks-main {
+    /* How it Works Page Specific Styles */
+    .hiw-main {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 60px 24px;
+      padding: 40px 24px;
     }
 
-    .howitworks-hero {
+    .hiw-hero {
       text-align: center;
       margin-bottom: 64px;
+      padding: 60px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
     }
 
-    .howitworks-title {
+    .hiw-title {
       font-size: 48px;
       font-weight: 700;
-      margin-bottom: 16px;
+      margin-bottom: 20px;
       background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
 
-    .howitworks-subtitle {
-      font-size: 18px;
+    .hiw-subtitle {
+      font-size: 20px;
       color: #94a3b8;
       max-width: 600px;
       margin: 0 auto;
@@ -221,344 +235,477 @@
     }
 
     /* Steps Section */
-    .steps-container {
-      display: grid;
-      gap: 32px;
-      margin-bottom: 64px;
-    }
-
-    .step-card {
-      display: grid;
-      grid-template-columns: 80px 1fr;
-      gap: 32px;
-      padding: 40px;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 20px;
-      transition: all 0.3s ease;
-    }
-
-    .step-card:hover {
-      border-color: rgba(37, 99, 235, 0.3);
-      background: rgba(255,255,255,0.05);
-    }
-
-    .step-number {
-      width: 80px;
-      height: 80px;
+    .hiw-steps {
       display: flex;
+      flex-direction: column;
+      gap: 80px;
+      margin-bottom: 80px;
+    }
+
+    .hiw-step {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+
+    .hiw-step:nth-child(even) {
+      direction: rtl;
+    }
+
+    .hiw-step:nth-child(even) > * {
+      direction: ltr;
+    }
+
+    .hiw-step-content {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .hiw-step-number {
+      display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-size: 32px;
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+      color: #fff;
+      font-size: 20px;
       font-weight: 700;
-      color: #3b82f6;
-      background: rgba(37, 99, 235, 0.1);
-      border-radius: 20px;
+      border-radius: 12px;
+      margin-bottom: 8px;
     }
 
-    .step-content h3 {
-      font-size: 24px;
+    .hiw-step-title {
+      font-size: 28px;
       font-weight: 600;
       color: #fff;
-      margin-bottom: 12px;
+      margin: 0;
     }
 
-    .step-content p {
+    .hiw-step-description {
       font-size: 16px;
       color: #94a3b8;
       line-height: 1.7;
-      margin-bottom: 20px;
+      margin: 0;
     }
 
-    .step-features {
+    .hiw-step-features {
       display: flex;
-      flex-wrap: wrap;
+      flex-direction: column;
       gap: 12px;
+      margin-top: 8px;
     }
 
-    .step-feature {
+    .hiw-step-feature {
       display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 8px 16px;
+      gap: 12px;
       font-size: 14px;
       color: #cbd5e1;
-      background: rgba(255,255,255,0.05);
-      border-radius: 100px;
     }
 
-    .step-feature::before {
+    .hiw-step-feature::before {
       content: "✓";
-      color: #22c55e;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      background: rgba(34, 197, 94, 0.2);
+      color: #4ade80;
+      font-size: 12px;
       font-weight: 700;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .hiw-step-visual {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      padding: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 300px;
+    }
+
+    .hiw-step-visual-inner {
+      text-align: center;
+    }
+
+    .hiw-step-icon {
+      font-size: 80px;
+      margin-bottom: 16px;
+    }
+
+    .hiw-step-preview {
+      background: #1e293b;
+      border-radius: 12px;
+      padding: 24px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .hiw-preview-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .hiw-preview-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .hiw-preview-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13px;
+      color: #94a3b8;
+    }
+
+    .hiw-preview-dot {
+      width: 8px;
+      height: 8px;
+      background: #3b82f6;
+      border-radius: 50%;
     }
 
     /* Features Grid */
-    .features-section {
-      margin-top: 80px;
-      padding-top: 64px;
-      border-top: 1px solid rgba(255,255,255,0.1);
-    }
-
-    .features-title {
-      font-size: 32px;
-      font-weight: 600;
-      color: #fff;
-      text-align: center;
-      margin-bottom: 48px;
-    }
-
-    .features-grid {
+    .hiw-features {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      grid-template-columns: repeat(3, 1fr);
       gap: 24px;
+      margin-bottom: 80px;
     }
 
-    .feature-item {
-      padding: 32px;
-      background: rgba(255,255,255,0.03);
+    .hiw-feature-card {
+      background: rgba(255,255,255,0.05);
       border: 1px solid rgba(255,255,255,0.1);
       border-radius: 16px;
+      padding: 32px;
       text-align: center;
       transition: all 0.3s ease;
     }
 
-    .feature-item:hover {
+    .hiw-feature-card:hover {
       transform: translateY(-4px);
-      border-color: rgba(37, 99, 235, 0.3);
+      border-color: rgba(37, 99, 235, 0.5);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
     }
 
-    .feature-icon {
-      width: 64px;
-      height: 64px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 20px;
-      font-size: 32px;
-      background: rgba(37, 99, 235, 0.1);
-      border-radius: 16px;
+    .hiw-feature-icon {
+      font-size: 48px;
+      margin-bottom: 20px;
     }
 
-    .feature-item h4 {
+    .hiw-feature-title {
       font-size: 18px;
       font-weight: 600;
       color: #fff;
       margin-bottom: 12px;
     }
 
-    .feature-item p {
+    .hiw-feature-description {
       font-size: 14px;
       color: #94a3b8;
       line-height: 1.6;
+      margin: 0;
     }
 
     /* CTA Section */
-    .cta-section {
-      margin-top: 80px;
-      padding: 64px;
-      background: linear-gradient(135deg, rgba(37, 99, 235, 0.15) 0%, rgba(124, 58, 237, 0.15) 100%);
-      border: 1px solid rgba(37, 99, 235, 0.2);
-      border-radius: 24px;
+    .hiw-cta {
       text-align: center;
+      padding: 60px 40px;
+      background: linear-gradient(135deg, rgba(37, 99, 235, 0.15) 0%, rgba(124, 58, 237, 0.15) 100%);
+      border: 1px solid rgba(37, 99, 235, 0.3);
+      border-radius: 24px;
+      margin-bottom: 40px;
     }
 
-    .cta-title {
+    .hiw-cta-title {
       font-size: 32px;
       font-weight: 700;
       color: #fff;
       margin-bottom: 16px;
     }
 
-    .cta-subtitle {
-      font-size: 18px;
+    .hiw-cta-description {
+      font-size: 16px;
       color: #94a3b8;
       margin-bottom: 32px;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
-    .cta-button {
+    .hiw-cta-buttons {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .hiw-cta-btn {
       display: inline-flex;
       align-items: center;
-      padding: 16px 32px;
-      font-size: 16px;
+      padding: 14px 32px;
+      font-size: 15px;
       font-weight: 600;
-      color: #fff;
-      background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
+      border-radius: 10px;
       text-decoration: none;
       transition: all 0.2s ease;
     }
 
-    .cta-button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(37, 99, 235, 0.4);
+    .hiw-cta-btn.primary {
+      background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+      color: #fff;
     }
 
-    @media (max-width: 768px) {
-      .howitworks-title {
+    .hiw-cta-btn.primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
+    }
+
+    .hiw-cta-btn.secondary {
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .hiw-cta-btn.secondary:hover {
+      background: rgba(255,255,255,0.15);
+    }
+
+    @media (max-width: 968px) {
+      .hiw-title {
         font-size: 36px;
       }
 
-      .step-card {
+      .hiw-step {
         grid-template-columns: 1fr;
-        text-align: center;
-        padding: 32px 24px;
+        gap: 40px;
       }
 
-      .step-number {
-        margin: 0 auto;
+      .hiw-step:nth-child(even) {
+        direction: ltr;
       }
 
-      .step-features {
-        justify-content: center;
+      .hiw-features {
+        grid-template-columns: 1fr;
       }
 
-      .cta-section {
+      .hiw-cta {
         padding: 40px 24px;
       }
 
-      .cta-title {
+      .hiw-cta-title {
         font-size: 24px;
       }
     }
   </style>
 </head>
-<body class="howitworks-page">
+<body>
   <a href="#main-content" class="skip-link">Skip to main content</a>
   
-  <!-- Navigation Header -->
-  <header class="nav-header">
-    <div class="nav-left">
-      <a href="index.html" class="nav-logo">
-        Slide<span class="nav-logo-accent">Theory</span>
-      </a>
-      <nav>
-        <ul class="nav-links" id="navLinks">
-          <li><a href="index.html" class="nav-link">Home</a></li>
-          <li><a href="how-it-works.html" class="nav-link active">How it Works</a></li>
-          <li><a href="resources.html" class="nav-link">Resources</a></li>
-          <li><a href="blog.html" class="nav-link">Blog</a></li>
-          <li class="nav-cta-mobile"><a href="index.html" class="btn-cta">Get Started</a></li>
-        </ul>
-      </nav>
-    </div>
-    <div class="nav-cta">
-      <a href="index.html" class="btn-cta">Get Started</a>
-      <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-    </div>
-  </header>
+  <!-- ARIA live region for status announcements -->
+  <div id="statusAnnouncer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+  
+  <div class="page-app">
+    <!-- Header -->
+    <header class="nav-header">
+      <div class="nav-left">
+        <a href="index.html" class="nav-logo">
+          Slide<span class="nav-logo-accent">Theory</span>
+          <span class="version-badge">v2.0</span>
+        </a>
+        <nav>
+          <ul class="nav-links" id="navLinks">
+            <li><a href="index.html" class="nav-link">Home</a></li>
+            <li><a href="how-it-works.html" class="nav-link active">How it Works</a></li>
+            <li><a href="resources.html" class="nav-link">Resources</a></li>
+            <li><a href="blog.html" class="nav-link">Blog</a></li>
+            <li class="nav-cta-mobile"><a href="index.html" class="btn-cta">Get Started</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="nav-cta">
+        <a href="index.html" class="btn-cta">Get Started</a>
+        <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </header>
 
-  <!-- Main Content -->
-  <main class="howitworks-main" id="main-content">
-    <!-- Hero -->
-    <section class="howitworks-hero">
-      <h1 class="howitworks-title">How SlideTheory Works</h1>
-      <p class="howitworks-subtitle">Generate professional consulting slides in minutes using MBB-inspired frameworks and AI-powered design.</p>
-    </section>
+    <!-- Main Content -->
+    <main class="hiw-main" id="main-content">
+      <!-- Hero -->
+      <section class="hiw-hero">
+        <h1 class="hiw-title">How SlideTheory Works</h1>
+        <p class="hiw-subtitle">Transform your ideas into professional consulting slides in minutes. Our AI-powered platform uses MBB-grade frameworks to create presentation-ready output.</p>
+      </section>
 
-    <!-- Steps -->
-    <div class="steps-container">
-      <!-- Step 1 -->
-      <div class="step-card">
-        <div class="step-number">1</div>
-        <div class="step-content">
-          <h3>Choose Your Slide Type</h3>
-          <p>Select from professionally designed templates including Executive Summary, Process Flows, Data Charts, and more. Each template is optimized for different presentation scenarios.</p>
-          <div class="step-features">
-            <span class="step-feature">Executive Summary</span>
-            <span class="step-feature">Process Flows</span>
-            <span class="step-feature">Data Visualizations</span>
-            <span class="step-feature">Strategic Frameworks</span>
+      <!-- Steps -->
+      <section class="hiw-steps">
+        <!-- Step 1 -->
+        <article class="hiw-step">
+          <div class="hiw-step-content">
+            <span class="hiw-step-number">1</span>
+            <h2 class="hiw-step-title">Choose Your Slide Type</h2>
+            <p class="hiw-step-description">Select from executive summaries, process flows, data visualizations, and more. Each template is designed based on real McKinsey, BCG, and Bain slide layouts.</p>
+            <div class="hiw-step-features">
+              <span class="hiw-step-feature">Executive Summary for top-level insights</span>
+              <span class="hiw-step-feature">Horizontal & Vertical Flows for processes</span>
+              <span class="hiw-step-feature">Graphs & Charts for data storytelling</span>
+              <span class="hiw-step-feature">General layouts for flexible content</span>
+            </div>
           </div>
-        </div>
-      </div>
-
-      <!-- Step 2 -->
-      <div class="step-card">
-        <div class="step-number">2</div>
-        <div class="step-content">
-          <h3>Define Your Audience & Message</h3>
-          <p>Tell us who you're presenting to and what matters most. SlideTheory automatically adjusts the detail level, tone, and structure based on your audience—from C-Suite executives to working teams.</p>
-          <div class="step-features">
-            <span class="step-feature">C-Suite Optimized</span>
-            <span class="step-feature">Board Ready</span>
-            <span class="step-feature">Investor Focused</span>
-            <span class="step-feature">Team Alignment</span>
+          <div class="hiw-step-visual">
+            <div class="hiw-step-visual-inner">
+              <div class="hiw-step-icon">📊</div>
+              <div class="hiw-step-preview">
+                <div class="hiw-preview-title">Slide Types</div>
+                <div class="hiw-preview-list">
+                  <div class="hiw-preview-item"><span class="hiw-preview-dot"></span>Executive Summary</div>
+                  <div class="hiw-preview-item"><span class="hiw-preview-dot"></span>Horizontal Flow</div>
+                  <div class="hiw-preview-item"><span class="hiw-preview-dot"></span>Vertical Flow</div>
+                  <div class="hiw-preview-item"><span class="hiw-preview-dot"></span>Graph/Chart</div>
+                  <div class="hiw-preview-item"><span class="hiw-preview-dot"></span>General</div>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
+        </article>
 
-      <!-- Step 3 -->
-      <div class="step-card">
-        <div class="step-number">3</div>
-        <div class="step-content">
-          <h3>Add Your Content</h3>
-          <p>Enter your key takeaway and supporting context. Our AI understands consulting best practices and will structure your information using proven frameworks like MECE, Pyramid Principle, and SCR.</p>
-          <div class="step-features">
-            <span class="step-feature">MECE Structure</span>
-            <span class="step-feature">Pyramid Principle</span>
-            <span class="step-feature">Action Titles</span>
-            <span class="step-feature">Data Integration</span>
+        <!-- Step 2 -->
+        <article class="hiw-step">
+          <div class="hiw-step-content">
+            <span class="hiw-step-number">2</span>
+            <h2 class="hiw-step-title">Define Your Audience</h2>
+            <p class="hiw-step-description">Tell us who you're presenting to. Our AI adjusts the detail level, tone, and structure based on whether you're speaking to C-Suite executives, investors, or internal teams.</p>
+            <div class="hiw-step-features">
+              <span class="hiw-step-feature">C-Suite/Board: High-level, strategic focus</span>
+              <span class="hiw-step-feature">PE/Investors: Data-heavy, financial emphasis</span>
+              <span class="hiw-step-feature">External Clients: Professional, persuasive tone</span>
+              <span class="hiw-step-feature">Internal Teams: Detailed, actionable content</span>
+            </div>
           </div>
-        </div>
-      </div>
-
-      <!-- Step 4 -->
-      <div class="step-card">
-        <div class="step-number">4</div>
-        <div class="step-content">
-          <h3>Generate & Download</h3>
-          <p>Watch as SlideTheory creates a professional slide in seconds. Download as PNG, PowerPoint, or PDF. Edit and iterate until it's perfect—regenerate anytime with a single click.</p>
-          <div class="step-features">
-            <span class="step-feature">PNG Export</span>
-            <span class="step-feature">PowerPoint</span>
-            <span class="step-feature">PDF Output</span>
-            <span class="step-feature">One-Click Regenerate</span>
+          <div class="hiw-step-visual">
+            <div class="hiw-step-visual-inner">
+              <div class="hiw-step-icon">🎯</div>
+              <div class="hiw-step-preview">
+                <div class="hiw-preview-title">Audience Options</div>
+                <div class="hiw-preview-list">
+                  <div class="hiw-preview-item"><span class="hiw-preview-dot"></span>C-Suite / Board</div>
+                  <div class="hiw-preview-item"><span class="hiw-preview-dot"></span>PE / Investors</div>
+                  <div class="hiw-preview-item"><span class="hiw-preview-dot"></span>External Client</div>
+                  <div class="hiw-preview-item"><span class="hiw-preview-dot"></span>Internal / Working Team</div>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-    </div>
+        </article>
 
-    <!-- Features Section -->
-    <section class="features-section">
-      <h2 class="features-title">Built for Consulting Excellence</h2>
-      <div class="features-grid">
-        <div class="feature-item">
-          <div class="feature-icon">🎯</div>
-          <h4>Action-Oriented Titles</h4>
-          <p>Every slide communicates the "so what" with clear, executive-ready titles that drive decisions.</p>
-        </div>
-        <div class="feature-item">
-          <div class="feature-icon">📊</div>
-          <h4>Data-Driven Design</h4>
-          <p>Automatically structure charts, graphs, and metrics following MBB visualization standards.</p>
-        </div>
-        <div class="feature-item">
-          <div class="feature-icon">⚡</div>
-          <h4>Minutes, Not Hours</h4>
-          <p>What used to take hours of formatting now takes minutes. Focus on insights, not slide layout.</p>
-        </div>
-        <div class="feature-item">
-          <div class="feature-icon">🎨</div>
-          <h4>Professional Aesthetics</h4>
-          <p>Clean, modern designs inspired by McKinsey, BCG, and Bain presentation standards.</p>
-        </div>
-      </div>
-    </section>
+        <!-- Step 3 -->
+        <article class="hiw-step">
+          <div class="hiw-step-content">
+            <span class="hiw-step-number">3</span>
+            <h2 class="hiw-step-title">Input Your Content</h2>
+            <p class="hiw-step-description">Provide your key takeaway, context, and any supporting data. Our AI uses the Pyramid Principle and MECE framework to structure your content for maximum impact.</p>
+            <div class="hiw-step-features">
+              <span class="hiw-step-feature">Key Takeaway: The single most important message</span>
+              <span class="hiw-step-feature">Context: Background and strategic considerations</span>
+              <span class="hiw-step-feature">Data Input: Excel, CSV, or manual entry</span>
+              <span class="hiw-step-feature">Presentation Mode: Less or more detail</span>
+            </div>
+          </div>
+          <div class="hiw-step-visual">
+            <div class="hiw-step-visual-inner">
+              <div class="hiw-step-icon">✍️</div>
+              <div class="hiw-step-preview">
+                <div class="hiw-preview-title">Content Structure</div>
+                <div class="hiw-preview-list">
+                  <div class="hiw-preview-item"><span class="hiw-preview-dot"></span>Key Takeaway (150 chars)</div>
+                  <div class="hiw-preview-item"><span class="hiw-preview-dot"></span>Context (2000 chars)</div>
+                  <div class="hiw-preview-item"><span class="hiw-preview-dot"></span>Data Input (optional)</div>
+                  <div class="hiw-preview-item"><span class="hiw-preview-dot"></span>File Upload (CSV, Excel)</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
 
-    <!-- CTA Section -->
-    <section class="cta-section">
-      <h2 class="cta-title">Ready to Transform Your Presentations?</h2>
-      <p class="cta-subtitle">Join professionals who create better slides in less time with SlideTheory.</p>
-      <a href="index.html" class="cta-button">Start Creating Slides →</a>
-    </section>
-  </main>
+        <!-- Step 4 -->
+        <article class="hiw-step">
+          <div class="hiw-step-content">
+            <span class="hiw-step-number">4</span>
+            <h2 class="hiw-step-title">Generate & Download</h2>
+            <p class="hiw-step-description">Click generate and watch as our AI creates your slide in seconds. Review, regenerate if needed, and download in PNG, PowerPoint, or PDF format.</p>
+            <div class="hiw-step-features">
+              <span class="hiw-step-feature">AI-powered generation in under 30 seconds</span>
+              <span class="hiw-step-feature">MBB-grade styling and formatting</span>
+              <span class="hiw-step-feature">Download as PNG, PPTX, or PDF</span>
+              <span class="hiw-step-feature">Regenerate for alternative versions</span>
+            </div>
+          </div>
+          <div class="hiw-step-visual">
+            <div class="hiw-step-visual-inner">
+              <div class="hiw-step-icon">⚡</div>
+              <div class="hiw-step-preview">
+                <div class="hiw-preview-title">Export Options</div>
+                <div class="hiw-preview-list">
+                  <div class="hiw-preview-item"><span class="hiw-preview-dot"></span>PNG Image (high-res)</div>
+                  <div class="hiw-preview-item"><span class="hiw-preview-dot"></span>PowerPoint (.pptx)</div>
+                  <div class="hiw-preview-item"><span class="hiw-preview-dot"></span>PDF Document</div>
+                  <div class="hiw-preview-item"><span class="hiw-preview-dot"></span>Regenerate Variations</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <!-- Features Grid -->
+      <section class="hiw-features">
+        <article class="hiw-feature-card">
+          <div class="hiw-feature-icon">🧠</div>
+          <h3 class="hiw-feature-title">MBB Frameworks</h3>
+          <p class="hiw-feature-description">Built on the same structural principles used by McKinsey, BCG, and Bain consultants.</p>
+        </article>
+
+        <article class="hiw-feature-card">
+          <div class="hiw-feature-icon">⚡</div>
+          <h3 class="hiw-feature-title">Lightning Fast</h3>
+          <p class="hiw-feature-description">Generate professional slides in seconds, not hours. Focus on strategy, not formatting.</p>
+        </article>
+
+        <article class="hiw-feature-card">
+          <div class="hiw-feature-icon">🎨</div>
+          <h3 class="hiw-feature-title">Professional Design</h3>
+          <p class="hiw-feature-description">Clean, consulting-grade aesthetics that impress executives and clients alike.</p>
+        </article>
+      </section>
+
+      <!-- CTA Section -->
+      <section class="hiw-cta">
+        <h2 class="hiw-cta-title">Ready to create your first slide?</h2>
+        <p class="hiw-cta-description">Join thousands of consultants, executives, and professionals who use SlideTheory to create stunning presentations.</p>
+        <div class="hiw-cta-buttons">
+          <a href="index.html" class="hiw-cta-btn primary">Get Started Free</a>
+          <a href="resources.html" class="hiw-cta-btn secondary">Explore Resources</a>
+        </div>
+      </section>
+    </main>
+  </div>
 
   <script>
     // Mobile menu toggle
