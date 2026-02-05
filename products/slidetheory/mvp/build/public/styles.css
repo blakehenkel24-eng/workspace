@@ -70,7 +70,7 @@
   
   --text-primary: var(--gray-900);
   --text-secondary: var(--gray-600);
-  --text-tertiary: var(--gray-400);
+  --text-tertiary: var(--gray-500);
   --text-inverse: var(--gray-0);
   
   --border-light: var(--gray-200);
@@ -159,7 +159,7 @@
   
   --text-primary: var(--gray-100);
   --text-secondary: var(--gray-400);
-  --text-tertiary: var(--gray-500);
+  --text-tertiary: var(--gray-400);
   --text-inverse: var(--gray-900);
   
   --border-light: var(--gray-700);
@@ -266,8 +266,8 @@ body {
 }
 
 .icon-btn {
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -968,8 +968,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 44px;
+  height: 44px;
   background: transparent;
   border: none;
   border-radius: var(--radius-md);
@@ -1174,7 +1174,8 @@ button:focus-visible,
 .toggle-btn:focus-visible,
 .version-btn:focus-visible,
 .dropdown-item:focus-visible,
-.file-upload-btn:focus-visible {
+.file-upload-btn:focus-visible,
+.mobile-menu-toggle:focus-visible {
   outline: 3px solid var(--border-focus);
   outline-offset: 2px;
   box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
@@ -1422,6 +1423,10 @@ textarea:focus-visible {
   background: transparent;
   border: none;
   cursor: pointer;
+  width: 44px;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
 }
 
 .mobile-menu-toggle span {

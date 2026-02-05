@@ -118,6 +118,10 @@
       background: transparent;
       border: none;
       cursor: pointer;
+      width: 44px;
+      height: 44px;
+      align-items: center;
+      justify-content: center;
     }
 
     .mobile-menu-toggle span {
@@ -231,8 +235,8 @@
       </div>
       <div class="nav-cta">
         <a href="#slideFormV2" class="btn-cta" onclick="document.getElementById('slideTypeV2').focus(); return false;">Get Started</a>
-        <button class="icon-btn" id="helpBtn" title="Help (?)" data-shortcut="?">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <button class="icon-btn" id="helpBtn" title="Help (?)" data-shortcut="?" aria-label="Open help and keyboard shortcuts (press ?)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <circle cx="12" cy="12" r="10"/>
             <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
             <path d="M12 17h.01"/>

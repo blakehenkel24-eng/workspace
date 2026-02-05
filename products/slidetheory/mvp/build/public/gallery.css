@@ -215,8 +215,8 @@
   position: absolute;
   top: 0.75rem;
   left: 0.75rem;
-  width: 32px;
-  height: 32px;
+  width: 44px;
+  height: 44px;
   background: var(--bg-primary);
   border: none;
   border-radius: var(--radius-md);
@@ -231,6 +231,11 @@
 
 .template-card__favorite:hover {
   transform: scale(1.1);
+}
+
+.template-card__favorite:focus-visible {
+  outline: 3px solid var(--border-focus, #3b82f6);
+  outline-offset: 2px;
 }
 
 .template-card__favorite.is-favorite svg {
@@ -421,6 +426,11 @@
   transition: color var(--transition-fast);
   padding: 0;
   line-height: 1;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .star:hover,
@@ -430,6 +440,12 @@
 
 .star.is-selected {
   color: var(--warning-500);
+}
+
+.star:focus-visible {
+  outline: 3px solid var(--border-focus, #3b82f6);
+  outline-offset: 2px;
+  border-radius: var(--radius-md, 6px);
 }
 
 .rating-average {
