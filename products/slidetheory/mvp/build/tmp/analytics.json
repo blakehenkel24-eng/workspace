@@ -1,4 +1,135 @@
 {
+  "version": "2.0",
+  "createdAt": "2026-02-05T01:00:50.342Z",
+  "updatedAt": "2026-02-05T05:07:41.328Z",
+  "slides": {
+    "totalGenerated": 23,
+    "totalCached": 0,
+    "byType": {
+      "Executive Summary": 13,
+      "Market Analysis": 3,
+      "Financial Model": 4,
+      "Competitive Analysis": 1,
+      "Growth Strategy": 1,
+      "Risk Assessment": 1
+    },
+    "byTemplate": {
+      "Executive Summary": 13,
+      "Market Analysis": 3,
+      "Financial Model": 4,
+      "Competitive Analysis": 1,
+      "Growth Strategy": 1,
+      "Risk Assessment": 1
+    },
+    "byFramework": {
+      "MECE": 6,
+      "Pyramid Principle": 1
+    },
+    "byDay": {
+      "2026-02-05": {
+        "total": 23,
+        "cached": 0,
+        "types": {
+          "Executive Summary": 13,
+          "Market Analysis": 3,
+          "Financial Model": 4,
+          "Competitive Analysis": 1,
+          "Growth Strategy": 1,
+          "Risk Assessment": 1
+        }
+      }
+    },
+    "generationTime": {
+      "totalMs": 159171,
+      "count": 23,
+      "avgMs": 6920,
+      "minMs": 0,
+      "maxMs": 33777,
+      "p50": 0,
+      "p95": 0,
+      "p99": 0
+    }
+  },
+  "exports": {
+    "total": 3,
+    "byFormat": {
+      "png": 0,
+      "pptx": 3,
+      "pdf": 0,
+      "zip": 0
+    },
+    "byDay": {
+      "2026-02-05": {
+        "total": 3,
+        "formats": {
+          "pptx": 3
+        }
+      }
+    },
+    "avgTimeMs": 19,
+    "totalTimeMs": 56
+  },
+  "errors": {
+    "total": 0,
+    "byType": {},
+    "byEndpoint": {},
+    "byDay": {},
+    "recent": []
+  },
+  "funnel": {
+    "landingPage": 0,
+    "formStarted": 0,
+    "formCompleted": 0,
+    "generationStarted": 2,
+    "generationCompleted": 2,
+    "exportStarted": 2,
+    "exportCompleted": 2,
+    "dropOffPoints": {
+      "landingToForm": 0,
+      "formStartToComplete": 0,
+      "formToGeneration": -2,
+      "generationToExport": 0
+    }
+  },
+  "templates": {
+    "usage": {},
+    "ratings": {}
+  },
+  "hourlyDistribution": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    23,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "dayOfWeekDistribution": [
+    0,
+    0,
+    0,
+    0,
+    23,
+    0,
+    0
+  ],
   "totalSlides": 14,
   "byType": {
     "Executive Summary": 6,
@@ -21,6 +152,5 @@
       }
     }
   },
-  "lastGenerated": "2026-02-05T03:46:20.238Z",
-  "createdAt": "2026-02-05T01:00:50.342Z"
+  "lastGenerated": "2026-02-05T03:46:20.238Z"
 }
