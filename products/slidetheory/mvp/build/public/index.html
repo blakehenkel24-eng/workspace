@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SlideTheory - AI-Powered Consulting Slides</title>
+  <title>SlideTheory v2.0 - MBB-Inspired Slide Generation</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -13,19 +13,23 @@
   <div class="app">
     <!-- Header -->
     <header class="header">
-      <div class="logo">
-        <span class="logo-mark">ST</span>
-        <span class="logo-text">Slide<span class="logo-accent">Theory</span></span>
+      <div class="logo">Slide<span class="logo-accent">Theory</span>
+        <span class="version-badge">v2.0</span>
       </div>
       <div class="header-actions">
-        <button class="icon-btn" id="themeToggle" title="Toggle theme">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="5"/>
-            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+        <button class="icon-btn" id="templatesBtn" title="Quick Templates">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7"/>
+            <rect x="14" y="3" width="7" height="7"/>
+            <rect x="14" y="14" width="7" height="7"/>
+            <rect x="3" y="14" width="7" height="7"/>
           </svg>
         </button>
-        <button class="icon-btn" id="helpBtn" title="Help (?)">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <button class="icon-btn" id="toggleVersionBtn" title="Switch to v1">
+          <span style="font-size: 11px; font-weight: 600;">V1</span>
+        </button>
+        <button class="icon-btn" id="helpBtn" title="Help (?)" data-shortcut="?">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="10"/>
             <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
             <path d="M12 17h.01"/>
@@ -36,200 +40,289 @@
 
     <!-- Main Layout -->
     <div class="main-layout">
-      <!-- Left Panel: Input Form -->
+      <!-- Input Panel -->
       <aside class="input-panel">
         <div class="panel-header">
-          <h1 class="panel-title">Create Slide</h1>
-          <p class="panel-subtitle">Generate professional consulting slides in seconds. Press <kbd>Ctrl</kbd>+<kbd>Enter</kbd> to generate.</p>
+          <h1 class="panel-title">Create Your Slide</h1>
+          <p class="panel-subtitle">Generate professional consulting slides with MBB-style structure. Press <kbd>Ctrl</kbd>+<kbd>Enter</kbd> to generate.</p>
         </div>
 
-        <!-- Error Container -->
+        <!-- Version Toggle -->
+        <div class="version-toggle">
+          <button class="version-btn active" data-version="v2">v2.0 MBB Templates</button>
+          <button class="version-btn" data-version="v1">v1.0 Classic</button>
+        </div>
+
+        <!-- Error Alert Container -->
         <div id="errorContainer" class="hidden"></div>
 
-        <form id="slideForm">
+        <!-- V2 Form -->
+        <form id="slideFormV2" class="slide-form-v2">
           <!-- Slide Type -->
           <div class="form-section">
-            <label class="form-label" for="slideType">Slide Type</label>
-            <div class="select-wrapper">
-              <select class="select" id="slideType" name="slideType" required>
-                <option value="">Select slide type...</option>
-                <option value="General">General</option>
-                <option value="Executive Summary">Executive Summary</option>
-                <option value="Horizontal Flow">Horizontal Flow</option>
-                <option value="Vertical Flow">Vertical Flow</option>
-                <option value="Graph/Chart">Graph/Chart</option>
-              </select>
-              <svg class="select-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="m6 9 6 6 6-6"/>
-              </svg>
-            </div>
+            <label class="form-label" for="slideTypeV2">
+              Slide Type<span class="required">*</span>
+            </label>
+            <select class="select" id="slideTypeV2" name="slideType" required>
+              <option value="">Select slide type...</option>
+              <option value="Executive Summary">Executive Summary</option>
+              <option value="Horizontal Flow">Horizontal Flow (Process)</option>
+              <option value="Vertical Flow">Vertical Flow (Hierarchy)</option>
+              <option value="Graph/Chart">Graph/Chart (Data)</option>
+              <option value="General">General (Flexible)</option>
+            </select>
+            <div class="form-hint" id="slideTypeHintV2"></div>
           </div>
 
           <!-- Audience -->
           <div class="form-section">
-            <label class="form-label" for="audience">Target Audience</label>
-            <div class="select-wrapper">
-              <select class="select" id="audience" name="audience" required>
-                <option value="">Select audience...</option>
-                <option value="C-Suite/Board">C-Suite/Board</option>
-                <option value="External Client">External Client</option>
-                <option value="Internal/Working Team">Internal/Working Team</option>
-                <option value="PE/Investors">PE/Investors</option>
-              </select>
-              <svg class="select-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="m6 9 6 6 6-6"/>
-              </svg>
-            </div>
+            <label class="form-label" for="audienceV2">
+              Audience<span class="required">*</span>
+            </label>
+            <select class="select" id="audienceV2" name="audience" required>
+              <option value="">Select audience...</option>
+              <option value="C-Suite/Board">C-Suite/Board (High-level)</option>
+              <option value="External Client">External Client</option>
+              <option value="Internal/Working Team">Internal/Working Team</option>
+              <option value="PE/Investors">PE/Investors (Data-heavy)</option>
+            </select>
+            <div class="form-hint" id="audienceHintV2">Adjusts whitespace and detail level automatically</div>
+          </div>
+
+          <!-- Key Takeaway -->
+          <div class="form-section">
+            <label class="form-label" for="keyTakeawayV2">
+              Key Takeaway<span class="required">*</span>
+            </label>
+            <p class="form-description">The single most important message to communicate.</p>
+            <input 
+              type="text"
+              class="input" 
+              id="keyTakeawayV2" 
+              name="keyTakeaway" 
+              maxlength="150"
+              placeholder="E.g., Revenue growth of 25% positions us for Series B..."
+              required
+            />
+            <div class="char-counter" id="keyTakeawayCounterV2">0 / 150</div>
           </div>
 
           <!-- Context -->
           <div class="form-section">
-            <label class="form-label" for="context">Context</label>
+            <label class="form-label" for="contextV2">
+              Context<span class="required">*</span>
+            </label>
+            <p class="form-description">Background, research findings, client context, strategic considerations.</p>
             <textarea 
-              class="textarea textarea-expandable" 
-              id="context" 
+              class="textarea" 
+              id="contextV2" 
               name="context" 
-              rows="4"
-              placeholder="Paste research, notes, client context..."
+              rows="5" 
+              maxlength="2000"
+              placeholder="Describe the business situation, market dynamics, competitive landscape, and any relevant strategic considerations..."
               required
             ></textarea>
+            <div class="char-counter" id="contextCounterV2">0 / 2000</div>
           </div>
 
-          <!-- Presentation Mode Toggle -->
+          <!-- Presentation Mode -->
           <div class="form-section">
             <label class="form-label">Presentation Mode</label>
             <div class="toggle-group">
-              <button type="button" class="toggle-btn active" data-mode="presentation">
+              <button type="button" class="toggle-btn active" data-mode="presentation" id="modePresentationV2">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
-                  <line x1="8" y1="21" x2="16" y2="21"/>
-                  <line x1="12" y1="17" x2="12" y2="21"/>
+                  <rect x="3" y="4" width="18" height="12" rx="2"/>
+                  <path d="M8 20h8"/>
+                  <path d="M12 16v4"/>
                 </svg>
-                Presentation Mode
+                Presentation (Less detail)
               </button>
-              <button type="button" class="toggle-btn" data-mode="read">
+              <button type="button" class="toggle-btn" data-mode="read" id="modeReadV2">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
                   <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
                 </svg>
-                Read Mode
+                Read Mode (More detail)
               </button>
             </div>
-            <p class="form-hint" id="modeHint">Less detail — optimized for live presentations</p>
           </div>
 
           <!-- Data Input -->
           <div class="form-section">
-            <label class="form-label" for="dataInput">Data Input</label>
-            <div class="data-input-wrapper">
-              <textarea 
-                class="textarea data-textarea" 
-                id="dataInput" 
-                name="dataInput" 
-                rows="4"
-                placeholder="Paste Excel data here (CSV format)..."
-              ></textarea>
-              <div class="file-upload">
-                <input type="file" id="fileUpload" accept=".xlsx,.csv" hidden>
-                <button type="button" class="file-upload-btn" id="fileUploadBtn">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="17 8 12 3 7 8"/>
-                    <line x1="12" y1="3" x2="12" y2="15"/>
-                  </svg>
-                  Upload .xlsx or .csv
-                </button>
-              </div>
+            <label class="form-label" for="dataInputV2">Data Input</label>
+            <p class="form-description">Paste Excel data, CSV, or key metrics. Optional.</p>
+            <textarea 
+              class="textarea textarea--data" 
+              id="dataInputV2" 
+              name="dataInput" 
+              rows="4" 
+              maxlength="2000"
+              placeholder="Revenue:	$5.2M (+23%)
+Customers:	1,240 (+45%)
+Gross Margin:	68% (+4pp)"
+            ></textarea>
+            <div class="file-upload-wrapper">
+              <input type="file" id="dataFileV2" class="file-input" accept=".csv,.xlsx,.xls,.txt" />
+              <label for="dataFileV2" class="file-upload-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="17 8 12 3 7 8"/>
+                  <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+                Upload file
+              </label>
+              <span class="file-name" id="fileNameV2"></span>
             </div>
           </div>
 
-          <!-- Key Takeaway -->
-          <div class="form-section form-section--highlight">
-            <label class="form-label" for="keyTakeaway">Key Takeaway</label>
-            <input 
-              type="text" 
-              class="input input--prominent" 
-              id="keyTakeaway" 
-              name="keyTakeaway"
-              placeholder="Enter the main message or insight..."
-            />
-          </div>
-
           <!-- Generate Button -->
-          <button type="submit" class="btn btn--primary btn--full" id="generateBtn">
-            <svg class="btn__icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <button type="submit" class="btn btn--primary btn--lg btn--full" id="generateBtnV2" disabled>
+            <svg class="btn__icon" id="generateIconV2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
             </svg>
-            <span>Generate Slide</span>
+            <span id="generateTextV2">Generate Slide</span>
+            <span class="btn__shortcut">Ctrl+Enter</span>
+          </button>
+        </form>
+
+        <!-- V1 Form (Hidden by default) -->
+        <form id="slideFormV1" class="slide-form-v1 hidden">
+          <!-- Slide Type -->
+          <div class="form-section">
+            <label class="form-label" for="slideTypeV1">Slide Type<span class="required">*</span></label>
+            <select class="select" id="slideTypeV1" name="slideType" required>
+              <option value="">Select slide type...</option>
+              <optgroup label="Core Slides">
+                <option value="Executive Summary">Executive Summary</option>
+                <option value="Market Analysis">Market Analysis</option>
+                <option value="Financial Model">Financial Model</option>
+              </optgroup>
+              <optgroup label="Strategic Analysis">
+                <option value="Competitive Analysis">Competitive Analysis</option>
+                <option value="Growth Strategy">Growth Strategy</option>
+                <option value="Risk Assessment">Risk Assessment</option>
+              </optgroup>
+            </select>
+          </div>
+
+          <!-- Context -->
+          <div class="form-section">
+            <label class="form-label" for="contextV1">Context<span class="required">*</span></label>
+            <textarea class="textarea" id="contextV1" name="context" rows="4" maxlength="500" placeholder="Describe the purpose, key message, and background..." required></textarea>
+            <div class="char-counter" id="contextCounterV1">0 / 500</div>
+          </div>
+
+          <!-- Data Points -->
+          <div class="form-section">
+            <label class="form-label" for="dataPointsV1">Data Points</label>
+            <textarea class="textarea" id="dataPointsV1" name="dataPoints" rows="4" maxlength="1000" placeholder="Revenue: $4.2M (+23% YoY)
+Gross Margin: 68%..."></textarea>
+          </div>
+
+          <!-- Audience -->
+          <div class="form-section">
+            <label class="form-label" for="audienceV1">Target Audience<span class="required">*</span></label>
+            <select class="select" id="audienceV1" name="audience" required>
+              <option value="">Select audience...</option>
+              <option value="C-Suite">C-Suite</option>
+              <option value="Board">Board Members</option>
+              <option value="Investors">Investors</option>
+              <option value="Internal Team">Internal Team</option>
+              <option value="Clients">Clients</option>
+              <option value="Analysts">Analysts</option>
+            </select>
+          </div>
+
+          <!-- Framework -->
+          <div class="form-section">
+            <label class="form-label" for="frameworkV1">Framework</label>
+            <select class="select" id="frameworkV1" name="framework">
+              <option value="">None (Auto)</option>
+              <option value="Pyramid Principle">Pyramid Principle</option>
+              <option value="MECE">MECE</option>
+              <option value="2x2 Matrix">2x2 Matrix</option>
+              <option value="Waterfall Chart">Waterfall Chart</option>
+              <option value="SWOT">SWOT Analysis</option>
+            </select>
+          </div>
+
+          <button type="submit" class="btn btn--primary btn--lg btn--full" id="generateBtnV1" disabled>
+            <svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+            </svg>
+            Generate Slide
           </button>
         </form>
       </aside>
 
-      <!-- Right Panel: Preview -->
+      <!-- Preview Panel -->
       <main class="preview-panel">
-        <div class="preview-container">
-          <div class="slide-wrapper" id="slideWrapper">
+        <div class="slide-preview">
+          <div class="slide-preview__aspect slide-preview--empty" id="previewContainer">
             <!-- Empty State -->
-            <div class="empty-state" id="emptyState">
-              <div class="empty-state__icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                  <rect x="3" y="3" width="18" height="18" rx="2"/>
-                  <line x1="9" y1="9" x2="15" y2="9"/>
-                  <line x1="9" y1="13" x2="15" y2="13"/>
-                  <line x1="9" y1="17" x2="11" y2="17"/>
-                </svg>
-              </div>
-              <h3 class="empty-state__title">Your slide will appear here</h3>
+            <div id="emptyState">
+              <svg class="empty-state__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                <line x1="9" y1="9" x2="15" y2="9"/>
+                <line x1="9" y1="13" x2="15" y2="13"/>
+                <line x1="9" y1="17" x2="11" y2="17"/>
+              </svg>
+              <p class="empty-state__title">Your slide will appear here</p>
               <p class="empty-state__text">Fill out the form and click Generate to create your professional consulting slide.</p>
             </div>
 
-            <!-- Loading State -->
-            <div class="loading-state hidden" id="loadingState">
+            <!-- Loading Overlay -->
+            <div id="loadingOverlay" class="loading-overlay hidden">
               <div class="spinner"></div>
-              <p class="loading-text">Creating your slide...</p>
-              <p class="loading-subtext" id="loadingSubtext">Analyzing context</p>
+              <p class="loading-text" id="loadingText">Creating your slide...</p>
+              <div class="loading-progress">
+                <div class="loading-progress-bar" id="loadingProgressBar"></div>
+              </div>
+              <p class="loading-steps" id="loadingSteps">Analyzing context...</p>
             </div>
 
-            <!-- Slide Preview -->
-            <div class="slide-content hidden" id="slideContent">
-              <div class="slide-preview-frame" id="slidePreviewFrame">
-                <!-- Slide will be rendered here -->
-              </div>
-            </div>
+            <!-- Slide Image -->
+            <img id="slideImage" class="slide-preview__image hidden" alt="Generated slide">
           </div>
         </div>
 
-        <!-- Export Actions -->
-        <div class="export-bar" id="exportBar">
-          <span class="export-label">Export:</span>
-          <div class="export-actions">
-            <button class="export-btn" data-format="png" title="Export as PNG">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                <circle cx="8.5" cy="8.5" r="1.5"/>
-                <polyline points="21 15 16 10 5 21"/>
+        <!-- Action Bar -->
+        <div class="action-bar" id="actionBar" style="display: none;">
+          <button class="btn btn--secondary" id="regenerateBtn">
+            <svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+              <path d="M21 3v5h-5"/>
+              <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
+              <path d="M8 16H3v5"/>
+            </svg>
+            Regenerate
+          </button>
+          <div class="dropdown">
+            <button class="btn btn--primary" id="downloadBtn">
+              <svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
               </svg>
-              PNG
-            </button>
-            <button class="export-btn" data-format="pptx" title="Export as PowerPoint">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                <polyline points="14 2 14 8 20 8"/>
-                <line x1="16" y1="13" x2="8" y2="13"/>
-                <line x1="16" y1="17" x2="8" y2="17"/>
-                <polyline points="10 9 9 9 8 9"/>
+              Download
+              <svg class="btn__icon btn__icon--small" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="m6 9 6 6 6-6"/>
               </svg>
-              PPTX
             </button>
-            <button class="export-btn" data-format="pdf" title="Export as PDF">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                <polyline points="14 2 14 8 20 8"/>
-                <line x1="16" y1="13" x2="8" y2="13"/>
-                <line x1="16" y1="17" x2="8" y2="17"/>
-              </svg>
-              PDF
-            </button>
+            <div class="dropdown-menu" id="downloadMenu">
+              <button class="dropdown-item" data-format="png">
+                <span class="dropdown-icon">🖼️</span>
+                <span class="dropdown-label">PNG Image</span>
+              </button>
+              <button class="dropdown-item" data-format="pptx">
+                <span class="dropdown-icon">📊</span>
+                <span class="dropdown-label">PowerPoint (.pptx)</span>
+              </button>
+              <button class="dropdown-item" data-format="pdf">
+                <span class="dropdown-icon">📄</span>
+                <span class="dropdown-label">PDF Document</span>
+              </button>
+            </div>
           </div>
         </div>
       </main>
@@ -246,7 +339,7 @@
       <div class="modal-header">
         <h3 class="modal-title">Keyboard Shortcuts</h3>
         <button class="modal-close" id="modalClose">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M18 6 6 18"/>
             <path d="m6 6 12 12"/>
           </svg>
@@ -255,28 +348,24 @@
       <div class="modal-body">
         <div class="shortcut-list">
           <div class="shortcut-item">
-            <span>Generate slide</span>
             <kbd>Ctrl</kbd>+<kbd>Enter</kbd>
+            <span>Generate slide</span>
           </div>
           <div class="shortcut-item">
-            <span>Regenerate</span>
             <kbd>Ctrl</kbd>+<kbd>R</kbd>
+            <span>Regenerate slide</span>
           </div>
           <div class="shortcut-item">
-            <span>Download</span>
             <kbd>Ctrl</kbd>+<kbd>D</kbd>
+            <span>Download slide</span>
           </div>
           <div class="shortcut-item">
-            <span>Toggle theme</span>
-            <kbd>Ctrl</kbd>+<kbd>T</kbd>
-          </div>
-          <div class="shortcut-item">
-            <span>Show shortcuts</span>
             <kbd>?</kbd>
+            <span>Show this help</span>
           </div>
           <div class="shortcut-item">
-            <span>Close modal</span>
             <kbd>Esc</kbd>
+            <span>Close modal / Cancel</span>
           </div>
         </div>
       </div>

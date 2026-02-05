@@ -470,7 +470,7 @@ function buildSlideHTML(slideType, content) {
 }
 
 // Re-export renderSlideToImage from existing renderer
-const { renderSlideToImage, buildSlideHTML: _buildSlideHTML } = require('./slide-generator-legacy');
+const { renderSlideToImage: legacyRenderSlide, buildSlideHTML: _buildSlideHTML } = require('./slide-generator');
 
 // Create wrapper module exports
 module.exports = {
@@ -478,5 +478,5 @@ module.exports = {
   generateExportUrls,
   parseAIResponse,
   buildSlideHTML,
-  renderSlideToImage
+  renderSlideToImage: legacyRenderSlide
 };

@@ -269,8 +269,15 @@ app.get('/api/health', (req, res) => {
       aiGeneration: !!process.env.KIMI_API_KEY,
       exports: ['png', 'pptx', 'pdf'],
       slideTypes: VALID_SLIDE_TYPES,
-      v2SlideTypes: V2_SLIDE_TYPES,
-      v2Enabled: true
+      v2Generation: true,
+      directionalPrompts: true,
+      templateSelection: true
+    },
+    pipeline: {
+      validators: 'lib/validators.js',
+      templateSelector: 'lib/template-selector.js',
+      promptBuilder: 'lib/prompt-builder.js',
+      slideGenerator: 'lib/slide-generator-v2.js'
     }
   });
 });
@@ -465,352 +472,134 @@ app.post('/api/generate-slide-v2', async (req, res) => {
   const startTime = Date.now();
   
   try {
-    const validationErrors = validateV2Request(req.body);
-    if (validationErrors.length > 0) {
-      logger.warn(req, 'V2 validation failed', { errors: validationErrors });
+    // Step 1: Validate inputs using new validators
+    const validation = validateSlideInputs(req.body);
+    if (!validation.isValid) {
+      logger.warn(req, 'V2 validation failed', { errors: validation.errors });
       return res.status(400).json({
         success: false,
         error: 'VALIDATION_ERROR',
         message: 'Invalid input',
-        errors: validationErrors
+        errors: validation.errors
       });
     }
 
-    const { 
-      slideType, 
-      audience, 
-      context, 
-      presentationMode = 'read',
-      dataInput = '',
-      keyTakeaway 
-    } = req.body;
+    const params = validation.parsedData;
+    logger.info(req, 'Starting v2 slide generation', { 
+      slideType: params.slideType, 
+      audience: params.audience,
+      presentationMode: params.presentationMode 
+    });
     
-    logger.info(req, 'Starting v2 slide generation', { slideType, audience, presentationMode });
+    // Step 2: Select template structure
+    const template = selectTemplate({
+      slideType: params.slideType,
+      audience: params.audience,
+      presentationMode: params.presentationMode,
+      context: params.context
+    });
+
+    // Step 3: Build optimized prompt
+    const promptConfig = buildPrompt({
+      slideType: params.slideType,
+      audience: params.audience,
+      context: params.context,
+      presentationMode: params.presentationMode,
+      data: params.data,
+      dataPoints: params.dataPoints,
+      keyTakeaway: params.keyTakeaway,
+      framework: params.framework
+    });
+
+    // Step 4-8: Use the v2 generation pipeline
+    const result = await generateSlideV2(params);
     
-    // 1. Load the appropriate template
-    const templateId = slideType.toLowerCase().replace(/[^a-z]/g, '-');
-    const template = await loadTemplate(templateId);
-    
-    if (!template) {
-      return res.status(500).json({
-        success: false,
-        error: 'TEMPLATE_ERROR',
-        message: 'Failed to load slide template'
-      });
+    if (!result.success) {
+      logger.error(req, 'V2 generation pipeline failed', new Error(result.message));
+      return res.status(500).json(result);
     }
-    
-    // 2. Get audience and presentation mode configurations
-    const audienceConfig = getAudienceConfig(template, audience);
-    const modeConfig = getPresentationModeConfig(template, presentationMode);
-    
-    // 3. Parse data input if provided
-    const parsedData = parseDataInput(dataInput);
-    
-    // 4. Generate content using Kimi with structure-aware prompting
-    const content = await generateV2SlideContent({
-      slideType,
-      template,
-      audience,
-      context,
-      keyTakeaway,
-      dataInput: parsedData,
-      presentationMode,
-      audienceConfig,
-      modeConfig
+
+    // Record analytics
+    await recordSlideGenerated(params.slideType);
+
+    // Add prompt metadata
+    result.metadata.promptTokens = result.metadata.promptTokens;
+    result.metadata.template = template.structure;
+
+    logger.info(req, 'V2 slide generated successfully', { 
+      slideId: result.slideId, 
+      durationMs: result.durationMs 
     });
-    
-    // 5. Generate slide HTML using template structure
-    const slideId = crypto.randomUUID();
-    const html = buildV2SlideHTML({
-      template,
-      content,
-      audienceConfig,
-      modeConfig
-    });
-    
-    // 6. Render to image
-    const imagePath = path.join(SLIDES_DIR, `${slideId}.png`);
-    const actualPath = await renderSlideToImage({ 
-      slideType: 'Executive Summary', // Use existing renderer
-      content: { ...content, html },
-      outputPath: imagePath 
-    });
-    
-    const isSVG = actualPath.endsWith('.svg');
-    const fileExtension = isSVG ? '.svg' : '.png';
-    
-    const duration = Date.now() - startTime;
-    logger.info(req, 'V2 slide generated successfully', { slideId, durationMs: duration });
-    
-    // 7. Record analytics
-    await recordSlideGenerated(slideType);
-    
-    // 8. Schedule cleanup
-    setTimeout(async () => {
-      try { await fs.unlink(actualPath); } catch (err) {}
-    }, 24 * 60 * 60 * 1000);
-    
-    res.json({
-      success: true,
-      slideId,
-      imageUrl: `/slides/${slideId}${fileExtension}`,
-      title: content.title,
-      content,
-      metadata: {
-        template: template.id,
-        audience,
-        presentationMode,
-        generatedAt: new Date().toISOString()
-      },
-      expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
-    });
+
+    res.json(result);
     
   } catch (error) {
     const duration = Date.now() - startTime;
     logger.error(req, 'V2 generation failed', error, { durationMs: duration });
     
     let message = 'Failed to generate slide. Please try again.';
+    let suggestion = 'Try simplifying your input or refreshing the page.';
+    
     if (error.message?.includes('API key')) {
       message = 'AI service not configured. Please check your KIMI_API_KEY.';
+      suggestion = 'Contact your administrator to configure the AI service.';
     } else if (error.message?.includes('timeout')) {
       message = 'Generation timed out. Please try with a shorter context.';
+      suggestion = 'Reduce context length or try again later.';
+    } else if (error.message?.includes('rate limit')) {
+      message = 'Too many requests. Please wait a moment and try again.';
+      suggestion = 'Wait 30 seconds before retrying.';
     }
     
     res.status(500).json({
       success: false,
       error: 'GENERATION_FAILED',
       message,
-      suggestion: 'Try simplifying your input or refreshing the page.'
+      suggestion
     });
   }
 });
 
-function parseDataInput(dataInput) {
-  if (!dataInput || typeof dataInput !== 'string') return [];
-  
-  const lines = dataInput.split(/\n/).map(l => l.trim()).filter(l => l.length > 0);
-  const data = [];
-  
-  for (const line of lines) {
-    // Try to parse key: value pairs
-    const match = line.match(/^(.+?)[:\t]+(.+)$/);
-    if (match) {
-      data.push({ key: match[1].trim(), value: match[2].trim() });
-    } else {
-      data.push({ value: line });
-    }
-  }
-  
-  return data;
-}
-
-async function generateV2SlideContent({ slideType, template, audience, context, keyTakeaway, dataInput, presentationMode, audienceConfig, modeConfig }) {
-  const apiKey = process.env.KIMI_API_KEY;
-  
-  if (!apiKey) {
-    console.log('[V2] No API key, using fallback content');
-    return generateV2FallbackContent(slideType, context, keyTakeaway, dataInput, template);
-  }
-  
-  const templateDescription = template.structure ? 
-    `Structure: ${JSON.stringify(template.structure.zones?.map(z => z.id) || [])}` : 
-    'Standard consulting slide';
-  
-  const systemPrompt = `You are an expert McKinsey/BCG/Bain strategy consultant creating executive presentation slides.
-
-TEMPLATE STRUCTURE:
-${templateDescription}
-
-AUDIENCE: ${audience}
-${audienceConfig.titleMaxWords ? `- Title max ${audienceConfig.titleMaxWords} words` : ''}
-${audienceConfig.bulletMaxLength ? `- Bullet max ${audienceConfig.bulletMaxLength} characters` : ''}
-${audienceConfig.whitespaceRatio ? `- Design for ${Math.round(audienceConfig.whitespaceRatio * 100)}% whitespace` : ''}
-
-PRESENTATION MODE: ${presentationMode}
-${modeConfig.detailLevel ? `- Detail level: ${modeConfig.detailLevel}` : ''}
-${modeConfig.maxPoints ? `- Max ${modeConfig.maxPoints} main points` : ''}
-
-RULES:
-- Output ONLY valid JSON
-- Be concise, action-oriented
-- Use consulting format: $XM, +X%, Xpp
-- No filler words, no hedging
-- Tailor depth for ${audience}
-- Key takeaway must be prominent`;
-
-  const dataText = dataInput?.length > 0 
-    ? `DATA POINTS:\n${dataInput.map(d => d.key ? `${d.key}: ${d.value}` : d.value).join('\n')}` 
-    : 'No specific data provided - generate appropriate metrics.';
-
-  const userPrompt = `Create a ${slideType} slide with:
-
-KEY TAKEAWAY: ${keyTakeaway}
-
-CONTEXT:
-${context}
-
-${dataText}
-
-Generate slide content as JSON matching this structure:
-{
-  "title": "Action headline (5-8 words)",
-  "subtitle": "Optional supporting insight",
-  "mainContent": [...],
-  "supportingPoints": [...],
-  "metrics": [...],
-  "recommendation": "Clear action statement"
-}
-
-Only return valid JSON. No markdown, no explanation.`;
-
+// V2 Pipeline Health Check
+app.get('/api/v2/health', async (req, res) => {
   try {
-    console.log(`[V2] Generating ${slideType} for ${audience}`);
-    const startTime = Date.now();
-    
-    const KIMI_API_BASE = 'https://api.moonshot.cn/v1';
-    const DEFAULT_MODEL = process.env.KIMI_MODEL || 'kimi-coding/k2p5';
-    
-    const response = await fetch(`${KIMI_API_BASE}/chat/completions`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`
-      },
-      body: JSON.stringify({
-        model: DEFAULT_MODEL,
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: userPrompt }
-        ],
-        temperature: 0.6,
-        max_tokens: 1500,
-        response_format: { type: 'json_object' }
-      })
+    // Test prompt builder
+    const testPrompt = buildPrompt({
+      slideType: 'Executive Summary',
+      audience: 'C-Suite',
+      context: 'Test context for health check',
+      keyTakeaway: 'Test takeaway'
     });
-    
-    if (!response.ok) {
-      throw new Error(`Kimi API error: ${response.status}`);
-    }
-    
-    const data = await response.json();
-    const content = data.choices[0].message.content;
-    
-    const duration = Date.now() - startTime;
-    console.log(`[V2] Generated in ${duration}ms`);
-    
-    let parsedContent;
-    try {
-      parsedContent = JSON.parse(content);
-    } catch (parseError) {
-      const jsonMatch = content.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        parsedContent = JSON.parse(jsonMatch[0]);
-      } else {
-        throw new Error('Invalid JSON response');
-      }
-    }
-    
-    parsedContent._slideType = slideType;
-    parsedContent._template = template.id;
-    
-    return parsedContent;
-    
-  } catch (error) {
-    console.error('[V2] Generation error:', error.message);
-    return generateV2FallbackContent(slideType, context, keyTakeaway, dataInput, template);
-  }
-}
 
-function generateV2FallbackContent(slideType, context, keyTakeaway, dataInput, template) {
-  const today = new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-  
-  const fallbacks = {
-    'Executive Summary': () => ({
-      title: keyTakeaway,
-      subtitle: 'Strategic Recommendations',
-      mainContent: [
-        { heading: 'Market Position', text: context?.substring(0, 100) + '...' || 'Strong market position with growth opportunities' },
-        { heading: 'Key Drivers', text: 'Operational excellence and customer focus drive sustainable advantage' },
-        { heading: 'Strategic Priority', text: 'Accelerate execution to capture market opportunities' }
-      ],
-      recommendation: 'Invest in growth initiatives while optimizing operations for maximum value creation.',
-      footer: { source: 'Internal analysis', date: today }
-    }),
-    'Horizontal Flow': () => ({
-      title: keyTakeaway,
-      steps: [
-        { number: 1, label: 'Phase 1', title: 'Discovery', description: 'Assess current state and opportunities' },
-        { number: 2, label: 'Phase 2', title: 'Analysis', description: 'Deep dive into key findings' },
-        { number: 3, label: 'Phase 3', title: 'Solution', description: 'Develop recommendations' },
-        { number: 4, label: 'Phase 4', title: 'Implementation', description: 'Execute with excellence' }
-      ],
-      footer: { source: 'Process framework', date: today }
-    }),
-    'Vertical Flow': () => ({
-      title: keyTakeaway,
-      levels: [
-        { level: 1, title: 'Strategic Objective', description: keyTakeaway },
-        { level: 2, title: 'Key Initiatives', description: 'Three core programs to drive outcomes' },
-        { level: 3, title: 'Tactical Actions', description: 'Specific workstreams and deliverables' },
-        { level: 4, title: 'Execution Metrics', description: 'KPIs to track progress' }
-      ],
-      footer: { source: 'Strategic framework', date: today }
-    }),
-    'Graph/Chart': () => ({
-      title: keyTakeaway,
-      chartType: 'bar',
-      chartData: {
-        labels: ['Q1', 'Q2', 'Q3', 'Q4'],
-        values: [25, 40, 35, 55]
+    // Test template selector
+    const testTemplate = selectTemplate({
+      slideType: 'Executive Summary',
+      audience: 'C-Suite'
+    });
+
+    res.json({
+      status: 'ok',
+      version: '2.0.0',
+      components: {
+        validators: '✅',
+        promptBuilder: testPrompt.systemPrompt ? '✅' : '❌',
+        templateSelector: testTemplate.structure ? '✅' : '❌',
+        aiClient: process.env.KIMI_API_KEY ? '✅ Connected' : '⚠️  Fallback Mode'
       },
-      insights: [
-        'Strong Q4 performance driven by strategic initiatives',
-        'Consistent growth trajectory across all quarters',
-        'Market conditions favorable for continued expansion'
-      ],
-      footer: { source: 'Performance data', date: today }
-    }),
-    'General': () => ({
-      title: keyTakeaway,
-      blocks: [
-        { type: 'text', heading: 'Overview', content: context?.substring(0, 120) || 'Strategic assessment completed' },
-        { type: 'highlight', heading: 'Key Finding', content: 'Significant opportunity for value creation identified' },
-        { type: 'metric', label: 'Impact', value: '+25%', change: 'projected' }
-      ],
-      footer: { source: 'Analysis', date: today }
-    })
-  };
-  
-  const generator = fallbacks[slideType] || fallbacks['General'];
-  return generator();
-}
-
-function buildV2SlideHTML({ template, content, audienceConfig, modeConfig }) {
-  // Use the slide-generator's buildSlideHTML for now
-  // This creates an Executive Summary style slide that works for all v2 types
-  const { buildSlideHTML } = require('./lib/slide-generator');
-  
-  // Map v2 types to v1 types for rendering
-  const typeMapping = {
-    'Executive Summary': 'Executive Summary',
-    'Horizontal Flow': 'Growth Strategy',
-    'Vertical Flow': 'Growth Strategy',
-    'Graph/Chart': 'Market Analysis',
-    'General': 'Executive Summary'
-  };
-  
-  // Adapt content structure to match what the renderer expects
-  const adaptedContent = {
-    ...content,
-    title: content.title || 'Untitled Slide',
-    subtitle: content.subtitle || '',
-    keyPoints: content.mainContent || content.supportingPoints || content.blocks || [],
-    recommendation: content.recommendation || '',
-    footer: content.footer || { source: 'SlideTheory', date: new Date().toLocaleDateString() }
-  };
-  
-  return buildSlideHTML(typeMapping[content._slideType] || 'Executive Summary', adaptedContent);
-}
+      features: {
+        v2Generation: true,
+        directionalPrompts: true,
+        templateSelection: true,
+        audienceAdaptation: true
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      error: error.message
+    });
+  }
+});
 
 app.post('/api/export/pptx', async (req, res) => {
   try {
@@ -984,12 +773,22 @@ initializeDirectories().then(() => {
     console.log(`
 ╔════════════════════════════════════════════════╗
 ║                                                ║
-║     SlideTheory v2.0 - MBB Edition             ║
+║     SlideTheory v2.0 - AI Generation System    ║
+║                                                ║
+║     Pipeline Components:                       ║
+║       ✅ lib/validators.js                     ║
+║       ✅ lib/template-selector.js              ║
+║       ✅ lib/prompt-builder.js                 ║
+║       ✅ lib/slide-generator-v2.js             ║
 ║                                                ║
 ║     Export Formats: PNG, PPTX, PDF             ║
-║     V1 Slide Types: ${VALID_SLIDE_TYPES.length}                       ║
-║     V2 Slide Types: ${V2_SLIDE_TYPES.length} (MBB Templates)          ║
+║     Slide Types: ${VALID_SLIDE_TYPES.length}                          ║
 ║     AI Status: ${process.env.KIMI_API_KEY ? '✅ Connected' : '⚠️  Fallback Mode'}        ║
+║                                                ║
+║     Endpoints:                                 ║
+║       POST /api/generate          (v1 legacy)  ║
+║       POST /api/generate-slide-v2 (v2 AI)      ║
+║       GET  /api/v2/health         (pipeline)   ║
 ║                                                ║
 ║     http://localhost:${PORT}                       ║
 ║                                                ║
