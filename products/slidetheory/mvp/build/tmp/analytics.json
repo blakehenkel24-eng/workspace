@@ -1,22 +1,26 @@
 {
-  "totalSlides": 2,
+  "totalSlides": 10,
   "byType": {
-    "Executive Summary": 1,
-    "Market Analysis": 1,
-    "Financial Model": 0,
-    "Competitive Analysis": 0,
-    "Growth Strategy": 0,
-    "Risk Assessment": 0
+    "Executive Summary": 4,
+    "Market Analysis": 2,
+    "Financial Model": 1,
+    "Competitive Analysis": 1,
+    "Growth Strategy": 1,
+    "Risk Assessment": 1
   },
   "byDay": {
     "2026-02-05": {
-      "total": 2,
+      "total": 10,
       "byType": {
-        "Executive Summary": 1,
-        "Market Analysis": 1
+        "Executive Summary": 4,
+        "Market Analysis": 2,
+        "Financial Model": 1,
+        "Competitive Analysis": 1,
+        "Growth Strategy": 1,
+        "Risk Assessment": 1
       }
     }
   },
-  "lastGenerated": "2026-02-05T01:01:50.599Z",
+  "lastGenerated": "2026-02-05T03:44:10.415Z",
   "createdAt": "2026-02-05T01:00:50.342Z"
 }

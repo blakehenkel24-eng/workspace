@@ -1,21 +1,27 @@
 {
   "name": "slidetheory-mvp",
-  "version": "1.1.0",
-  "description": "AI-powered consulting slide generator",
+  "version": "2.0.0",
+  "description": "AI-powered consulting slide generator with modular architecture",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "dev": "node --watch server.js",
     "test": "node --test",
+    "test:watch": "node --test --watch",
+    "build": "echo 'Build step placeholder - no build needed for Node.js'",
+    "lint": "echo 'Lint step placeholder - install ESLint for linting'",
     "pm2:start": "pm2 start server.js --name slidetheory",
     "pm2:stop": "pm2 stop slidetheory",
-    "pm2:restart": "pm2 restart slidetheory"
+    "pm2:restart": "pm2 restart slidetheory",
+    "pm2:logs": "pm2 logs slidetheory"
   },
   "keywords": [
     "slides",
     "consulting",
     "ai",
-    "presentation"
+    "presentation",
+    "powerpoint",
+    "pdf"
   ],
   "author": "",
   "license": "MIT",
@@ -26,6 +32,7 @@
     "pptxgenjs": "^4.0.1",
     "puppeteer": "^24.36.1"
   },
+  "devDependencies": {},
   "engines": {
     "node": ">=18.0.0"
   }

@@ -1,498 +1,653 @@
 /**
  * SlideTheory v2.0 - Frontend Application
- * Form handling, preview updates, theme toggle
+ * MBB-Inspired Slide Generation with Knowledge Base
  */
 
-// ========================================
-// DOM Elements
-// ========================================
+// ============================================
+// STATE MANAGEMENT
+// ============================================
 
-const form = document.getElementById('slideForm');
-const slideType = document.getElementById('slideType');
-const audience = document.getElementById('audience');
-const context = document.getElementById('context');
-const dataInput = document.getElementById('dataInput');
-const keyTakeaway = document.getElementById('keyTakeaway');
-const generateBtn = document.getElementById('generateBtn');
-const fileUpload = document.getElementById('fileUpload');
-const fileUploadBtn = document.getElementById('fileUploadBtn');
-
-const slideWrapper = document.getElementById('slideWrapper');
-const emptyState = document.getElementById('emptyState');
-const loadingState = document.getElementById('loadingState');
-const slideContent = document.getElementById('slideContent');
-const slidePreviewFrame = document.getElementById('slidePreviewFrame');
-const exportBar = document.getElementById('exportBar');
-const loadingSubtext = document.getElementById('loadingSubtext');
-
-const themeToggle = document.getElementById('themeToggle');
-const helpBtn = document.getElementById('helpBtn');
-const shortcutsModal = document.getElementById('shortcutsModal');
-const modalClose = document.getElementById('modalClose');
-const toastContainer = document.getElementById('toastContainer');
-const errorContainer = document.getElementById('errorContainer');
-
-// Toggle buttons
-const toggleBtns = document.querySelectorAll('.toggle-btn');
-const modeHint = document.getElementById('modeHint');
-
-// ========================================
-// State
-// ========================================
-
-let state = {
+const state = {
+  version: 'v2',
   isGenerating: false,
-  presentationMode: 'presentation', // 'presentation' | 'read'
-  theme: 'light',
-  currentSlide: null
+  currentSlide: null,
+  presentationMode: 'presentation', // 'presentation' or 'read'
+  templates: {}
 };
 
-const loadingSteps = [
-  'Analyzing context',
-  'Structuring content',
-  'Designing slide',
-  'Finalizing'
+// ============================================
+// DOM ELEMENTS - V2
+// ============================================
+
+const v2Form = document.getElementById('slideFormV2');
+const v2Elements = {
+  slideType: document.getElementById('slideTypeV2'),
+  audience: document.getElementById('audienceV2'),
+  keyTakeaway: document.getElementById('keyTakeawayV2'),
+  context: document.getElementById('contextV2'),
+  dataInput: document.getElementById('dataInputV2'),
+  dataFile: document.getElementById('dataFileV2'),
+  generateBtn: document.getElementById('generateBtnV2'),
+  generateIcon: document.getElementById('generateIconV2'),
+  generateText: document.getElementById('generateTextV2'),
+  fileName: document.getElementById('fileNameV2'),
+  counters: {
+    keyTakeaway: document.getElementById('keyTakeawayCounterV2'),
+    context: document.getElementById('contextCounterV2')
+  },
+  hints: {
+    slideType: document.getElementById('slideTypeHintV2'),
+    audience: document.getElementById('audienceHintV2')
+  },
+  toggles: {
+    presentation: document.getElementById('modePresentationV2'),
+    read: document.getElementById('modeReadV2')
+  }
+};
+
+// ============================================
+// DOM ELEMENTS - V1 (LEGACY)
+// ============================================
+
+const v1Form = document.getElementById('slideFormV1');
+const v1Elements = {
+  slideType: document.getElementById('slideTypeV1'),
+  context: document.getElementById('contextV1'),
+  dataPoints: document.getElementById('dataPointsV1'),
+  audience: document.getElementById('audienceV1'),
+  framework: document.getElementById('frameworkV1'),
+  generateBtn: document.getElementById('generateBtnV1'),
+  counter: document.getElementById('contextCounterV1')
+};
+
+// ============================================
+// DOM ELEMENTS - SHARED
+// ============================================
+
+const sharedElements = {
+  previewContainer: document.getElementById('previewContainer'),
+  emptyState: document.getElementById('emptyState'),
+  loadingOverlay: document.getElementById('loadingOverlay'),
+  loadingSteps: document.getElementById('loadingSteps'),
+  slideImage: document.getElementById('slideImage'),
+  actionBar: document.getElementById('actionBar'),
+  regenerateBtn: document.getElementById('regenerateBtn'),
+  downloadBtn: document.getElementById('downloadBtn'),
+  downloadMenu: document.getElementById('downloadMenu'),
+  errorContainer: document.getElementById('errorContainer'),
+  toastContainer: document.getElementById('toastContainer'),
+  shortcutsModal: document.getElementById('shortcutsModal'),
+  modalClose: document.getElementById('modalClose'),
+  versionBtns: document.querySelectorAll('.version-btn'),
+  toggleVersionBtn: document.getElementById('toggleVersionBtn')
+};
+
+// ============================================
+// LOADING STEPS
+// ============================================
+
+const loadingStepMessages = [
+  'Analyzing context...',
+  'Selecting optimal template...',
+  'Synthesizing content...',
+  'Applying MBB styling...',
+  'Finalizing slide...'
 ];
 
-// ========================================
-// Initialization
-// ========================================
+let loadingStepInterval = null;
 
-function init() {
-  loadTheme();
+// ============================================
+// INITIALIZATION
+// ============================================
+
+async function init() {
+  await loadV2Templates();
   setupEventListeners();
-  validateForm();
-}
-
-// ========================================
-// Theme Management
-// ========================================
-
-function loadTheme() {
-  const savedTheme = localStorage.getItem('slidetheory-theme');
-  if (savedTheme) {
-    state.theme = savedTheme;
-  } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    state.theme = 'dark';
+  validateV2Form();
+  
+  // Check URL for version preference
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('version') === 'v1') {
+    switchVersion('v1');
   }
-  applyTheme();
 }
 
-function applyTheme() {
-  document.documentElement.setAttribute('data-theme', state.theme);
-  localStorage.setItem('slidetheory-theme', state.theme);
+async function loadV2Templates() {
+  try {
+    const response = await fetch('/api/v2/templates');
+    const data = await response.json();
+    
+    if (data.success) {
+      data.templates.forEach(t => {
+        state.templates[t.id] = t;
+      });
+    }
+  } catch (error) {
+    console.error('Failed to load v2 templates:', error);
+  }
 }
 
-function toggleTheme() {
-  state.theme = state.theme === 'light' ? 'dark' : 'light';
-  applyTheme();
-}
-
-// ========================================
-// Event Listeners
-// ========================================
+// ============================================
+// EVENT LISTENERS
+// ============================================
 
 function setupEventListeners() {
-  // Form validation
-  [slideType, audience, context].forEach(el => {
-    el.addEventListener('input', validateForm);
-    el.addEventListener('change', validateForm);
+  // Version switching
+  sharedElements.versionBtns.forEach(btn => {
+    btn.addEventListener('click', () => switchVersion(btn.dataset.version));
   });
-
-  // Form submission
-  form.addEventListener('submit', handleSubmit);
-
-  // File upload
-  fileUploadBtn.addEventListener('click', () => fileUpload.click());
-  fileUpload.addEventListener('change', handleFileUpload);
-
-  // Toggle buttons
-  toggleBtns.forEach(btn => {
-    btn.addEventListener('click', () => handleModeToggle(btn));
+  
+  sharedElements.toggleVersionBtn?.addEventListener('click', () => {
+    const newVersion = state.version === 'v2' ? 'v1' : 'v2';
+    switchVersion(newVersion);
   });
-
-  // Theme toggle
-  themeToggle.addEventListener('click', toggleTheme);
-
-  // Help modal
-  helpBtn.addEventListener('click', openModal);
-  modalClose.addEventListener('click', closeModal);
-  shortcutsModal.querySelector('.modal-backdrop').addEventListener('click', closeModal);
-
-  // Export buttons
-  document.querySelectorAll('.export-btn').forEach(btn => {
-    btn.addEventListener('click', () => handleExport(btn.dataset.format));
+  
+  // V2 Form
+  v2Form?.addEventListener('submit', handleV2Submit);
+  v2Elements.slideType?.addEventListener('change', updateSlideTypeHint);
+  v2Elements.audience?.addEventListener('change', validateV2Form);
+  v2Elements.keyTakeaway?.addEventListener('input', () => {
+    updateCharCounter(v2Elements.keyTakeaway, v2Elements.counters.keyTakeaway, 150);
+    validateV2Form();
   });
-
+  v2Elements.context?.addEventListener('input', () => {
+    updateCharCounter(v2Elements.context, v2Elements.counters.context, 2000);
+    validateV2Form();
+  });
+  v2Elements.dataFile?.addEventListener('change', handleFileUpload);
+  
+  // Presentation mode toggles
+  v2Elements.toggles.presentation?.addEventListener('click', () => setPresentationMode('presentation'));
+  v2Elements.toggles.read?.addEventListener('click', () => setPresentationMode('read'));
+  
+  // V1 Form (legacy)
+  v1Form?.addEventListener('submit', handleV1Submit);
+  v1Elements.context?.addEventListener('input', () => {
+    const len = v1Elements.context.value.length;
+    v1Elements.counter.textContent = `${len} / 500`;
+    validateV1Form();
+  });
+  [v1Elements.slideType, v1Elements.audience].forEach(el => {
+    el?.addEventListener('change', validateV1Form);
+  });
+  
+  // Shared actions
+  sharedElements.regenerateBtn?.addEventListener('click', () => {
+    if (state.version === 'v2') {
+      handleV2Submit(new Event('submit'));
+    } else {
+      handleV1Submit(new Event('submit'));
+    }
+  });
+  
+  sharedElements.downloadBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    sharedElements.downloadMenu?.classList.toggle('open');
+  });
+  
+  document.querySelectorAll('.dropdown-item[data-format]').forEach(item => {
+    item.addEventListener('click', (e) => {
+      e.stopPropagation();
+      handleDownload(item.dataset.format);
+      sharedElements.downloadMenu?.classList.remove('open');
+    });
+  });
+  
+  document.addEventListener('click', () => {
+    sharedElements.downloadMenu?.classList.remove('open');
+  });
+  
+  // Modal
+  document.getElementById('helpBtn')?.addEventListener('click', () => {
+    sharedElements.shortcutsModal?.classList.remove('hidden');
+  });
+  
+  sharedElements.modalClose?.addEventListener('click', closeModal);
+  sharedElements.shortcutsModal?.querySelector('.modal-backdrop')?.addEventListener('click', closeModal);
+  
   // Keyboard shortcuts
   document.addEventListener('keydown', handleKeyboard);
+}
 
-  // Drag and drop for file upload
-  const dataWrapper = document.querySelector('.data-input-wrapper');
-  if (dataWrapper) {
-    dataWrapper.addEventListener('dragover', handleDragOver);
-    dataWrapper.addEventListener('dragleave', handleDragLeave);
-    dataWrapper.addEventListener('drop', handleDrop);
+// ============================================
+// VERSION SWITCHING
+// ============================================
+
+function switchVersion(version) {
+  state.version = version;
+  
+  // Update toggle buttons
+  sharedElements.versionBtns.forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.version === version);
+  });
+  
+  // Show/hide forms
+  v2Form?.classList.toggle('hidden', version !== 'v2');
+  v1Form?.classList.toggle('hidden', version !== 'v1');
+  
+  // Update URL
+  const url = new URL(window.location);
+  if (version === 'v1') {
+    url.searchParams.set('version', 'v1');
+  } else {
+    url.searchParams.delete('version');
+  }
+  window.history.replaceState({}, '', url);
+  
+  // Update toggle button text
+  if (sharedElements.toggleVersionBtn) {
+    sharedElements.toggleVersionBtn.innerHTML = `<span style="font-size: 11px; font-weight: 600;">${version === 'v2' ? 'V1' : 'V2'}</span>`;
+    sharedElements.toggleVersionBtn.title = `Switch to ${version === 'v2' ? 'v1' : 'v2'}`;
+  }
+  
+  showToast(`Switched to ${version.toUpperCase()}`, 'success');
+}
+
+function setPresentationMode(mode) {
+  state.presentationMode = mode;
+  
+  Object.values(v2Elements.toggles).forEach(btn => {
+    btn?.classList.toggle('active', btn.dataset.mode === mode);
+  });
+}
+
+// ============================================
+// FORM VALIDATION
+// ============================================
+
+function validateV2Form() {
+  const isValid = 
+    v2Elements.slideType?.value &&
+    v2Elements.audience?.value &&
+    v2Elements.keyTakeaway?.value.length >= 5 &&
+    v2Elements.context?.value.length >= 10;
+  
+  if (v2Elements.generateBtn) {
+    v2Elements.generateBtn.disabled = !isValid || state.isGenerating;
   }
 }
 
-// ========================================
-// Form Handling
-// ========================================
-
-function validateForm() {
-  const isValid = slideType.value && audience.value && context.value.trim().length >= 10;
-  generateBtn.disabled = !isValid || state.isGenerating;
-}
-
-function handleModeToggle(btn) {
-  const mode = btn.dataset.mode;
-  state.presentationMode = mode;
-
-  // Update UI
-  toggleBtns.forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-
-  // Update hint
-  modeHint.textContent = mode === 'presentation' 
-    ? 'Less detail — optimized for live presentations'
-    : 'More detail — comprehensive for reading';
-}
-
-async function handleSubmit(e) {
-  e.preventDefault();
-  if (state.isGenerating) return;
-
-  await generateSlide();
-}
-
-// ========================================
-// File Upload
-// ========================================
-
-function handleDragOver(e) {
-  e.preventDefault();
-  e.currentTarget.classList.add('drag-over');
-}
-
-function handleDragLeave(e) {
-  e.currentTarget.classList.remove('drag-over');
-}
-
-function handleDrop(e) {
-  e.preventDefault();
-  e.currentTarget.classList.remove('drag-over');
+function validateV1Form() {
+  const isValid = 
+    v1Elements.slideType?.value &&
+    v1Elements.audience?.value &&
+    v1Elements.context?.value.length >= 10;
   
-  const files = e.dataTransfer.files;
-  if (files.length > 0) {
-    processFile(files[0]);
+  if (v1Elements.generateBtn) {
+    v1Elements.generateBtn.disabled = !isValid || state.isGenerating;
+  }
+}
+
+// ============================================
+// UI HELPERS
+// ============================================
+
+function updateCharCounter(input, counter, max) {
+  if (!input || !counter) return;
+  const len = input.value.length;
+  counter.textContent = `${len} / ${max}`;
+  counter.classList.toggle('warning', len > max * 0.9);
+  counter.classList.toggle('error', len >= max);
+}
+
+function updateSlideTypeHint() {
+  const type = v2Elements.slideType?.value;
+  const hints = {
+    'Executive Summary': 'Top insight + 3 supporting points + recommendation',
+    'Horizontal Flow': 'Left-to-right process, workflow, or timeline',
+    'Vertical Flow': 'Top-to-bottom hierarchy, waterfall, or org chart',
+    'Graph/Chart': 'Data visualization with insights panel',
+    'General': 'Flexible multi-section layout'
+  };
+  
+  if (v2Elements.hints.slideType) {
+    v2Elements.hints.slideType.textContent = hints[type] || '';
   }
 }
 
 function handleFileUpload(e) {
   const file = e.target.files[0];
-  if (file) {
-    processFile(file);
-  }
-}
-
-function processFile(file) {
-  const allowedTypes = ['.xlsx', '.csv', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'text/csv'];
-  const isAllowed = allowedTypes.some(type => 
-    file.name.toLowerCase().endsWith(type) || file.type === type
-  );
-
-  if (!isAllowed) {
-    showError('Invalid file type', 'Please upload a .xlsx or .csv file');
-    return;
-  }
-
-  const reader = new FileReader();
-  
-  reader.onload = (e) => {
-    const content = e.target.result;
-    dataInput.value = content;
-    showToast(`Loaded: ${file.name}`);
-  };
-
-  reader.onerror = () => {
-    showError('File error', 'Could not read the file. Please try again.');
-  };
-
-  if (file.name.toLowerCase().endsWith('.csv')) {
+  if (file && v2Elements.fileName) {
+    v2Elements.fileName.textContent = file.name;
+    
+    // Read file content
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      if (v2Elements.dataInput) {
+        v2Elements.dataInput.value = event.target.result;
+      }
+    };
     reader.readAsText(file);
-  } else {
-    // For xlsx, we'd need a library like SheetJS - for now just show filename
-    dataInput.value = `[File: ${file.name}]\n[Excel data would be parsed here]`;
-    showToast(`Loaded: ${file.name} (Excel parsing coming soon)`);
   }
 }
 
-// ========================================
-// Slide Generation
-// ========================================
+// ============================================
+// SLIDE GENERATION - V2
+// ============================================
 
-async function generateSlide() {
+async function handleV2Submit(e) {
+  e.preventDefault();
+  if (state.isGenerating) return;
+  
+  clearError();
+  
+  const requestData = {
+    slideType: v2Elements.slideType.value,
+    audience: v2Elements.audience.value,
+    context: v2Elements.context.value,
+    keyTakeaway: v2Elements.keyTakeaway.value,
+    presentationMode: state.presentationMode,
+    dataInput: v2Elements.dataInput.value
+  };
+  
+  startLoading();
+  
+  try {
+    const response = await fetch('/api/generate-slide-v2', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(requestData)
+    });
+    
+    const data = await response.json();
+    
+    if (!data.success) {
+      throw new Error(data.message || 'Failed to generate slide');
+    }
+    
+    displaySlide(data);
+    showToast('Slide generated successfully!', 'success');
+    
+  } catch (error) {
+    showError('Generation Failed', error.message);
+    stopLoading();
+    showEmptyState();
+  }
+}
+
+// ============================================
+// SLIDE GENERATION - V1 (LEGACY)
+// ============================================
+
+async function handleV1Submit(e) {
+  e.preventDefault();
+  if (state.isGenerating) return;
+  
+  clearError();
+  
+  const dataPointsArray = v1Elements.dataPoints.value
+    .split(/\n/)
+    .map(line => line.trim())
+    .filter(line => line.length > 0);
+  
+  const requestData = {
+    slideType: v1Elements.slideType.value,
+    context: v1Elements.context.value,
+    dataPoints: dataPointsArray,
+    targetAudience: v1Elements.audience.value,
+    framework: v1Elements.framework.value || undefined
+  };
+  
+  startLoading();
+  
+  try {
+    const response = await fetch('/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(requestData)
+    });
+    
+    const data = await response.json();
+    
+    if (!data.success) {
+      throw new Error(data.message || 'Failed to generate slide');
+    }
+    
+    displaySlide(data);
+    showToast('Slide generated successfully!', 'success');
+    
+  } catch (error) {
+    showError('Generation Failed', error.message);
+    stopLoading();
+    showEmptyState();
+  }
+}
+
+// ============================================
+// LOADING STATES
+// ============================================
+
+function startLoading() {
   state.isGenerating = true;
-  validateForm();
-
-  // Show loading state
-  emptyState.classList.add('hidden');
-  slideContent.classList.add('hidden');
-  exportBar.classList.remove('visible');
-  loadingState.classList.remove('hidden');
-
+  
+  // Update button
+  const btn = state.version === 'v2' ? v2Elements.generateBtn : v1Elements.generateBtn;
+  const icon = state.version === 'v2' ? v2Elements.generateIcon : null;
+  const text = state.version === 'v2' ? v2Elements.generateText : null;
+  
+  if (btn) btn.disabled = true;
+  if (text) text.textContent = 'Generating...';
+  if (icon) icon.classList.add('spinning');
+  
+  // Show loading overlay
+  sharedElements.emptyState?.classList.add('hidden');
+  sharedElements.slideImage?.classList.add('hidden');
+  sharedElements.loadingOverlay?.classList.remove('hidden');
+  sharedElements.actionBar.style.display = 'none';
+  
   // Animate loading steps
   let stepIndex = 0;
-  loadingSubtext.textContent = loadingSteps[0];
-  
-  const stepInterval = setInterval(() => {
-    stepIndex = (stepIndex + 1) % loadingSteps.length;
-    loadingSubtext.textContent = loadingSteps[stepIndex];
-  }, 800);
-
-  try {
-    // Prepare request data
-    const requestData = {
-      slideType: slideType.value,
-      audience: audience.value,
-      context: context.value,
-      dataInput: dataInput.value,
-      keyTakeaway: keyTakeaway.value,
-      presentationMode: state.presentationMode
-    };
-
-    // Simulate API call (replace with actual endpoint)
-    // const response = await fetch('/api/generate', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify(requestData)
-    // });
-    // const data = await response.json();
-
-    // Simulate delay for demo
-    await new Promise(resolve => setTimeout(resolve, 2000));
-
-    // Generate sample slide for preview
-    const sampleSlide = generateSampleSlide(requestData);
-    
-    clearInterval(stepInterval);
-    displaySlide(sampleSlide);
-    showToast('Slide generated successfully!');
-
-  } catch (error) {
-    clearInterval(stepInterval);
-    showError('Generation failed', error.message || 'Something went wrong. Please try again.');
-    showEmptyState();
-  } finally {
-    state.isGenerating = false;
-    validateForm();
+  if (sharedElements.loadingSteps) {
+    sharedElements.loadingSteps.textContent = loadingStepMessages[0];
+    loadingStepInterval = setInterval(() => {
+      stepIndex = (stepIndex + 1) % loadingStepMessages.length;
+      sharedElements.loadingSteps.textContent = loadingStepMessages[stepIndex];
+    }, 1500);
   }
 }
 
-function generateSampleSlide(data) {
-  // Generate a sample slide HTML based on the input
-  const points = [
-    'Strategic analysis reveals significant market opportunity',
-    'Key metrics indicate strong growth trajectory',
-    'Competitive positioning shows distinct advantages',
-    'Recommended actions align with organizational goals'
-  ];
-
-  const slideHtml = `
-    <div class="sample-slide">
-      <div class="sample-slide__header">
-        <h2 class="sample-slide__title">${escapeHtml(data.slideType)}</h2>
-        <p class="sample-slide__subtitle">${escapeHtml(data.audience)}</p>
-      </div>
-      <div class="sample-slide__content">
-        <ul class="sample-slide__points">
-          ${points.map(p => `<li>${escapeHtml(p)}</li>`).join('')}
-        </ul>
-        ${data.keyTakeaway ? `
-          <div class="sample-slide__takeaway">
-            <div class="sample-slide__takeaway-label">Key Takeaway</div>
-            <div class="sample-slide__takeaway-text">${escapeHtml(data.keyTakeaway)}</div>
-          </div>
-        ` : ''}
-      </div>
-    </div>
-  `;
-
-  return slideHtml;
+function stopLoading() {
+  state.isGenerating = false;
+  
+  // Reset button
+  const btn = state.version === 'v2' ? v2Elements.generateBtn : v1Elements.generateBtn;
+  const icon = state.version === 'v2' ? v2Elements.generateIcon : null;
+  const text = state.version === 'v2' ? v2Elements.generateText : null;
+  
+  if (btn) btn.disabled = false;
+  if (text) text.textContent = 'Generate Slide';
+  if (icon) icon.classList.remove('spinning');
+  
+  // Hide loading
+  sharedElements.loadingOverlay?.classList.add('hidden');
+  
+  if (loadingStepInterval) {
+    clearInterval(loadingStepInterval);
+    loadingStepInterval = null;
+  }
 }
 
-function displaySlide(slideHtml) {
-  loadingState.classList.add('hidden');
-  slidePreviewFrame.innerHTML = slideHtml;
-  slideContent.classList.remove('hidden');
-  exportBar.classList.add('visible');
-  state.currentSlide = slideHtml;
+// ============================================
+// DISPLAY & DOWNLOAD
+// ============================================
+
+function displaySlide(data) {
+  state.currentSlide = data;
+  
+  sharedElements.slideImage.src = data.imageUrl;
+  sharedElements.slideImage.classList.remove('hidden');
+  sharedElements.previewContainer.classList.remove('slide-preview--empty');
+  sharedElements.actionBar.style.display = 'flex';
+  
+  stopLoading();
 }
 
 function showEmptyState() {
-  loadingState.classList.add('hidden');
-  slideContent.classList.add('hidden');
-  exportBar.classList.remove('visible');
-  emptyState.classList.remove('hidden');
+  sharedElements.slideImage?.classList.add('hidden');
+  sharedElements.emptyState?.classList.remove('hidden');
+  sharedElements.previewContainer?.classList.add('slide-preview--empty');
+  sharedElements.actionBar.style.display = 'none';
 }
 
-function escapeHtml(text) {
-  if (!text) return '';
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
-}
-
-// ========================================
-// Export
-// ========================================
-
-async function handleExport(format) {
-  if (!state.currentSlide) {
-    showError('No slide to export', 'Generate a slide first before exporting.');
-    return;
+async function handleDownload(format) {
+  if (!state.currentSlide) return;
+  
+  switch (format) {
+    case 'png':
+      downloadPNG();
+      break;
+    case 'pptx':
+      await downloadExport('pptx');
+      break;
+    case 'pdf':
+      await downloadExport('pdf');
+      break;
   }
+}
 
-  showToast(`Exporting as ${format.toUpperCase()}...`);
-
+async function downloadPNG() {
+  if (!state.currentSlide?.imageUrl) return;
+  
   try {
-    switch (format) {
-      case 'png':
-        await exportPNG();
-        break;
-      case 'pptx':
-        await exportPPTX();
-        break;
-      case 'pdf':
-        await exportPDF();
-        break;
-    }
+    const response = await fetch(state.currentSlide.imageUrl);
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `slidetheory-${Date.now()}.png`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    
+    window.URL.revokeObjectURL(url);
+    showToast('PNG download started!', 'success');
   } catch (error) {
-    showError('Export failed', error.message || 'Could not export the slide.');
+    showError('Download Failed', 'Could not download the slide.');
   }
 }
 
-async function exportPNG() {
-  // Use html2canvas or similar library
-  // For now, simulate the download
-  await simulateDownload('slide.png');
-  showToast('PNG downloaded!');
+async function downloadExport(format) {
+  if (!state.currentSlide?.content) return;
+  
+  showToast(`Generating ${format.toUpperCase()}...`, 'success');
+  
+  try {
+    const endpoint = `/api/export/${format}`;
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        slideType: state.currentSlide.content._slideType || 'Executive Summary',
+        content: state.currentSlide.content
+      })
+    });
+    
+    const data = await response.json();
+    
+    if (!data.success) {
+      throw new Error(data.message || `Failed to generate ${format}`);
+    }
+    
+    // Download file
+    const fileResponse = await fetch(data.downloadUrl);
+    const blob = await fileResponse.blob();
+    const url = window.URL.createObjectURL(blob);
+    
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `slidetheory-${Date.now()}.${format}`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    
+    window.URL.revokeObjectURL(url);
+    showToast(`${format.toUpperCase()} download started!`, 'success');
+    
+  } catch (error) {
+    showError('Export Failed', error.message);
+  }
 }
 
-async function exportPPTX() {
-  // Call backend API to generate PPTX
-  // const response = await fetch('/api/export/pptx', {
-  //   method: 'POST',
-  //   headers: { 'Content-Type': 'application/json' },
-  //   body: JSON.stringify({ slide: state.currentSlide })
-  // });
-  await simulateDownload('slide.pptx');
-  showToast('PowerPoint downloaded!');
-}
-
-async function exportPDF() {
-  // Call backend API to generate PDF
-  // const response = await fetch('/api/export/pdf', {
-  //   method: 'POST',
-  //   headers: { 'Content-Type': 'application/json' },
-  //   body: JSON.stringify({ slide: state.currentSlide })
-  // });
-  await simulateDownload('slide.pdf');
-  showToast('PDF downloaded!');
-}
-
-function simulateDownload(filename) {
-  return new Promise(resolve => {
-    setTimeout(() => {
-      console.log(`[Demo] Downloaded: ${filename}`);
-      resolve();
-    }, 500);
-  });
-}
-
-// ========================================
-// UI Helpers
-// ========================================
+// ============================================
+// FEEDBACK & MESSAGES
+// ============================================
 
 function showError(title, message) {
-  errorContainer.innerHTML = `
+  if (!sharedElements.errorContainer) return;
+  
+  sharedElements.errorContainer.innerHTML = `
     <div class="alert alert--error">
-      <div class="alert__title">${escapeHtml(title)}</div>
-      <div class="alert__message">${escapeHtml(message)}</div>
+      <div class="alert__title">${title}</div>
+      <div class="alert__message">${message}</div>
     </div>
   `;
-  errorContainer.classList.remove('hidden');
-  
-  setTimeout(() => {
-    errorContainer.classList.add('hidden');
-  }, 5000);
+  sharedElements.errorContainer.classList.remove('hidden');
+}
+
+function clearError() {
+  if (!sharedElements.errorContainer) return;
+  sharedElements.errorContainer.innerHTML = '';
+  sharedElements.errorContainer.classList.add('hidden');
 }
 
 function showToast(message, type = 'success') {
+  if (!sharedElements.toastContainer) return;
+  
   const toast = document.createElement('div');
   toast.className = `toast toast--${type}`;
   toast.textContent = message;
-  toastContainer.appendChild(toast);
+  sharedElements.toastContainer.appendChild(toast);
   
-  setTimeout(() => {
-    toast.remove();
-  }, 3000);
-}
-
-function openModal() {
-  shortcutsModal.classList.remove('hidden');
+  setTimeout(() => toast.remove(), 3000);
 }
 
 function closeModal() {
-  shortcutsModal.classList.add('hidden');
+  sharedElements.shortcutsModal?.classList.add('hidden');
+  sharedElements.downloadMenu?.classList.remove('open');
 }
 
-// ========================================
-// Keyboard Shortcuts
-// ========================================
+// ============================================
+// KEYBOARD SHORTCUTS
+// ============================================
 
 function handleKeyboard(e) {
-  // Ctrl+Enter - Generate
+  // Generate: Ctrl+Enter
   if (e.ctrlKey && e.key === 'Enter' && !state.isGenerating) {
     e.preventDefault();
-    if (!generateBtn.disabled) {
-      generateSlide();
+    if (state.version === 'v2') {
+      v2Form?.dispatchEvent(new Event('submit'));
+    } else {
+      v1Form?.dispatchEvent(new Event('submit'));
     }
   }
   
-  // Ctrl+R - Regenerate
+  // Regenerate: Ctrl+R
   if (e.ctrlKey && e.key === 'r' && state.currentSlide && !state.isGenerating) {
     e.preventDefault();
-    generateSlide();
+    sharedElements.regenerateBtn?.click();
   }
   
-  // Ctrl+D - Download/Export
+  // Download PNG: Ctrl+D
   if (e.ctrlKey && e.key === 'd' && state.currentSlide) {
     e.preventDefault();
-    exportPNG();
+    downloadPNG();
   }
   
-  // Ctrl+T - Toggle theme
-  if (e.ctrlKey && e.key === 't') {
+  // Help: ?
+  if (e.key === '?' && !e.ctrlKey && !e.shiftKey) {
     e.preventDefault();
-    toggleTheme();
+    sharedElements.shortcutsModal?.classList.remove('hidden');
   }
   
-  // ? - Show help
-  if (e.key === '?' && !e.ctrlKey && !e.altKey) {
-    e.preventDefault();
-    openModal();
-  }
-  
-  // Esc - Close modal
+  // Close modal: Esc
   if (e.key === 'Escape') {
     closeModal();
   }
 }
 
-// ========================================
-// Start
-// ========================================
+// ============================================
+// START APP
+// ============================================
 
-init();
+document.addEventListener('DOMContentLoaded', init);

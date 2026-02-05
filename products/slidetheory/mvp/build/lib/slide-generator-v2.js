@@ -10,7 +10,7 @@ const crypto = require('crypto');
 const { validateSlideInputs } = require('./validators');
 const { selectTemplate, loadTemplateExamples } = require('./template-selector');
 const { buildPrompt, getPromptStats } = require('./prompt-builder');
-const { renderSlideToImage } = require('./slide-renderer'); // Will use existing renderer
+const { renderSlideToImage } = require('./slide-generator'); // Use existing renderer
 
 // Kimi API configuration
 const KIMI_API_BASE = 'https://api.moonshot.cn/v1';
@@ -469,8 +469,13 @@ function buildSlideHTML(slideType, content) {
   return rendererBuildHTML(slideType, content);
 }
 
-// Re-export renderSlideToImage from existing renderer
-const { renderSlideToImage: legacyRenderSlide, buildSlideHTML: _buildSlideHTML } = require('./slide-generator');
+// Use existing renderer's buildSlideHTML for API response
+const { buildSlideHTML: rendererBuildSlideHTML } = require('./slide-generator');
+
+// Update buildSlideHTML to use the actual renderer
+function buildSlideHTML(slideType, content) {
+  return rendererBuildSlideHTML(slideType, content);
+}
 
 // Create wrapper module exports
 module.exports = {
@@ -478,5 +483,5 @@ module.exports = {
   generateExportUrls,
   parseAIResponse,
   buildSlideHTML,
-  renderSlideToImage: legacyRenderSlide
+  renderSlideToImage
 };

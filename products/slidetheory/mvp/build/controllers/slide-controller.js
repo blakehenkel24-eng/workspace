@@ -1,4 +1,4 @@
-//**
+/**
  * Slide Controller
  * Handles slide generation endpoints
  */

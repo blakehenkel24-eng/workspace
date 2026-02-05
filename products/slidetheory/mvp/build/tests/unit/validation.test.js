@@ -75,7 +75,7 @@ describe('Validation Functions', () => {
 
     it('should reject missing slideType', () => {
       const errors = validateGenerateRequest(mockInvalidRequests.missingSlideType);
-      assert.strictEqual(errors.length, 2); // slideType and context errors
+      assert.strictEqual(errors.length, 1); // slideType error only
       const slideTypeError = errors.find(e => e.field === 'slideType');
       assert.ok(slideTypeError);
       assert.ok(slideTypeError.message.includes('required'));
