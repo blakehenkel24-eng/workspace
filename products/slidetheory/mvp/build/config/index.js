@@ -10,6 +10,9 @@ const config = {
   port: process.env.PORT || 3000,
   nodeEnv: process.env.NODE_ENV || 'development',
   
+  // Version
+  VERSION: process.env.npm_package_version || '2.1.0',
+  
   // Paths
   paths: {
     slides: process.env.SLIDES_DIR || require('path').join(__dirname, '..', 'tmp', 'slides'),
@@ -32,11 +35,42 @@ const config = {
     }
   },
   
+  // Cache Settings
+  cache: {
+    enabled: process.env.CACHE_ENABLED !== 'false',
+    redisUrl: process.env.REDIS_URL || 'redis://localhost:6379',
+    ttl: {
+      slide: parseInt(process.env.CACHE_TTL_SLIDE || '604800'),     // 7 days
+      content: parseInt(process.env.CACHE_TTL_CONTENT || '86400'),  // 24 hours
+      template: parseInt(process.env.CACHE_TTL_TEMPLATE || '2592000'), // 30 days
+      analytics: parseInt(process.env.CACHE_TTL_ANALYTICS || '3600')   // 1 hour
+    }
+  },
+  
+  // Performance Settings
+  performance: {
+    slowThreshold: parseInt(process.env.SLOW_REQUEST_THRESHOLD || '2000'), // ms
+    operationThresholds: {
+      slide_generation: 5000,
+      ai_content_generation: 3000,
+      slide_rendering: 2000,
+      export_generation: 10000
+    },
+    enableCompression: process.env.ENABLE_COMPRESSION !== 'false',
+    enableCaching: process.env.ENABLE_CACHING !== 'false',
+    maxConcurrentGenerations: parseInt(process.env.MAX_CONCURRENT_GENERATIONS || '5')
+  },
+  
   // Export Settings
   exports: {
-    formats: ['png', 'pptx', 'pdf'],
+    formats: ['png', 'pptx', 'pdf', 'zip'],
+    aspectRatios: ['16:9', '4:3', 'widescreen', 'letter', 'a4'],
+    qualities: ['low', 'medium', 'high', 'ultra'],
     cleanupSlidesMs: 24 * 60 * 60 * 1000, // 24 hours
-    cleanupExportsMs: 60 * 60 * 1000 // 1 hour
+    cleanupExportsMs: 60 * 60 * 1000, // 1 hour
+    maxBatchSize: 50,
+    defaultQuality: 'high',
+    defaultAspectRatio: '16:9'
   },
   
   // Slide Settings
@@ -67,6 +101,14 @@ const config = {
   logging: {
     level: process.env.LOG_LEVEL || 'info',
     format: process.env.LOG_FORMAT || 'json' // 'json' | 'pretty'
+  },
+  
+  // CDN / Asset Optimization
+  cdn: {
+    enabled: process.env.CDN_ENABLED === 'true',
+    baseUrl: process.env.CDN_BASE_URL || '',
+    enableBrotli: process.env.CDN_BROTLI !== 'false',
+    enableGzip: process.env.CDN_GZIP !== 'false'
   }
 };
 

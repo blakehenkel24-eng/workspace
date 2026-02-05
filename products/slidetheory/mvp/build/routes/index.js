@@ -14,6 +14,8 @@ const slideRoutes = require('./slide-routes');
 const exportRoutes = require('./export-routes');
 const fileRoutes = require('./file-routes');
 const progressRoutes = require('./progress-routes');
+const performanceRoutes = require('./performance-routes');
+const analyticsRoutes = require('./analytics-routes');
 
 // Mount routes
 router.use(healthRoutes);
@@ -22,6 +24,8 @@ router.use(templateRoutes);
 router.use(slideRoutes);
 router.use(exportRoutes);
 router.use('/progress', progressRoutes);
+router.use(performanceRoutes);
+router.use(analyticsRoutes);
 
 // Static file serving routes (mounted at root level in server)
 module.exports = {

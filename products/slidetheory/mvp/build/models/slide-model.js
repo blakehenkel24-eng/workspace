@@ -201,10 +201,12 @@ class ExportRequest {
     this.slideType = data.slideType;
     this.content = data.content;
     this.format = data.format || 'pptx';
+    this.options = data.options || {};
   }
   
   validate() {
     const errors = [];
+    const { EXPORT_FORMATS, ASPECT_RATIOS, QUALITY_LEVELS } = require('../config/constants');
     
     if (!this.slideType) {
       errors.push({ field: 'slideType', message: 'Slide type is required' });
@@ -212,6 +214,31 @@ class ExportRequest {
     
     if (!this.content || typeof this.content !== 'object') {
       errors.push({ field: 'content', message: 'Content object is required' });
+    }
+    
+    // Validate format
+    if (this.format && !EXPORT_FORMATS.includes(this.format.toLowerCase())) {
+      errors.push({ 
+        field: 'format', 
+        message: `Format must be one of: ${EXPORT_FORMATS.join(', ')}` 
+      });
+    }
+    
+    // Validate options
+    if (this.options) {
+      if (this.options.aspectRatio && !ASPECT_RATIOS.includes(this.options.aspectRatio)) {
+        errors.push({ 
+          field: 'options.aspectRatio', 
+          message: `Aspect ratio must be one of: ${ASPECT_RATIOS.join(', ')}` 
+        });
+      }
+      
+      if (this.options.quality && !QUALITY_LEVELS.includes(this.options.quality)) {
+        errors.push({ 
+          field: 'options.quality', 
+          message: `Quality must be one of: ${QUALITY_LEVELS.join(', ')}` 
+        });
+      }
     }
     
     return {

@@ -45,7 +45,13 @@ module.exports = {
   ],
   
   // Export Formats
-  EXPORT_FORMATS: ['png', 'pptx', 'pdf'],
+  EXPORT_FORMATS: ['png', 'pptx', 'pdf', 'zip'],
+  
+  // Aspect Ratios
+  ASPECT_RATIOS: ['16:9', '4:3', 'widescreen', 'letter', 'a4'],
+  
+  // Quality Levels
+  QUALITY_LEVELS: ['low', 'medium', 'high', 'ultra'],
   
   // Colors (McKinsey-style palette)
   COLORS: {

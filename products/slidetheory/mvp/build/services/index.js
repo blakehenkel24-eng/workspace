@@ -7,7 +7,17 @@ const { generateSlideContent } = require('./ai-service');
 const { generateFallbackContent } = require('./fallback-service');
 const { renderSlideToImage, buildSlideHTML, generatePlaceholderSVG } = require('./slide-service');
 const { getSlideStyles, buildSlideBody } = require('./slide-templates');
-const { generatePPTX, generatePDF } = require('./export-service');
+const { 
+  generatePPTX, 
+  generatePDF, 
+  generatePNG,
+  batchExport,
+  getExportHistory,
+  getExportHistoryList,
+  clearExportHistory,
+  ASPECT_RATIOS,
+  QUALITY_SETTINGS
+} = require('./export-service');
 const { 
   loadAnalytics, 
   saveAnalytics, 
@@ -16,6 +26,11 @@ const {
   getPopularSlideTypes,
   resetAnalytics
 } = require('./analytics-service');
+
+// Performance & Caching
+const cacheService = require('./cache-service');
+const performanceMonitor = require('./performance-monitor');
+const assetOptimizer = require('./asset-optimizer');
 
 module.exports = {
   // AI
@@ -34,6 +49,13 @@ module.exports = {
   // Export
   generatePPTX,
   generatePDF,
+  generatePNG,
+  batchExport,
+  getExportHistory,
+  getExportHistoryList,
+  clearExportHistory,
+  ASPECT_RATIOS,
+  QUALITY_SETTINGS,
   
   // Analytics
   loadAnalytics,
@@ -41,5 +63,10 @@ module.exports = {
   recordSlideGenerated,
   getAnalyticsSummary,
   getPopularSlideTypes,
-  resetAnalytics
+  resetAnalytics,
+  
+  // Performance & Caching
+  cacheService,
+  performanceMonitor,
+  assetOptimizer
 };

@@ -100,7 +100,7 @@ GET /api/templates/:id
 
 ---
 
-### Generate Slide
+### Generate Slide (v1 - Legacy)
 
 Generate a slide with AI-powered content.
 
@@ -154,6 +154,161 @@ POST /api/generate
 | 400 | INVALID_SLIDE_TYPE | Slide type not in allowed list |
 | 400 | INVALID_CONTEXT | Context too short (<10) or too long (>500) |
 | 500 | GENERATION_FAILED | AI or rendering error |
+
+---
+
+### Generate Slide v2 (With Progress Tracking)
+
+Generate a slide using the hybrid renderer with real-time progress tracking.
+
+```http
+POST /api/generate-slide-v2
+```
+
+**Request Body:**
+```json
+{
+  "slideType": "Executive Summary",
+  "context": "Q3 earnings showing 23% revenue growth...",
+  "keyTakeaway": "Revenue growth of 25% positions us for Series B",
+  "audience": "C-Suite/Board",
+  "presentationMode": "presentation",
+  "dataInput": "Revenue:\t$5.2M (+23%)\nCustomers:\t1,240 (+45%)"
+}
+```
+
+**Parameters:**
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| slideType | string | Yes | `Executive Summary`, `Horizontal Flow`, `Vertical Flow`, `Graph/Chart`, `General` |
+| context | string | Yes | 10-2000 characters describing the slide purpose |
+| keyTakeaway | string | Yes | 5-150 character key message |
+| audience | string | Yes | `C-Suite/Board`, `External Client`, `Internal/Working Team`, `PE/Investors` |
+| presentationMode | string | No | `presentation` (less detail) or `read` (more detail) |
+| dataInput | string | No | Tabular data, CSV, or metrics |
+
+**Response:**
+```json
+{
+  "success": true,
+  "jobId": "job_abc123",
+  "slideId": "550e8400-e29b-41d4-a716-446655440000",
+  "imageUrl": "/slides/550e8400-e29b-41d4-a716-446655440000.png",
+  "title": "Revenue Growth Accelerates to 25%",
+  "content": { ... },
+  "expiresAt": "2025-02-05T14:30:00.000Z",
+  "durationMs": 4200,
+  "renderStats": {
+    "durationMs": 850,
+    "width": 1920,
+    "height": 1080
+  }
+}
+```
+
+**Integration with Progress Tracking:**
+
+After calling this endpoint, connect to the SSE endpoint for real-time progress:
+
+```javascript
+const evtSource = new EventSource(`/api/progress/${response.jobId}`);
+evtSource.onmessage = (event) => {
+  const data = JSON.parse(event.data);
+  // Update progress UI
+};
+```
+
+---
+
+### Get Progress (SSE)
+
+Connect to Server-Sent Events endpoint for real-time progress updates.
+
+```http
+GET /api/progress/:jobId
+```
+
+**Parameters:**
+| Name | Type | Description |
+|------|------|-------------|
+| jobId | string | Job ID from generate-slide-v2 response |
+
+**SSE Events:**
+
+| Event Type | Data | Description |
+|------------|------|-------------|
+| `connected` | `{ jobId, percent, ... }` | Initial connection established |
+| `progress` | `{ jobId, step, stepLabel, percent, estimateSeconds }` | Step progress update |
+| `complete` | `{ jobId, result, durationMs }` | Generation completed |
+| `error` | `{ jobId, error, durationMs }` | Generation failed |
+| `cancelled` | `{ jobId }` | Job was cancelled |
+
+**Progress Steps:**
+1. `validate` - Validating input (5%)
+2. `prompt_build` - Building prompt (10%)
+3. `ai_generate` - AI content generation (50%)
+4. `render` - Rendering slide (25%)
+5. `export` - Finalizing (10%)
+
+---
+
+### Cancel Generation
+
+Cancel a running slide generation job.
+
+```http
+POST /api/progress/:jobId/cancel
+```
+
+**Parameters:**
+| Name | Type | Description |
+|------|------|-------------|
+| jobId | string | Job ID to cancel |
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Job cancelled"
+}
+```
+
+**Error Response:**
+```json
+{
+  "success": false,
+  "message": "Job not found or already completed"
+}
+```
+
+---
+
+### List Active Jobs
+
+Get a list of currently active generation jobs (for monitoring).
+
+```http
+GET /api/progress
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "count": 3,
+  "jobs": [
+    {
+      "jobId": "job_abc123",
+      "currentStep": "ai_generate",
+      "currentStepLabel": "Generating content...",
+      "percent": 45,
+      "estimateSeconds": 3,
+      "isCancelled": false,
+      "durationMs": 2300
+    }
+  ]
+}
+```
 
 ---
 

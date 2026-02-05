@@ -13,6 +13,147 @@ Track all discovered bugs, issues, and their resolution status.
 
 ## Active Bugs
 
+### Bug #008
+| Field | Value |
+|-------|-------|
+| **ID** | BUG-008 |
+| **Severity** | 🟠 High |
+| **Status** | ⏳ Pending |
+| **Reported** | 2026-02-05 |
+| **Reporter** | QA Cycle 2 |
+
+**Description:**
+Missing `canvas` npm package dependency causes hybrid renderer and all dependent tests to fail.
+
+**Steps to Reproduce:**
+1. Run `npm test` or `node --test tests/integration/*.test.js`
+2. Observe MODULE_NOT_FOUND error for 'canvas'
+3. Tests fail to start
+
+**Expected:**
+All tests run successfully with all dependencies installed.
+
+**Actual:**
+Tests fail with: `Error: Cannot find module 'canvas'`
+
+**Proposed Fix:**
+```bash
+npm install canvas
+```
+
+---
+
+### Bug #009
+| Field | Value |
+|-------|-------|
+| **ID** | BUG-009 |
+| **Severity** | 🟡 Medium |
+| **Status** | ⏳ Pending |
+| **Reported** | 2026-02-05 |
+| **Reporter** | QA Cycle 2 |
+
+**Description:**
+Hybrid renderer only has templates for 3 of 6 slide types. Missing: Competitive Analysis, Growth Strategy, Risk Assessment.
+
+**Steps to Reproduce:**
+1. Check `services/hybrid-renderer.js` TEMPLATES object
+2. Only Executive Summary, Market Analysis, Financial Model exist
+
+**Expected:**
+All 6 slide types have hybrid renderer templates.
+
+**Actual:**
+Only 3 templates implemented.
+
+**Proposed Fix:**
+Add template definitions to TEMPLATES object following existing pattern.
+
+---
+
+### Bug #010
+| Field | Value |
+|-------|-------|
+| **ID** | BUG-010 |
+| **Severity** | 🟡 Medium |
+| **Status** | 📋 Documented |
+| **Reported** | 2026-02-05 |
+| **Reporter** | QA Cycle 2 |
+
+**Description:**
+Mobile stepper UX pattern not implemented. Mobile users see full stacked form requiring excessive scrolling.
+
+**Steps to Reproduce:**
+1. Open app on mobile device or DevTools mobile simulator
+2. Observe form layout stacks but is very long
+3. No stepper progress indicator visible
+
+**Expected:**
+Mobile stepper UI with 3 steps (Type → Content → Review) per agents/agent2-mobile/TASK.md.
+
+**Actual:**
+Full form displayed, user must scroll through all fields.
+
+**Reference:**
+`products/slidetheory/agents/agent2-mobile/TASK.md`
+
+---
+
+### Bug #011
+| Field | Value |
+|-------|-------|
+| **ID** | BUG-011 |
+| **Severity** | 🟢 Low |
+| **Status** | 📋 Documented |
+| **Reported** | 2026-02-05 |
+| **Reporter** | QA Cycle 2 |
+
+**Description:**
+Progress tracking service exists but is not integrated into slide generation pipeline. Frontend shows fake loading steps instead of real SSE updates.
+
+**Steps to Reproduce:**
+1. Generate a slide
+2. Observe loading overlay with cycling text
+3. Check Network tab - no SSE connection to /api/progress/:jobId
+
+**Expected:**
+Real-time progress updates via Server-Sent Events.
+
+**Actual:**
+Fake loading animation with predetermined messages.
+
+**Proposed Fix:**
+Integrate ProgressTracker into slide-controller.js and connect frontend to SSE endpoint.
+
+---
+
+### Bug #012
+| Field | Value |
+|-------|-------|
+| **ID** | BUG-012 |
+| **Severity** | 🟢 Low |
+| **Status** | ⏳ Pending |
+| **Reported** | 2026-02-05 |
+| **Reporter** | QA Cycle 2 |
+
+**Description:**
+Toast notifications are not announced to screen readers. Visual-only feedback excludes assistive technology users.
+
+**Steps to Reproduce:**
+1. Enable screen reader (NVDA/VoiceOver)
+2. Generate a slide successfully
+3. Toast appears visually but is not announced
+
+**Expected:**
+Success/error messages announced via ARIA live region.
+
+**Actual:**
+No audio feedback for toast notifications.
+
+**Proposed Fix:**
+Add `role="status"` to toast container or route messages through statusAnnouncer ARIA live region.
+
+---
+
 ### Bug #001
 | Field | Value |
 |-------|-------|
@@ -331,8 +472,9 @@ Implement file upload for CSV/Excel data import or remove from spec.
 | Date | Version | Changes |
 |------|---------|---------|
 | 2025-02-05 | v2.0 | Initial bug tracker created |
+| 2026-02-05 | v2.0 | Cycle 2 QA - Added BUG-008 through BUG-012 |
 
 ---
 
-*Last Updated: 2025-02-05*
+*Last Updated: 2026-02-05*
 *Maintained by: QA Engineering*

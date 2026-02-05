@@ -83,7 +83,8 @@ const sharedElements = {
   versionBtns: document.querySelectorAll('.version-btn'),
   toggleVersionBtn: document.getElementById('toggleVersionBtn'),
   statusAnnouncer: document.getElementById('statusAnnouncer'),
-  successOverlay: document.getElementById('successOverlay')
+  successOverlay: document.getElementById('successOverlay'),
+  galleryBtn: document.getElementById('galleryBtn')
 };
 
 // ============================================
@@ -181,6 +182,66 @@ async function init() {
   if (params.get('version') === 'v1') {
     switchVersion('v1');
   }
+  
+  // Check for template selection from gallery
+  handleTemplateFromURL();
+}
+
+function handleTemplateFromURL() {
+  const params = new URLSearchParams(window.location.search);
+  const templateId = params.get('template');
+  const type = params.get('type');
+  const audience = params.get('audience');
+  
+  if (type) {
+    // Map gallery types to form types
+    const typeMap = {
+      'Executive Summary': 'Executive Summary',
+      'Market Analysis': 'Horizontal Flow',
+      'Financial Model': 'Graph/Chart',
+      'Competitive Analysis': 'Horizontal Flow',
+      'Growth Strategy': 'Vertical Flow',
+      'Risk Assessment': 'General'
+    };
+    
+    const mappedType = typeMap[type] || type;
+    if (v2Elements.slideType) {
+      v2Elements.slideType.value = mappedType;
+      updateSlideTypeHint();
+    }
+    if (v1Elements.slideType) {
+      v1Elements.slideType.value = type;
+    }
+  }
+  
+  if (audience) {
+    if (v2Elements.audience) {
+      v2Elements.audience.value = audience;
+    }
+    if (v1Elements.audience) {
+      const audienceMap = {
+        'C-Suite/Board': 'C-Suite',
+        'PE/Investors': 'Investors',
+        'External Client': 'Clients',
+        'Internal/Working Team': 'Internal Team'
+      };
+      v1Elements.audience.value = audienceMap[audience] || audience;
+    }
+  }
+  
+  // Validate and show toast
+  if (templateId) {
+    validateV2Form();
+    validateV1Form();
+    showToast('Template loaded from gallery', 'success');
+    
+    // Clean URL
+    const url = new URL(window.location);
+    url.searchParams.delete('template');
+    url.searchParams.delete('type');
+    url.searchParams.delete('audience');
+    window.history.replaceState({}, '', url);
+  }
 }
 
 async function loadV2Templates() {
@@ -211,6 +272,11 @@ function setupEventListeners() {
   sharedElements.toggleVersionBtn?.addEventListener('click', () => {
     const newVersion = state.version === 'v2' ? 'v1' : 'v2';
     switchVersion(newVersion);
+  });
+  
+  // Gallery button
+  sharedElements.galleryBtn?.addEventListener('click', () => {
+    window.location.href = 'gallery.html';
   });
   
   // V2 Form
@@ -303,6 +369,9 @@ function setupEventListeners() {
   
   sharedElements.modalClose?.addEventListener('click', closeModalFunc);
   sharedElements.shortcutsModal?.querySelector('.modal-backdrop')?.addEventListener('click', closeModalFunc);
+  
+  // Cancel button
+  document.getElementById('cancelBtn')?.addEventListener('click', cancelGeneration);
   
   // Keyboard shortcuts
   document.addEventListener('keydown', handleKeyboard);
@@ -913,6 +982,13 @@ function handleKeyboard(e) {
   if (e.key === '?' && !e.ctrlKey && !e.shiftKey) {
     e.preventDefault();
     sharedElements.shortcutsModal?.classList.remove('hidden');
+  }
+  
+  // Cancel generation: Esc (when generating)
+  if (e.key === 'Escape' && state.isGenerating) {
+    e.preventDefault();
+    cancelGeneration();
+    return;
   }
   
   // Close modal: Esc

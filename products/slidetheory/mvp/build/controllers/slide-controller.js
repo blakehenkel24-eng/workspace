@@ -9,7 +9,7 @@ const config = require('../config');
 const { STATUS, ERROR_CODES, MESSAGES, TIME } = require('../config/constants');
 const { generateSlideContent } = require('../services/ai-service');
 const { renderSlideToImage } = require('../services/slide-service');
-const { recordSlideGenerated } = require('../services/analytics-service');
+const { recordSlideGenerated, recordError, recordFunnelStep } = require('../services/enhanced-analytics-service');
 const { generateCacheKey, get, set } = require('../services/cache-service');
 const { recordGeneration, startTimer, recordCache } = require('../services/performance-monitor');
 const { logger } = require('../middleware/logger');
@@ -74,6 +74,7 @@ const generateSlide = asyncHandler(async (req, res) => {
   
   // Not cached - generate new slide
   logger.info(req, 'Starting slide generation', { slideType, targetAudience });
+  await recordFunnelStep('generation_start', req);
   
   // Generate content
   const contentTimer = startTimer('ai_content_generation');
@@ -129,8 +130,9 @@ const generateSlide = asyncHandler(async (req, res) => {
     format: isSVG ? 'SVG' : 'PNG'
   });
   
-  // Record analytics
-  await recordSlideGenerated(slideType);
+  // Record analytics with enhanced tracking
+  await recordSlideGenerated(slideType, slideType, framework, duration, false);
+  await recordFunnelStep('generation_complete', req);
   
   // Schedule cleanup
   scheduleCleanup(actualPath, TIME.SLIDE_EXPIRY_MS);
@@ -142,6 +144,13 @@ const generateSlide = asyncHandler(async (req, res) => {
   res.status(STATUS.OK).json(responseData);
 });
 
+// Placeholder for v2 implementation
+const generateSlideV2 = asyncHandler(async (req, res) => {
+  // For now, just call the v1 implementation
+  return generateSlide(req, res);
+});
+
 module.exports = {
-  generateSlide
+  generateSlide,
+  generateSlideV2
 };

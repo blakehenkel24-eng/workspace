@@ -1,6 +1,6 @@
 /**
  * Export Helper Utilities
- * Helpers for PNG, PPTX, and PDF exports
+ * Helpers for PNG, PPTX, PDF exports and batch operations
  */
 
 const fs = require('fs').promises;
@@ -38,7 +38,14 @@ function scheduleCleanup(filePath, delayMs = 60 * 60 * 1000) {
       await fs.unlink(filePath);
       console.log(`[Exporter] Cleaned up: ${path.basename(filePath)}`);
     } catch (err) {
-      // Ignore cleanup errors (file may already be deleted)
+      // Ignore cleanup errors (file may already be deleted or is a directory)
+      try {
+        // Try to remove as directory
+        await fs.rm(filePath, { recursive: true, force: true });
+        console.log(`[Exporter] Cleaned up directory: ${path.basename(filePath)}`);
+      } catch (dirErr) {
+        // Ignore
+      }
     }
   }, delayMs);
 }
@@ -49,7 +56,7 @@ function scheduleCleanup(filePath, delayMs = 60 * 60 * 1000) {
  * @param {string[]} allowedFormats - Allowed formats
  * @returns {boolean} Whether format is valid
  */
-function isValidFormat(format, allowedFormats = ['png', 'pptx', 'pdf']) {
+function isValidFormat(format, allowedFormats = ['png', 'pptx', 'pdf', 'zip']) {
   return allowedFormats.includes(format?.toLowerCase());
 }
 
@@ -64,6 +71,7 @@ function getMimeType(format) {
     svg: 'image/svg+xml',
     pptx: 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
     pdf: 'application/pdf',
+    zip: 'application/zip',
     json: 'application/json'
   };
   
@@ -101,6 +109,52 @@ function calculateExpiry(durationMs = 60 * 60 * 1000) {
   return new Date(Date.now() + durationMs).toISOString();
 }
 
+/**
+ * Get file extension from format
+ * @param {string} format - Export format
+ * @returns {string} File extension
+ */
+function getFileExtension(format) {
+  const extensions = {
+    png: '.png',
+    pptx: '.pptx',
+    pdf: '.pdf',
+    zip: '.zip',
+    svg: '.svg',
+    json: '.json'
+  };
+  return extensions[format?.toLowerCase()] || `.${format}`;
+}
+
+/**
+ * Parse export filename
+ * @param {string} filename - Export filename
+ * @returns {Object} Parsed filename info
+ */
+function parseExportFilename(filename) {
+  const ext = path.extname(filename).toLowerCase();
+  const basename = path.basename(filename, ext);
+  
+  return {
+    filename,
+    basename,
+    extension: ext,
+    format: ext.replace('.', ''),
+    exportId: basename
+  };
+}
+
+/**
+ * Ensure exports directory exists
+ * @returns {Promise<string>} Path to exports directory
+ */
+async function ensureExportsDirectory() {
+  const exportsDir = process.env.EXPORTS_DIR || 
+    path.join(__dirname, '..', 'tmp', 'exports');
+  await fs.mkdir(exportsDir, { recursive: true });
+  return exportsDir;
+}
+
 module.exports = {
   generateExportId,
   getExportPath,
@@ -109,5 +163,8 @@ module.exports = {
   getMimeType,
   sanitizeFilename,
   buildDownloadUrl,
-  calculateExpiry
+  calculateExpiry,
+  getFileExtension,
+  parseExportFilename,
+  ensureExportsDirectory
 };
