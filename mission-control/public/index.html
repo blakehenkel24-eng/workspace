@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mission Control Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-container">
+    <header class="header">
+      <h1>🚀 Mission Control</h1>
+      <div class="header-actions">
+        <button id="theme-toggle" class="btn-icon" title="Toggle Theme">🌓</button>
+        <span id="connection-status" class="status-badge offline">Offline</span>
+      </div>
+    </header>
+    
+    <main class="dashboard">
+      <!-- Chat Panel -->
+      <section class="panel panel-chat" data-panel="chat">
+        <header class="panel-header">
+          <h2>💬 Chat</h2>
+        </header>
+        <div class="panel-content">
+          <div id="chat-messages" class="chat-messages"></div>
+          <div class="chat-input">
+            <input type="text" id="chat-input" placeholder="Type a message...">
+            <button id="chat-send" class="btn-primary">Send</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Memory Panel -->
+      <section class="panel panel-memory" data-panel="memory">
+        <header class="panel-header">
+          <h2>🧠 Memory</h2>
+        </header>
+        <div class="panel-content">
+          <div id="memory-list" class="memory-list">
+            <p class="empty-state">No memories stored</p>
+          </div>
+          <div class="memory-input">
+            <input type="text" id="memory-input" placeholder="Add a memory...">
+            <button id="memory-add" class="btn-primary">Add</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Files Panel -->
+      <section class="panel panel-files" data-panel="files">
+        <header class="panel-header">
+          <h2>📁 Files</h2>
+        </header>
+        <div class="panel-content">
+          <div id="files-list" class="files-list">
+            <p class="empty-state">No files uploaded</p>
+          </div>
+          <div class="file-upload">
+            <input type="file" id="file-input" hidden>
+            <button id="file-select" class="btn-secondary">Choose File</button>
+            <button id="file-upload" class="btn-primary" disabled>Upload</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tools Panel -->
+      <section class="panel panel-tools" data-panel="tools">
+        <header class="panel-header">
+          <h2>🛠️ Tools</h2>
+        </header>
+        <div class="panel-content">
+          <div class="tools-grid">
+            <button class="tool-btn" data-tool="search">
+              <span class="tool-icon">🔍</span>
+              <span class="tool-name">Search</span>
+            </button>
+            <button class="tool-btn" data-tool="browser">
+              <span class="tool-icon">🌐</span>
+              <span class="tool-name">Browser</span>
+            </button>
+            <button class="tool-btn" data-tool="exec">
+              <span class="tool-icon">⚡</span>
+              <span class="tool-name">Execute</span>
+            </button>
+            <button class="tool-btn" data-tool="image">
+              <span class="tool-icon">🖼️</span>
+              <span class="tool-name">Image</span>
+            </button>
+            <button class="tool-btn" data-tool="tts">
+              <span class="tool-icon">🔊</span>
+              <span class="tool-name">TTS</span>
+            </button>
+            <button class="tool-btn" data-tool="canvas">
+              <span class="tool-icon">🎨</span>
+              <span class="tool-name">Canvas</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Status Panel -->
+      <section class="panel panel-status" data-panel="status">
+        <header class="panel-header">
+          <h2>📊 Status</h2>
+        </header>
+        <div class="panel-content">
+          <div class="status-grid">
+            <div class="status-item">
+              <span class="status-label">Status</span>
+              <span id="system-status" class="status-value">Checking...</span>
+            </div>
+            <div class="status-item">
+              <span class="status-label">Uptime</span>
+              <span id="system-uptime" class="status-value">--</span>
+            </div>
+            <div class="status-item">
+              <span class="status-label">Version</span>
+              <span id="system-version" class="status-value">--</span>
+            </div>
+            <div class="status-item">
+              <span class="status-label">Last Update</span>
+              <span id="system-timestamp" class="status-value">--</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tasks Panel -->
+      <section class="panel panel-tasks" data-panel="tasks">
+        <header class="panel-header">
+          <h2>✅ Tasks</h2>
+        </header>
+        <div class="panel-content">
+          <div id="tasks-list" class="tasks-list">
+            <p class="empty-state">No tasks</p>
+          </div>
+          <div class="task-input">
+            <input type="text" id="task-input" placeholder="New task...">
+            <button id="task-add" class="btn-primary">Add</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Config Panel -->
+      <section class="panel panel-config" data-panel="config">
+        <header class="panel-header">
+          <h2>⚙️ Config</h2>
+        </header>
+        <div class="panel-content">
+          <div class="config-form">
+            <div class="config-group">
+              <label for="config-theme">Theme</label>
+              <select id="config-theme">
+                <option value="auto">Auto</option>
+                <option value="light">Light</option>
+                <option value="dark">Dark</option>
+              </select>
+            </div>
+            <div class="config-group">
+              <label for="config-notifications">Notifications</label>
+              <input type="checkbox" id="config-notifications" checked>
+            </div>
+            <div class="config-group">
+              <label for="config-refresh">Auto Refresh (seconds)</label>
+              <input type="number" id="config-refresh" value="30" min="5" max="300">
+            </div>
+            <button id="config-save" class="btn-primary">Save Config</button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+  
+  <script src="app.js"></script>
+</body>
+</html>
