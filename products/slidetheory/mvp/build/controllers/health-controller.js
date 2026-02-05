@@ -8,6 +8,7 @@ const fs = require('fs').promises;
 const config = require('../config');
 const { VERSION, STATUS } = require('../config/constants');
 const { isAIAvailable, getProviderDisplayName } = require('../config/ai-providers');
+const { isPuppeteerAvailable } = require('../services/export-service');
 
 // Simple in-memory metrics store
 const metrics = {
@@ -34,8 +35,9 @@ function recordRequest(duration, isError = false) {
  * Get basic health status
  * GET /api/health
  */
-function getHealth(req, res) {
+async function getHealth(req, res) {
   const uptime = Date.now() - metrics.startTime;
+  const puppeteerAvailable = await isPuppeteerAvailable();
   
   res.status(STATUS.OK).json({
     status: 'ok',
@@ -47,7 +49,8 @@ function getHealth(req, res) {
       aiGeneration: isAIAvailable(),
       aiProvider: getProviderDisplayName(),
       exports: config.exports.formats,
-      slideTypes: config.slides.validTypes
+      slideTypes: config.slides.validTypes,
+      puppeteer: puppeteerAvailable
     }
   });
 }
@@ -62,14 +65,16 @@ async function getDetailedHealth(req, res) {
       checkAIProvider(),
       checkStorage(),
       checkMemory(),
-      checkDiskSpace()
+      checkDiskSpace(),
+      checkPuppeteer()
     ]);
-    
+
     const checkResults = {
       ai: checks[0],
       storage: checks[1],
       memory: checks[2],
-      disk: checks[3]
+      disk: checks[3],
+      puppeteer: checks[4]
     };
     
     // Determine overall status
@@ -216,6 +221,23 @@ async function checkDiskSpace() {
     status: 'ok',
     note: 'Disk check requires diskusage package'
   };
+}
+
+async function checkPuppeteer() {
+  try {
+    const available = await isPuppeteerAvailable();
+    return {
+      status: available ? 'ok' : 'warning',
+      available,
+      message: available ? 'Puppeteer is available for PDF/PNG generation' : 'Puppeteer not available - PDF/PNG exports will fail. Install with: npm install puppeteer'
+    };
+  } catch (err) {
+    return {
+      status: 'warning',
+      available: false,
+      message: err.message
+    };
+  }
 }
 
 module.exports = {

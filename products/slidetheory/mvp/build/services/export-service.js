@@ -13,12 +13,60 @@
  */
 
 const PptxGenJS = require('pptxgenjs');
-const puppeteer = require('puppeteer');
 const fs = require('fs').promises;
 const path = require('path');
 const crypto = require('crypto');
 const config = require('../config');
 const { COLORS } = require('../config/constants');
+const { logger } = require('../middleware/logger');
+
+// Lazy-load puppeteer - only import when needed
+let puppeteer = null;
+let puppeteerAvailable = null; // null = unknown, true = available, false = unavailable
+
+/**
+ * Check if Puppeteer is available
+ * @returns {Promise<boolean>}
+ */
+async function isPuppeteerAvailable() {
+  if (puppeteerAvailable !== null) {
+    return puppeteerAvailable;
+  }
+  
+  try {
+    puppeteer = require('puppeteer');
+    // Test if we can launch a browser
+    const browser = await puppeteer.launch({
+      headless: 'new',
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+      timeout: 5000
+    });
+    await browser.close();
+    puppeteerAvailable = true;
+    logger.info(null, 'Puppeteer is available for PDF/PNG generation');
+  } catch (error) {
+    puppeteerAvailable = false;
+    logger.warn(null, 'Puppeteer not available', { 
+      error: error.message,
+      hint: 'Install with: npm install puppeteer'
+    });
+  }
+  
+  return puppeteerAvailable;
+}
+
+/**
+ * Get puppeteer instance (throws if unavailable)
+ * @returns {Promise<Object>}
+ */
+async function getPuppeteer() {
+  if (!await isPuppeteerAvailable()) {
+    const error = new Error('PDF/PNG generation requires Puppeteer which is not available. Please install with: npm install puppeteer');
+    error.code = 'PUPPETEER_UNAVAILABLE';
+    throw error;
+  }
+  return puppeteer;
+}
 
 // ============================================
 // ASPECT RATIO CONFIGURATIONS
@@ -129,7 +177,8 @@ async function generatePNG({ slideType, content, outputPath, options = {} }) {
   const finalScale = scale || qualityConfig.scale;
   const dimensions = ASPECT_RATIOS[aspectRatio] || ASPECT_RATIOS['16:9'];
   
-  const browser = await puppeteer.launch({
+  // Check Puppeteer availability before attempting to use it
+  const browser = await (await getPuppeteer()).launch({
     headless: 'new',
     args: ['--no-sandbox', '--disable-setuid-sandbox']
   });
@@ -749,7 +798,8 @@ async function generatePDF({ slideType, content, outputPath, options = {} }) {
   const qualityConfig = QUALITY_SETTINGS[quality] || QUALITY_SETTINGS.high;
   const dimensions = ASPECT_RATIOS[aspectRatio] || ASPECT_RATIOS['16:9'];
   
-  const browser = await puppeteer.launch({
+  // Check Puppeteer availability before attempting to use it
+  const browser = await (await getPuppeteer()).launch({
     headless: 'new',
     args: ['--no-sandbox', '--disable-setuid-sandbox']
   });
@@ -1017,6 +1067,9 @@ module.exports = {
   getExportHistory,
   getExportHistoryList,
   clearExportHistory,
+  
+  // Puppeteer availability check
+  isPuppeteerAvailable,
   
   // Constants
   ASPECT_RATIOS,

@@ -1,37 +1,37 @@
 {
   "version": "2.0",
   "createdAt": "2026-02-05T01:00:50.342Z",
-  "updatedAt": "2026-02-05T05:07:41.328Z",
+  "updatedAt": "2026-02-05T14:36:12.956Z",
   "slides": {
-    "totalGenerated": 23,
+    "totalGenerated": 27,
     "totalCached": 0,
     "byType": {
-      "Executive Summary": 13,
-      "Market Analysis": 3,
+      "Executive Summary": 16,
+      "Market Analysis": 4,
       "Financial Model": 4,
       "Competitive Analysis": 1,
       "Growth Strategy": 1,
       "Risk Assessment": 1
     },
     "byTemplate": {
-      "Executive Summary": 13,
-      "Market Analysis": 3,
+      "Executive Summary": 16,
+      "Market Analysis": 4,
       "Financial Model": 4,
       "Competitive Analysis": 1,
       "Growth Strategy": 1,
       "Risk Assessment": 1
     },
     "byFramework": {
-      "MECE": 6,
+      "MECE": 9,
       "Pyramid Principle": 1
     },
     "byDay": {
       "2026-02-05": {
-        "total": 23,
+        "total": 27,
         "cached": 0,
         "types": {
-          "Executive Summary": 13,
-          "Market Analysis": 3,
+          "Executive Summary": 16,
+          "Market Analysis": 4,
           "Financial Model": 4,
           "Competitive Analysis": 1,
           "Growth Strategy": 1,
@@ -40,9 +40,9 @@
       }
     },
     "generationTime": {
-      "totalMs": 159171,
-      "count": 23,
-      "avgMs": 6920,
+      "totalMs": 186244,
+      "count": 27,
+      "avgMs": 6898,
       "minMs": 0,
       "maxMs": 33777,
       "p50": 0,
@@ -51,23 +51,23 @@
     }
   },
   "exports": {
-    "total": 3,
+    "total": 4,
     "byFormat": {
       "png": 0,
-      "pptx": 3,
+      "pptx": 4,
       "pdf": 0,
       "zip": 0
     },
     "byDay": {
       "2026-02-05": {
-        "total": 3,
+        "total": 4,
         "formats": {
-          "pptx": 3
+          "pptx": 4
         }
       }
     },
-    "avgTimeMs": 19,
-    "totalTimeMs": 56
+    "avgTimeMs": 30,
+    "totalTimeMs": 120
   },
   "errors": {
     "total": 0,
@@ -80,14 +80,14 @@
     "landingPage": 0,
     "formStarted": 0,
     "formCompleted": 0,
-    "generationStarted": 2,
-    "generationCompleted": 2,
-    "exportStarted": 2,
-    "exportCompleted": 2,
+    "generationStarted": 4,
+    "generationCompleted": 4,
+    "exportStarted": 3,
+    "exportCompleted": 3,
     "dropOffPoints": {
       "landingToForm": 0,
       "formStartToComplete": 0,
-      "formToGeneration": -2,
+      "formToGeneration": -4,
       "generationToExport": 0
     }
   },
@@ -110,7 +110,7 @@
     0,
     0,
     0,
-    0,
+    4,
     0,
     0,
     0,
@@ -126,7 +126,7 @@
     0,
     0,
     0,
-    23,
+    27,
     0,
     0
   ],
