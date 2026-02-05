@@ -222,6 +222,7 @@ async function init() {
   setupEventListeners();
   setupAutoSave();
   setupHistory();
+  setupMobileMenu();
   validateV2Form();
   checkForRecoveredData();
   
@@ -229,6 +230,38 @@ async function init() {
   if (params.get('version') === 'v1') {
     switchVersion('v1');
   }
+}
+
+// ============================================
+// MOBILE MENU - Centralized Navigation Logic
+// ============================================
+
+function setupMobileMenu() {
+  const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+  const navLinks = document.getElementById('navLinks');
+  
+  if (!mobileMenuToggle || !navLinks) return;
+  
+  mobileMenuToggle.addEventListener('click', () => {
+    mobileMenuToggle.classList.toggle('active');
+    navLinks.classList.toggle('open');
+  });
+
+  // Close mobile menu when clicking a link
+  navLinks.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', () => {
+      mobileMenuToggle.classList.remove('active');
+      navLinks.classList.remove('open');
+    });
+  });
+  
+  // Close on escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && navLinks.classList.contains('open')) {
+      mobileMenuToggle.classList.remove('active');
+      navLinks.classList.remove('open');
+    }
+  });
 }
 
 async function loadV2Templates() {
