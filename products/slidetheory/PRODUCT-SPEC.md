@@ -137,5 +137,33 @@ AI image generator that creates McKinsey/BCG/Bain-quality slides from context + 
 
 ---
 
-**Status:** Spec updated, MVP approach needs alignment
-**Next:** Confirm technical direction → Build/adjust MVP
+## Implementation Status (Cycle 1)
+
+| Feature | Status | Notes |
+|---------|--------|-------|
+| HTML-to-Image Rendering | ✅ Implemented | Puppeteer + node-html-to-image |
+| AI Content Generation | ✅ Implemented | Kimi API with fallback |
+| V1 Form (6 slide types) | ✅ Implemented | Classic interface |
+| V2 Form (5 slide types) | ✅ Implemented | New MBB-style interface |
+| PNG Export | ✅ Implemented | Direct download |
+| PPTX Export | ⚠️ Beta | Implemented, needs testing |
+| PDF Export | ⚠️ Beta | Implemented, needs testing |
+| Hybrid Renderer | ✅ Prototype | Canvas + text overlay system |
+| Real Progress Tracking | ✅ Prototype | SSE-based progress updates |
+| File Upload | ✅ Text Only | CSV/TXT files only |
+| Version Toggle | ✅ Implemented | V1/V2 switch |
+| Keyboard Shortcuts | ✅ Implemented | Ctrl+Enter, ?, etc. |
+| Mobile Stepper | 📝 Planned | Spec ready, Cycle 2 |
+| Accessibility (WCAG AA) | 📝 Planned | Spec ready, Cycle 2 |
+| MBB Knowledge Base | 📝 Planned | RAG integration, v1.1 |
+| Team Collaboration | 📝 Planned | v1.2 |
+
+**Legend:**
+- ✅ Implemented - Working in production
+- ⚠️ Beta - Implemented but needs validation
+- 📝 Planned - Spec ready, pending implementation
+
+---
+
+**Status:** Cycle 1 complete - Core prototypes delivered
+**Next:** Integrate hybrid renderer + progress tracking, implement mobile UX & a11y

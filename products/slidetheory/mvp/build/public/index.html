@@ -10,6 +10,12 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <!-- Skip to content link for keyboard users -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  
+  <!-- ARIA live region for status announcements -->
+  <div id="statusAnnouncer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+  
   <div class="app">
     <!-- Header -->
     <header class="header">
@@ -256,7 +262,7 @@ Gross Margin: 68%..."></textarea>
       </aside>
 
       <!-- Preview Panel -->
-      <main class="preview-panel">
+      <main class="preview-panel" id="main-content">
         <div class="slide-preview">
           <div class="slide-preview__aspect slide-preview--empty" id="previewContainer">
             <!-- Empty State -->
@@ -283,6 +289,17 @@ Gross Margin: 68%..."></textarea>
 
             <!-- Slide Image -->
             <img id="slideImage" class="slide-preview__image hidden" alt="Generated slide">
+            
+            <!-- Success Animation Overlay -->
+            <div id="successOverlay" class="success-overlay hidden">
+              <div class="success-checkmark">
+                <svg viewBox="0 0 52 52" class="checkmark" aria-hidden="true">
+                  <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
+                  <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+                </svg>
+              </div>
+              <p class="success-text">Slide ready!</p>
+            </div>
           </div>
         </div>
 
@@ -298,7 +315,7 @@ Gross Margin: 68%..."></textarea>
             Regenerate
           </button>
           <div class="dropdown">
-            <button class="btn btn--primary" id="downloadBtn">
+            <button class="btn btn--primary" id="downloadBtn" aria-haspopup="menu" aria-expanded="false" aria-controls="downloadMenu">
               <svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
                 <polyline points="7 10 12 15 17 10"/>
@@ -309,17 +326,17 @@ Gross Margin: 68%..."></textarea>
                 <path d="m6 9 6 6 6-6"/>
               </svg>
             </button>
-            <div class="dropdown-menu" id="downloadMenu">
-              <button class="dropdown-item" data-format="png">
-                <span class="dropdown-icon">🖼️</span>
+            <div class="dropdown-menu" id="downloadMenu" role="menu" aria-labelledby="downloadBtn">
+              <button class="dropdown-item" data-format="png" role="menuitem">
+                <span class="dropdown-icon" aria-hidden="true">🖼️</span>
                 <span class="dropdown-label">PNG Image</span>
               </button>
-              <button class="dropdown-item" data-format="pptx">
-                <span class="dropdown-icon">📊</span>
+              <button class="dropdown-item" data-format="pptx" role="menuitem">
+                <span class="dropdown-icon" aria-hidden="true">📊</span>
                 <span class="dropdown-label">PowerPoint (.pptx)</span>
               </button>
-              <button class="dropdown-item" data-format="pdf">
-                <span class="dropdown-icon">📄</span>
+              <button class="dropdown-item" data-format="pdf" role="menuitem">
+                <span class="dropdown-icon" aria-hidden="true">📄</span>
                 <span class="dropdown-label">PDF Document</span>
               </button>
             </div>
@@ -333,13 +350,14 @@ Gross Margin: 68%..."></textarea>
   <div id="toastContainer"></div>
 
   <!-- Keyboard Shortcuts Modal -->
-  <div class="modal hidden" id="shortcutsModal">
+  <div class="modal hidden" id="shortcutsModal" role="dialog" aria-modal="true" aria-labelledby="shortcutsTitle" aria-describedby="shortcutsDesc">
     <div class="modal-backdrop"></div>
     <div class="modal-content">
       <div class="modal-header">
-        <h3 class="modal-title">Keyboard Shortcuts</h3>
-        <button class="modal-close" id="modalClose">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <h3 class="modal-title" id="shortcutsTitle">Keyboard Shortcuts</h3>
+        <p class="sr-only" id="shortcutsDesc">Use Tab to navigate between buttons, Escape to close</p>
+        <button class="modal-close" id="modalClose" aria-label="Close keyboard shortcuts dialog">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <path d="M18 6 6 18"/>
             <path d="m6 6 12 12"/>
           </svg>

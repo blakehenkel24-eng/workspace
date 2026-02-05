@@ -41,6 +41,44 @@ const rules = {
     }
   },
   
+  generateSlideV2: {
+    slideType: {
+      required: true,
+      type: 'string',
+      message: 'slideType is required'
+    },
+    context: {
+      required: true,
+      type: 'string',
+      minLength: LIMITS.MIN_CONTEXT_LENGTH,
+      maxLength: 2000,
+      message: 'context must be between 10 and 2000 characters'
+    },
+    audience: {
+      required: true,
+      type: 'string',
+      message: 'audience is required'
+    },
+    keyTakeaway: {
+      required: true,
+      type: 'string',
+      minLength: 5,
+      maxLength: 150,
+      message: 'keyTakeaway is required (5-150 characters)'
+    },
+    presentationMode: {
+      required: false,
+      type: 'string',
+      validate: (value) => ['presentation', 'read'].includes(value),
+      message: 'presentationMode must be "presentation" or "read"'
+    },
+    dataInput: {
+      required: false,
+      type: 'string',
+      message: 'dataInput must be a string'
+    }
+  },
+  
   exportSlide: {
     slideType: {
       required: true,

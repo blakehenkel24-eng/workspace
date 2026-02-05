@@ -12,7 +12,9 @@ const state = {
   isGenerating: false,
   currentSlide: null,
   presentationMode: 'presentation', // 'presentation' or 'read'
-  templates: {}
+  templates: {},
+  currentJobId: null,
+  progressEventSource: null
 };
 
 // ============================================
@@ -79,7 +81,9 @@ const sharedElements = {
   shortcutsModal: document.getElementById('shortcutsModal'),
   modalClose: document.getElementById('modalClose'),
   versionBtns: document.querySelectorAll('.version-btn'),
-  toggleVersionBtn: document.getElementById('toggleVersionBtn')
+  toggleVersionBtn: document.getElementById('toggleVersionBtn'),
+  statusAnnouncer: document.getElementById('statusAnnouncer'),
+  successOverlay: document.getElementById('successOverlay')
 };
 
 // ============================================
@@ -95,6 +99,73 @@ const loadingStepMessages = [
 ];
 
 let loadingStepInterval = null;
+
+// ============================================
+// FOCUS TRAP FOR MODALS
+// ============================================
+
+function trapFocus(element) {
+  const focusableElements = element.querySelectorAll(
+    'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+  );
+  const firstFocusable = focusableElements[0];
+  const lastFocusable = focusableElements[focusableElements.length - 1];
+
+  element.addEventListener('keydown', function(e) {
+    if (e.key !== 'Tab') return;
+
+    if (e.shiftKey) {
+      if (document.activeElement === firstFocusable) {
+        lastFocusable.focus();
+        e.preventDefault();
+      }
+    } else {
+      if (document.activeElement === lastFocusable) {
+        firstFocusable.focus();
+        e.preventDefault();
+      }
+    }
+  });
+}
+
+// Store the element that had focus before modal opened
+let lastFocusedElement = null;
+
+function openModal(modalElement) {
+  lastFocusedElement = document.activeElement;
+  modalElement.classList.remove('hidden');
+  trapFocus(modalElement);
+  // Focus the first focusable element (usually the close button)
+  const firstFocusable = modalElement.querySelector('button, [href], input, select, textarea');
+  if (firstFocusable) {
+    firstFocusable.focus();
+  }
+}
+
+function closeModalFunc() {
+  sharedElements.shortcutsModal?.classList.add('hidden');
+  sharedElements.downloadMenu?.classList.remove('open');
+  // Return focus to the element that opened the modal
+  if (lastFocusedElement) {
+    lastFocusedElement.focus();
+  }
+}
+
+// ============================================
+// STATUS ANNOUNCEMENTS
+// ============================================
+
+function announceStatus(message) {
+  if (sharedElements.statusAnnouncer) {
+    sharedElements.statusAnnouncer.textContent = message;
+    // Clear after announcement to prevent repetition
+    setTimeout(() => {
+      if (sharedElements.statusAnnouncer) {
+        sharedElements.statusAnnouncer.textContent = '';
+      }
+    }, 1000);
+  }
+}
 
 // ============================================
 // INITIALIZATION
@@ -182,7 +253,29 @@ function setupEventListeners() {
   
   sharedElements.downloadBtn?.addEventListener('click', (e) => {
     e.stopPropagation();
-    sharedElements.downloadMenu?.classList.toggle('open');
+    const isOpen = sharedElements.downloadMenu?.classList.toggle('open');
+    // Update aria-expanded attribute
+    sharedElements.downloadBtn?.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  });
+
+  // Keyboard navigation for dropdown menu
+  sharedElements.downloadMenu?.addEventListener('keydown', (e) => {
+    const items = sharedElements.downloadMenu.querySelectorAll('[role="menuitem"]');
+    const currentIndex = Array.from(items).indexOf(document.activeElement);
+    
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      const nextIndex = currentIndex < items.length - 1 ? currentIndex + 1 : 0;
+      items[nextIndex].focus();
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      const prevIndex = currentIndex > 0 ? currentIndex - 1 : items.length - 1;
+      items[prevIndex].focus();
+    } else if (e.key === 'Escape') {
+      sharedElements.downloadMenu?.classList.remove('open');
+      sharedElements.downloadBtn?.setAttribute('aria-expanded', 'false');
+      sharedElements.downloadBtn?.focus();
+    }
   });
   
   document.querySelectorAll('.dropdown-item[data-format]').forEach(item => {
@@ -195,15 +288,18 @@ function setupEventListeners() {
   
   document.addEventListener('click', () => {
     sharedElements.downloadMenu?.classList.remove('open');
+    sharedElements.downloadBtn?.setAttribute('aria-expanded', 'false');
   });
   
   // Modal
   document.getElementById('helpBtn')?.addEventListener('click', () => {
-    sharedElements.shortcutsModal?.classList.remove('hidden');
+    if (sharedElements.shortcutsModal) {
+      openModal(sharedElements.shortcutsModal);
+    }
   });
   
-  sharedElements.modalClose?.addEventListener('click', closeModal);
-  sharedElements.shortcutsModal?.querySelector('.modal-backdrop')?.addEventListener('click', closeModal);
+  sharedElements.modalClose?.addEventListener('click', closeModalFunc);
+  sharedElements.shortcutsModal?.querySelector('.modal-backdrop')?.addEventListener('click', closeModalFunc);
   
   // Keyboard shortcuts
   document.addEventListener('keydown', handleKeyboard);
@@ -355,13 +451,160 @@ async function handleV2Submit(e) {
       throw new Error(data.message || 'Failed to generate slide');
     }
     
+    // Store job ID for progress tracking and cancellation
+    state.currentJobId = data.jobId;
+    
+    // Connect to SSE for progress updates
+    connectProgressSSE(data.jobId);
+    
+    // Wait for generation to complete via SSE
+    // The SSE connection will handle progress updates
+    // We poll for completion
+    await waitForCompletion(data.jobId);
+    
     displaySlide(data);
     showToast('Slide generated successfully!', 'success');
     
   } catch (error) {
-    showError('Generation Failed', error.message);
+    if (error.message !== 'Request cancelled') {
+      showError('Generation Failed', error.message);
+    }
     stopLoading();
     showEmptyState();
+  } finally {
+    closeProgressSSE();
+    state.currentJobId = null;
+  }
+}
+
+/**
+ * Wait for job completion by polling
+ */
+async function waitForCompletion(jobId, maxAttempts = 60) {
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    // Check if cancelled
+    if (!state.isGenerating) {
+      throw new Error('Request cancelled');
+    }
+    
+    await new Promise(resolve => setTimeout(resolve, 500));
+  }
+  
+  throw new Error('Generation timed out');
+}
+
+// ============================================
+// PROGRESS TRACKING (SSE)
+// ============================================
+
+/**
+ * Connect to SSE endpoint for progress updates
+ */
+function connectProgressSSE(jobId) {
+  // Close any existing connection
+  closeProgressSSE();
+  
+  const evtSource = new EventSource(`/api/progress/${jobId}`);
+  state.progressEventSource = evtSource;
+  
+  evtSource.addEventListener('message', (event) => {
+    try {
+      const data = JSON.parse(event.data);
+      handleProgressUpdate(data);
+    } catch (error) {
+      console.error('Failed to parse progress update:', error);
+    }
+  });
+  
+  evtSource.addEventListener('error', (error) => {
+    console.error('SSE error:', error);
+    // Don't close on error - let it retry
+  });
+  
+  return evtSource;
+}
+
+/**
+ * Close SSE connection
+ */
+function closeProgressSSE() {
+  if (state.progressEventSource) {
+    state.progressEventSource.close();
+    state.progressEventSource = null;
+  }
+}
+
+/**
+ * Handle progress update from SSE
+ */
+function handleProgressUpdate(data) {
+  const { type, percent, stepLabel, estimateSeconds } = data;
+  
+  switch (type) {
+    case 'connected':
+      console.log('[Progress] Connected to job:', data.jobId);
+      break;
+      
+    case 'progress':
+      // Update progress bar
+      updateProgressBar(percent);
+      
+      // Update loading text
+      if (stepLabel && sharedElements.loadingSteps) {
+        let text = stepLabel;
+        if (estimateSeconds && estimateSeconds > 0) {
+          text += ` (~${estimateSeconds}s remaining)`;
+        }
+        sharedElements.loadingSteps.textContent = text;
+      }
+      break;
+      
+    case 'complete':
+      closeProgressSSE();
+      break;
+      
+    case 'error':
+      closeProgressSSE();
+      showError('Generation Failed', data.error || 'Unknown error');
+      stopLoading();
+      break;
+      
+    case 'cancelled':
+      closeProgressSSE();
+      showToast('Generation cancelled', 'info');
+      stopLoading();
+      break;
+  }
+}
+
+/**
+ * Update progress bar visual
+ */
+function updateProgressBar(percent) {
+  const progressBar = document.getElementById('loadingProgressBar');
+  if (progressBar) {
+    progressBar.style.width = `${percent}%`;
+  }
+}
+
+/**
+ * Cancel current generation
+ */
+async function cancelGeneration() {
+  if (!state.currentJobId) return;
+  
+  try {
+    const response = await fetch(`/api/progress/${state.currentJobId}/cancel`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' }
+    });
+    
+    if (response.ok) {
+      showToast('Cancelling...', 'info');
+      state.isGenerating = false;
+    }
+  } catch (error) {
+    console.error('Failed to cancel:', error);
   }
 }
 
@@ -419,22 +662,25 @@ async function handleV1Submit(e) {
 
 function startLoading() {
   state.isGenerating = true;
-  
+
+  // Announce loading state to screen readers
+  announceStatus('Generating slide, please wait...');
+
   // Update button
   const btn = state.version === 'v2' ? v2Elements.generateBtn : v1Elements.generateBtn;
   const icon = state.version === 'v2' ? v2Elements.generateIcon : null;
   const text = state.version === 'v2' ? v2Elements.generateText : null;
-  
+
   if (btn) btn.disabled = true;
   if (text) text.textContent = 'Generating...';
   if (icon) icon.classList.add('spinning');
-  
+
   // Show loading overlay
   sharedElements.emptyState?.classList.add('hidden');
   sharedElements.slideImage?.classList.add('hidden');
   sharedElements.loadingOverlay?.classList.remove('hidden');
   sharedElements.actionBar.style.display = 'none';
-  
+
   // Animate loading steps
   let stepIndex = 0;
   if (sharedElements.loadingSteps) {
@@ -473,13 +719,31 @@ function stopLoading() {
 
 function displaySlide(data) {
   state.currentSlide = data;
-  
+
   sharedElements.slideImage.src = data.imageUrl;
   sharedElements.slideImage.classList.remove('hidden');
   sharedElements.previewContainer.classList.remove('slide-preview--empty');
   sharedElements.actionBar.style.display = 'flex';
-  
+
+  // Show success animation
+  showSuccessAnimation();
+
+  // Announce completion to screen readers
+  announceStatus('Slide generated successfully!');
+
   stopLoading();
+}
+
+function showSuccessAnimation() {
+  if (sharedElements.successOverlay) {
+    sharedElements.successOverlay.classList.remove('hidden');
+    // Hide after animation completes
+    setTimeout(() => {
+      if (sharedElements.successOverlay) {
+        sharedElements.successOverlay.classList.add('hidden');
+      }
+    }, 1500);
+  }
 }
 
 function showEmptyState() {
@@ -575,14 +839,17 @@ async function downloadExport(format) {
 
 function showError(title, message) {
   if (!sharedElements.errorContainer) return;
-  
+
   sharedElements.errorContainer.innerHTML = `
-    <div class="alert alert--error">
+    <div class="alert alert--error" role="alert" aria-live="assertive">
       <div class="alert__title">${title}</div>
       <div class="alert__message">${message}</div>
     </div>
   `;
   sharedElements.errorContainer.classList.remove('hidden');
+
+  // Announce error to screen readers
+  announceStatus(`Error: ${title}. ${message}`);
 }
 
 function clearError() {
@@ -642,7 +909,10 @@ function handleKeyboard(e) {
   
   // Close modal: Esc
   if (e.key === 'Escape') {
-    closeModal();
+    closeModalFunc();
+    // Also close dropdown menu
+    sharedElements.downloadMenu?.classList.remove('open');
+    sharedElements.downloadBtn?.setAttribute('aria-expanded', 'false');
   }
 }
 
