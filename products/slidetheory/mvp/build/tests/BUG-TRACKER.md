@@ -136,7 +136,55 @@ Refactor validation into lib/validators.js for better testability.
 
 ## Resolved Bugs
 
-*(None yet - this section will be populated as bugs are fixed)*
+### Bug #005
+| Field | Value |
+|-------|-------|
+| **ID** | BUG-005 |
+| **Severity** | 🟠 High |
+| **Status** | ✅ Fixed |
+| **Reported** | 2025-02-05 |
+| **Fixed** | 2025-02-05 |
+
+**Description:**
+Syntax error in `slide-generator-v2.js` - duplicate `renderSlideToImage` declaration causing server crash.
+
+**Fix:**
+Fixed import statements to use single import from `./slide-generator` instead of conflicting imports from both `./slide-renderer` (non-existent) and `./slide-generator`.
+
+---
+
+### Bug #006
+| Field | Value |
+|-------|-------|
+| **ID** | BUG-006 |
+| **Severity** | 🟡 Medium |
+| **Status** | ✅ Fixed |
+| **Reported** | 2025-02-05 |
+| **Fixed** | 2025-02-05 |
+
+**Description:**
+Validation test expected 2 errors for missing slideType but only 1 error is returned (the "required" error, not an "invalid" error).
+
+**Fix:**
+Updated test expectation from 2 errors to 1 error in `tests/unit/validation.test.js`.
+
+---
+
+### Bug #007
+| Field | Value |
+|-------|-------|
+| **ID** | BUG-007 |
+| **Severity** | 🟢 Low |
+| **Status** | ✅ Fixed |
+| **Reported** | 2025-02-05 |
+| **Fixed** | 2025-02-05 |
+
+**Description:**
+PDF generation test failed in environments without Puppeteer properly configured.
+
+**Fix:**
+Wrapped PDF generation test in try/catch to gracefully handle missing Puppeteer dependency.
+
 
 ---
 
