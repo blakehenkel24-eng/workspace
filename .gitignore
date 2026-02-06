@@ -48,3 +48,8 @@ google-service-account.json
 .google-service-account.json
 .vercel
 .env*.local
+
+# MCP Config files with secrets
+claude_desktop_config.json
+config/mcporter.json
+.credentials/
