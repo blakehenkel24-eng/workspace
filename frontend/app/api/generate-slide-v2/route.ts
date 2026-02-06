@@ -315,10 +315,12 @@ Generate the slide content as a JSON object with:
       }
       
       if (errorMessage.includes('permission') || errorMessage.includes('403') || errorMessage.includes('401')) {
+        console.error('[generate-slide-v2] API Key Error:', errorMessage);
         return NextResponse.json({
           success: false,
-          error: `Invalid ${provider.name} API key or insufficient permissions.`,
-          code: 'PERMISSION_DENIED'
+          error: `Invalid ${provider.name} API key or insufficient permissions. Please check your API key in Vercel environment variables.`,
+          code: 'PERMISSION_DENIED',
+          details: errorMessage
         }, { status: 403 });
       }
 
