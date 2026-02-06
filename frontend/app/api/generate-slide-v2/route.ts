@@ -19,9 +19,19 @@ Keep bullets under 12 words each, use parallel structure, and front-load insight
 
 export async function POST(request: NextRequest) {
   try {
+    // Check for API key
+    const apiKey = process.env.KIMI_API_KEY;
+    if (!apiKey) {
+      console.error('KIMI_API_KEY environment variable is not set');
+      return NextResponse.json({
+        success: false,
+        error: 'Server configuration error: API key not configured'
+      }, { status: 500 });
+    }
+
     // Initialize OpenAI client inside handler (not at module level) to avoid build-time errors
     const openai = new OpenAI({
-      apiKey: process.env.KIMI_API_KEY,
+      apiKey: apiKey,
       baseURL: process.env.KIMI_BASE_URL || 'https://api.moonshot.cn/v1',
     });
 
