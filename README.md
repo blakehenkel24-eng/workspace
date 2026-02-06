@@ -99,3 +99,4 @@ These files define how the AI agent operates in this workspace:
 ---
 
 *Last updated: February 5, 2026*
+<!-- Vercel deploy trigger -->
