@@ -60,7 +60,7 @@ Generate the slide content as a JSON object with:
 - supporting_elements: Array of key metrics/data points`;
 
     const completion = await openai.chat.completions.create({
-      model: 'kimi-k2-5',
+      model: 'moonshot-v1-128k',
       messages: [
         { role: 'system', content: SYSTEM_PROMPT },
         { role: 'user', content: userPrompt }
@@ -88,7 +88,7 @@ Generate the slide content as a JSON object with:
       } else {
         throw new Error('No JSON object found');
       }
-    } catch (e) {
+    } catch {
       // Fallback: create structured content from text
       parsedContent = {
         headline: keyTakeaway,
@@ -101,7 +101,7 @@ Generate the slide content as a JSON object with:
     }
 
     // Generate HTML content for the slide preview
-    const htmlContent = generateSlideHTML(parsedContent, slideType, audience);
+    const htmlContent = generateSlideHTML(parsedContent);
 
     // Create the slide data object matching SlideData type
     const now = new Date().toISOString();
@@ -132,7 +132,7 @@ Generate the slide content as a JSON object with:
   }
 }
 
-function generateSlideHTML(content: any, slideType: string, audience: string) {
+function generateSlideHTML(content: unknown) {
   const headline = content.headline || content.title || 'Strategic Insights';
   const subheadline = content.subheadline || '';
   const primaryMessage = content.content?.primary_message || '';
@@ -248,7 +248,7 @@ function generateSlideHTML(content: any, slideType: string, audience: string) {
       </div>` : ''}
       ${supporting.length > 0 ? `
       <div class="supporting-elements">
-        ${supporting.map((s: any) => `
+        ${supporting.map((s: {label?: string; value?: string}) => `
           <div class="metric-box">
             <div class="metric-label">${escapeHtml(s.label || 'Metric')}</div>
             <div class="metric-value">${escapeHtml(s.value || '')}</div>

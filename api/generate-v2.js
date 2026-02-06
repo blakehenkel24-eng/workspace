@@ -37,6 +37,15 @@ module.exports = async (req, res) => {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
+  // Check if API key is configured
+  if (!process.env.KIMI_API_KEY) {
+    console.error('KIMI_API_KEY environment variable is not set');
+    return res.status(500).json({
+      success: false,
+      error: 'Server configuration error: API key not configured. Please set KIMI_API_KEY in Vercel environment variables.'
+    });
+  }
+
   try {
     const { slideType, context, audience, keyTakeaway, presentationMode, dataInput } = req.body;
     
