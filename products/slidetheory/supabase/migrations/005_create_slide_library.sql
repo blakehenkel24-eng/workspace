@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS public.slide_library (
     layout_pattern JSONB DEFAULT '{}',
     color_palette JSONB DEFAULT '{}',
     tags TEXT[] DEFAULT '{}',
-    source TEXT NOT NULL CHECK (source IN ('uploaded', 'generated', 'template')),
+    source TEXT NOT NULL CHECK (source IN ('uploaded', 'generated', 'template', 'reference')),
     file_url TEXT,
     preview_url TEXT,
     content JSONB DEFAULT '{}',
