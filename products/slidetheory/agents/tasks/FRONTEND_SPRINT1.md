@@ -140,3 +140,4 @@ All code should be written to: `/products/slidetheory/mvp/build/`
 ## References
 - Sprint Plan: `/products/slidetheory/SPRINT_PLAN.md`
 - Product Spec: `/products/slidetheory/PRODUCT-SPEC.md`
+- **PROMPT_INSTRUCTIONS.md:** `/products/slidetheory/PROMPT_INSTRUCTIONS.md` (Review for Sprint 2 context - contains slide archetype layouts)

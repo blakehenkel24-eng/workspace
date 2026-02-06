@@ -15,6 +15,13 @@
 - **Hosting:** Vercel
 - **MCP Servers:** GitHub, Supabase, Puppeteer
 
+## Critical References
+
+**ALL AGENTS MUST READ:**
+- **AI Generation Prompts:** `/products/slidetheory/PROMPT_INSTRUCTIONS.md` - Contains the exact Kimi API prompt template and slide archetype requirements
+- **Product Spec:** `/products/slidetheory/PRODUCT-SPEC.md` - Core product requirements
+- **This Document:** Sprint planning and story assignments
+
 ---
 
 ## Sprint 1: Foundation
@@ -330,15 +337,75 @@ Build the slide preview panel with proper 16:9 ratio and responsive design.
 **Description:**
 Implement the slide generation API using Kimi API for content creation.
 
+**CRITICAL: Reference `/products/slidetheory/PROMPT_INSTRUCTIONS.md` for exact prompt template**
+
 **Acceptance Criteria:**
 - [ ] Supabase Edge Function for slide generation
 - [ ] Kimi API integration with proper error handling
-- [ ] Prompt engineering for each slide type
-- [ ] Audience-aware content tailoring
-- [ ] Response parsing and formatting
+- [ ] **USE EXACT PROMPT TEMPLATE from PROMPT_INSTRUCTIONS.md** (see below)
+- [ ] Prompt engineering for each slide type following archetype rules:
+  - Executive Summary: Pyramid principle, so-what first
+  - Horizontal Flow: Process/timeline, left-to-right
+  - Vertical Flow: Issue tree, top-down hierarchy, MECE
+  - Graph/Chart: Data viz with insight callouts
+- [ ] Audience-aware content tailoring (C-Suite, PE, Internal, External)
+- [ ] **MECE principle enforcement** in generated content
+- [ ] Response parsing and formatting (JSON structure)
 - [ ] Rate limiting implementation
 - [ ] Generation status updates (polling or SSE)
 - [ ] Fallback/error handling for API failures
+
+**Prompt Template (from PROMPT_INSTRUCTIONS.md):**
+```
+You are an elite consulting slide creation expert specializing in transforming complex business information into high-impact, executive-ready presentations. Your expertise draws from the communication principles of top-tier management consulting firms (McKinsey, BCG, Bain), emphasizing clarity, logical structure, and compelling visual storytelling.
+
+Create a slide with the following specifications:
+
+SLIDE TYPE: {slide_type}
+TARGET AUDIENCE: {audience}
+PRESENTATION MODE: {presentation_mode ? 'Presentation (less detail)' : 'Read Mode (more detail)'}
+
+CONTEXT:
+{context}
+
+{data ? 'DATA PROVIDED:\n' + data : ''}
+
+{key_takeaway ? 'KEY TAKEAWAY TO EMPHASIZE: ' + key_takeaway : ''}
+
+Generate a complete slide with:
+1. Compelling headline (action-oriented)
+2. Structured content (MECE-organized bullets, never prose)
+3. Layout description (visual recommendations)
+4. Full text content for all elements
+
+Output format: JSON with headline, content structure, and layout specs
+```
+
+**Quality Standards to Enforce:**
+- **MECE Principle:** Mutually Exclusive, Collectively Exhaustive
+- **Front-load key messages:** So-what first, then supporting points
+- **Executive tone:** Clear, concise, action-oriented language
+- **Structured bullets:** Never large text blocks
+- **16:9 format:** Optimized for presentation viewing
+
+**Output JSON Structure:**
+```typescript
+{
+  headline: string;           // Action-oriented slide title
+  summary: string;            // One key insight
+  content: {
+    sections: Array<{
+      type: 'header' | 'bullet' | 'sub-bullet' | 'chart' | 'matrix';
+      content: string;
+      items?: string[];       // For nested bullets
+    }>;
+  };
+  layout: {
+    type: string;             // e.g., 'executive_summary', 'horizontal_flow'
+    recommendations: string;  // Visual guidance
+  };
+}
+```
 
 **API Contract:**
 ```typescript
@@ -390,23 +457,31 @@ POST /functions/v1/generate-slide
 **Description:**
 Create HTML templates for each slide type with McKinsey-style design.
 
+**CRITICAL: Reference `/products/slidetheory/PROMPT_INSTRUCTIONS.md` for slide archetype layouts**
+
 **Acceptance Criteria:**
 - [ ] General slide template
-- [ ] Executive Summary template
-- [ ] Horizontal Flow template
-- [ ] Vertical Flow template
-- [ ] Graph/Chart template (with placeholder charts)
+- [ ] **Executive Summary template:** Pyramid principle layout, so-what headline at top, 3-4 supporting bullets below
+- [ ] **Horizontal Flow template:** Process/timeline layout, left-to-right visual flow, clear sequence indicators
+- [ ] **Vertical Flow template:** Issue tree layout, top-down hierarchy, MECE branch structure
+- [ ] **Graph/Chart template:** Data viz focus, clear axes/labels area, insight callout box
 - [ ] Consistent styling across all templates
-- [ ] Responsive scaling within 16:9 container
+- [ ] **Responsive scaling within 16:9 container (1920x1080 base)**
 - [ ] Professional typography and spacing
+- [ ] **MECE content structure display support** (proper indentation, grouping visuals)
 
 **Design Standards:**
+- **Aspect Ratio:** 16:9 (1920x1080 base, scaled responsively)
 - Primary color: Navy #003366
 - Background: White #FFFFFF
 - Accent: Blue #4A90E2
 - Fonts: Inter for body, system-serif for accents
 - Proper whitespace (no content touching edges)
 - Clear visual hierarchy
+- **Executive Summary:** Large headline, compact bullets
+- **Horizontal Flow:** Connected boxes left-to-right
+- **Vertical Flow:** Tree structure with connecting lines
+- **Graph/Chart:** Chart area + insight box layout
 
 **Dependencies:** Story 2.3  
 **Definition of Done:** Each slide type renders correctly with professional styling.
