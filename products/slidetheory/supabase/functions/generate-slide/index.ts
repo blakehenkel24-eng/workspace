@@ -153,11 +153,11 @@ async function generateEmbedding(text: string): Promise<number[]> {
 }
 
 /**
- * Search for similar slides in the library
+ * Search for internal reference slides (AI-only, system access)
+ * These slides are not user-facing, used only for style inspiration
  */
-async function searchSimilarSlides(
+async function searchInternalSlides(
   query: string,
-  userId: string,
   industry?: string,
   slideType?: string,
   limit: number = 3
@@ -173,23 +173,23 @@ async function searchSimilarSlides(
       auth: { autoRefreshToken: false, persistSession: false }
     });
 
-    const { data: slides, error } = await supabase.rpc('search_similar_slides', {
+    // Use search_internal_slides for AI-only internal references
+    const { data: slides, error } = await supabase.rpc('search_internal_slides', {
       query_embedding: embedding,
-      match_threshold: 0.6,
+      match_threshold: 0.5, // Lower threshold for internal references
       match_count: limit,
-      filter_user_id: userId,
       filter_industry: industry || null,
       filter_slide_type: slideType || null
     });
 
     if (error) {
-      console.error('RAG search error:', error);
+      console.error('RAG internal search error:', error);
       return [];
     }
 
     return slides || [];
   } catch (error) {
-    console.error('RAG search error:', error);
+    console.error('RAG internal search error:', error);
     return [];
   }
 }
@@ -477,15 +477,15 @@ serve(async (req) => {
     const { data: { user } } = await supabase.auth.getUser(token);
     const userId = user?.id || '';
 
-    // RAG Retrieval Step
+    // RAG Retrieval Step - Search internal reference slides (AI-only)
     let styleExamples = '';
     let retrievedSlides: RetrievedSlide[] = [];
     
-    if (body.use_rag !== false && userId) { // RAG enabled by default
+    if (body.use_rag !== false) { // RAG enabled by default
       const searchQuery = `${body.context} ${body.key_takeaway || ''} ${body.slide_type}`;
-      retrievedSlides = await searchSimilarSlides(
+      // Search internal_reference slides only - these are AI-only, not user-facing
+      retrievedSlides = await searchInternalSlides(
         searchQuery,
-        userId,
         body.industry,
         body.slide_type,
         body.rag_limit || 3

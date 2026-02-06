@@ -1,8 +1,6 @@
--- Seed Script: Populate slide_library with reference slides from existing decks
--- Run this after migration 005_create_slide_library.sql
-
--- Insert reference slides from McKinsey decks
--- These use NULL user_id to make them public templates
+-- Seed Script: Populate slide_library with INTERNAL reference slides
+-- These are NOT user-facing - used only by AI for style inspiration
+-- Run this after migration 006_add_internal_reference_access.sql
 
 -- Helper function to generate a random embedding (for seeding without API calls)
 -- In production, use actual OpenAI embeddings
@@ -11,7 +9,6 @@ RETURNS VECTOR AS $$
 DECLARE
   embedding FLOAT[];
 BEGIN
-  -- Generate array of random values between -1 and 1
   SELECT ARRAY_AGG(random() * 2 - 1)
   INTO embedding
   FROM generate_series(1, dimensions);
@@ -20,7 +17,8 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Insert McKinsey Top Trends Executive Summary slides
+-- Insert INTERNAL reference slides from McKinsey decks
+-- These are NOT visible to users - AI-only for RAG inspiration
 INSERT INTO public.slide_library (
   user_id,
   title,
@@ -30,6 +28,7 @@ INSERT INTO public.slide_library (
   color_palette,
   tags,
   source,
+  access_level,
   file_url,
   preview_url,
   content,
@@ -37,10 +36,10 @@ INSERT INTO public.slide_library (
   embedding,
   metadata
 ) VALUES
--- Executive Summary Title Slide
+-- Executive Summary Title Slide (INTERNAL)
 (
   NULL,
-  'The top trends in 2022 - Executive Summary',
+  '[INTERNAL] McKinsey Top Trends 2022 - Executive Summary',
   'consulting',
   'Executive Summary',
   '{
@@ -58,8 +57,9 @@ INSERT INTO public.slide_library (
     "background": ["#FFFFFF", "#F5F7FA"],
     "text": ["#051C2C", "#2D3748", "#718096"]
   }'::JSONB,
-  ARRAY['mckinsey', 'reference', 'professional', 'trends', '2022', 'executive-summary', 'consulting'],
-  'reference',
+  ARRAY['mckinsey', 'internal', 'trends', '2022', 'executive-summary', 'consulting', 'ai-reference'],
+  'internal_reference',
+  'system',
   'file:///products/slidetheory/mvp/build/knowledge-base/reference-decks/mckinsey-top-trends-exec-summary.pdf',
   NULL,
   '{
@@ -75,22 +75,25 @@ INSERT INTO public.slide_library (
       {"label": "Industries Covered", "value": "12"}
     ],
     "page_number": 1,
-    "consulting_firm": "mckinsey"
+    "consulting_firm": "mckinsey",
+    "internal_use_only": true
   }'::JSONB,
   'The top trends in 2022. Inflation and supply chain disruptions reshape consumer behavior. Remote work becomes permanent fixture across industries. Sustainability moves from compliance to growth driver. Digital transformation accelerates in traditional sectors.',
   generate_random_embedding(),
   '{
-    "source_type": "reference_deck",
+    "source_type": "internal_reference",
     "consulting_firm": "mckinsey",
     "document_type": "executive_summary",
-    "year": 2022
+    "year": 2022,
+    "access_restriction": "system_only",
+    "purpose": "ai_style_inspiration"
   }'::JSONB
 ),
 
--- Trend Detail Slide: Inflation
+-- Trend Detail Slide: Inflation (INTERNAL)
 (
   NULL,
-  'Inflation Reshapes Consumer Behavior - Trend Analysis',
+  '[INTERNAL] Inflation Impact Analysis - Chart Layout',
   'consulting',
   'Graph / Chart',
   '{
@@ -108,8 +111,9 @@ INSERT INTO public.slide_library (
     "chart_colors": ["#2251FF", "#0077B6", "#051C2C"],
     "background": ["#FFFFFF"]
   }'::JSONB,
-  ARRAY['mckinsey', 'reference', 'trends', 'inflation', 'consumer-behavior', 'data-visualization', 'consulting'],
-  'reference',
+  ARRAY['mckinsey', 'internal', 'trends', 'inflation', 'data-visualization', 'consulting', 'ai-reference'],
+  'internal_reference',
+  'system',
   'file:///products/slidetheory/mvp/build/knowledge-base/reference-decks/mckinsey-top-trends-exec-summary.pdf',
   NULL,
   '{
@@ -122,22 +126,25 @@ INSERT INTO public.slide_library (
     ],
     "data_source": "McKinsey Consumer Survey, Q3 2022",
     "page_number": 2,
-    "consulting_firm": "mckinsey"
+    "consulting_firm": "mckinsey",
+    "internal_use_only": true
   }'::JSONB,
   'Inflation drives 73% of consumers to change buying habits. 73% of consumers have switched brands due to price increases. Private label adoption up 15% across categories. Trade-down behavior most pronounced in discretionary categories. McKinsey Consumer Survey Q3 2022.',
   generate_random_embedding(),
   '{
-    "source_type": "reference_deck",
+    "source_type": "internal_reference",
     "consulting_firm": "mckinsey",
     "chart_type": "bar_chart",
-    "data_driven": true
+    "data_driven": true,
+    "access_restriction": "system_only",
+    "purpose": "ai_style_inspiration"
   }'::JSONB
 ),
 
--- Trend Detail Slide: Remote Work
+-- Trend Detail Slide: Remote Work (INTERNAL)
 (
   NULL,
-  'Remote Work Becomes Permanent - Market Analysis',
+  '[INTERNAL] Remote Work Metrics - Percentage Layout',
   'consulting',
   'Graph / Chart',
   '{
@@ -155,8 +162,9 @@ INSERT INTO public.slide_library (
     "chart_colors": ["#2251FF", "#88CCE8", "#E8F4F8"],
     "background": ["#FFFFFF"]
   }'::JSONB,
-  ARRAY['mckinsey', 'reference', 'remote-work', 'future-of-work', 'data-visualization', 'consulting'],
-  'reference',
+  ARRAY['mckinsey', 'internal', 'remote-work', 'future-of-work', 'data-visualization', 'consulting', 'ai-reference'],
+  'internal_reference',
+  'system',
   'file:///products/slidetheory/mvp/build/knowledge-base/reference-decks/mckinsey-top-trends-exec-summary.pdf',
   NULL,
   '{
@@ -172,38 +180,24 @@ INSERT INTO public.slide_library (
       "Technology investment in collaboration tools up 45%",
       "Talent pools now geographically unconstrained"
     ],
-    "consulting_firm": "mckinsey"
+    "consulting_firm": "mckinsey",
+    "internal_use_only": true
   }'::JSONB,
   '58% of work now hybrid or fully remote. 35% hybrid, 23% fully remote, 42% on-site. Real estate footprints shrinking 30%. Technology investment in collaboration tools up 45%. Talent pools now geographically unconstrained.',
   generate_random_embedding(),
   '{
-    "source_type": "reference_deck",
+    "source_type": "internal_reference",
     "consulting_firm": "mckinsey",
-    "chart_type": "percentage_breakdown"
+    "chart_type": "percentage_breakdown",
+    "access_restriction": "system_only",
+    "purpose": "ai_style_inspiration"
   }'::JSONB
-);
+),
 
--- Insert McKinsey Tech Trends 2022 slides
-INSERT INTO public.slide_library (
-  user_id,
-  title,
-  industry,
-  slide_type,
-  layout_pattern,
-  color_palette,
-  tags,
-  source,
-  file_url,
-  preview_url,
-  content,
-  extracted_text,
-  embedding,
-  metadata
-) VALUES
--- Tech Trends Overview
+-- Tech Trends Overview (INTERNAL)
 (
   NULL,
-  'Technology Trends 2022 - Strategic Overview',
+  '[INTERNAL] Technology Trends 2022 - Framework Layout',
   'consulting',
   'Vertical Flow',
   '{
@@ -220,8 +214,9 @@ INSERT INTO public.slide_library (
     "accent": ["#00C853", "#FF6B35", "#9C27B0"],
     "background": ["#FFFFFF", "#F5F7FA"]
   }'::JSONB,
-  ARRAY['mckinsey', 'reference', 'technology', 'trends', '2022', 'strategy', 'framework', 'consulting'],
-  'reference',
+  ARRAY['mckinsey', 'internal', 'technology', 'trends', '2022', 'strategy', 'framework', 'consulting', 'ai-reference'],
+  'internal_reference',
+  'system',
   'file:///products/slidetheory/mvp/build/knowledge-base/reference-decks/mckinsey-tech-trends-2022.pdf',
   NULL,
   '{
@@ -245,22 +240,25 @@ INSERT INTO public.slide_library (
         "description": "Distributed computing at scale"
       }
     ],
-    "consulting_firm": "mckinsey"
+    "consulting_firm": "mckinsey",
+    "internal_use_only": true
   }'::JSONB,
   'Four technology trends reshaping business in 2022. Applied AI: Moving from experimentation to scaled deployment. Trust Architecture: Building resilience in digital ecosystems. Digital Identity: New models for authentication and privacy. Cloud Edge: Distributed computing at scale.',
   generate_random_embedding(),
   '{
-    "source_type": "reference_deck",
+    "source_type": "internal_reference",
     "consulting_firm": "mckinsey",
     "document_type": "trends_report",
-    "year": 2022
+    "year": 2022,
+    "access_restriction": "system_only",
+    "purpose": "ai_style_inspiration"
   }'::JSONB
 ),
 
--- Applied AI Deep Dive
+-- Applied AI Deep Dive (INTERNAL)
 (
   NULL,
-  'Applied AI - Investment and Adoption Trends',
+  '[INTERNAL] AI Investment Trends - Waterfall Chart Layout',
   'consulting',
   'Graph / Chart',
   '{
@@ -278,8 +276,9 @@ INSERT INTO public.slide_library (
     "chart_colors": ["#2251FF", "#0077B6", "#051C2C"],
     "background": ["#FFFFFF"]
   }'::JSONB,
-  ARRAY['mckinsey', 'reference', 'ai', 'artificial-intelligence', 'investment', 'data-visualization', 'consulting'],
-  'reference',
+  ARRAY['mckinsey', 'internal', 'ai', 'artificial-intelligence', 'investment', 'data-visualization', 'consulting', 'ai-reference'],
+  'internal_reference',
+  'system',
   'file:///products/slidetheory/mvp/build/knowledge-base/reference-decks/mckinsey-tech-trends-2022.pdf',
   NULL,
   '{
@@ -291,22 +290,25 @@ INSERT INTO public.slide_library (
       "Top sectors: Healthcare, Finance, Manufacturing"
     ],
     "insight": "Shift from experimental to production AI",
-    "consulting_firm": "mckinsey"
+    "consulting_firm": "mckinsey",
+    "internal_use_only": true
   }'::JSONB,
   'AI investment reached $93B in 2022. Total AI investment 93B +15% YoY. Applied AI vs R&D 70/30 split. Top sectors Healthcare, Finance, Manufacturing. Shift from experimental to production AI.',
   generate_random_embedding(),
   '{
-    "source_type": "reference_deck",
+    "source_type": "internal_reference",
     "consulting_firm": "mckinsey",
     "chart_type": "waterfall",
-    "topic": "artificial_intelligence"
+    "topic": "artificial_intelligence",
+    "access_restriction": "system_only",
+    "purpose": "ai_style_inspiration"
   }'::JSONB
 ),
 
--- Process Flow: AI Implementation
+-- Process Flow: AI Implementation (INTERNAL)
 (
   NULL,
-  'AI Implementation Journey - Process Framework',
+  '[INTERNAL] AI Implementation Journey - Process Flow Layout',
   'consulting',
   'Horizontal Flow',
   '{
@@ -324,8 +326,9 @@ INSERT INTO public.slide_library (
     "step_colors": ["#051C2C", "#2251FF", "#0077B6", "#88CCE8", "#B8E0F0"],
     "background": ["#FFFFFF"]
   }'::JSONB,
-  ARRAY['mckinsey', 'reference', 'ai', 'implementation', 'process', 'framework', 'consulting'],
-  'reference',
+  ARRAY['mckinsey', 'internal', 'ai', 'implementation', 'process', 'framework', 'consulting', 'ai-reference'],
+  'internal_reference',
+  'system',
   'file:///products/slidetheory/mvp/build/knowledge-base/reference-decks/mckinsey-tech-trends-2022.pdf',
   NULL,
   '{
@@ -338,18 +341,21 @@ INSERT INTO public.slide_library (
       "5. Scale: Expand across organization"
     ],
     "key_enablers": ["Executive sponsorship", "Cross-functional teams", "Agile methodology"],
-    "consulting_firm": "mckinsey"
+    "consulting_firm": "mckinsey",
+    "internal_use_only": true
   }'::JSONB,
   'Five steps to AI at scale. 1. Strategy Define AI ambition and use cases. 2. Data Build unified data architecture. 3. Model Develop and train AI models. 4. Deploy Integrate into business processes. 5. Scale Expand across organization.',
   generate_random_embedding(),
   '{
-    "source_type": "reference_deck",
+    "source_type": "internal_reference",
     "consulting_firm": "mckinsey",
-    "framework_type": "process_flow"
+    "framework_type": "process_flow",
+    "access_restriction": "system_only",
+    "purpose": "ai_style_inspiration"
   }'::JSONB
 );
 
--- Insert Generated Export slides (simulated based on typical exports)
+-- Insert Generated Export slides as INTERNAL references (AI training data)
 INSERT INTO public.slide_library (
   user_id,
   title,
@@ -359,6 +365,7 @@ INSERT INTO public.slide_library (
   color_palette,
   tags,
   source,
+  access_level,
   file_url,
   preview_url,
   content,
@@ -368,7 +375,7 @@ INSERT INTO public.slide_library (
 ) VALUES
 (
   NULL,
-  'Market Analysis - Generated Template',
+  '[INTERNAL] Generated Export - Market Analysis Pattern',
   'general',
   'Graph / Chart',
   '{
@@ -385,24 +392,28 @@ INSERT INTO public.slide_library (
     "accent": ["#D97706"],
     "background": ["#FFFFFF", "#F8FAFC"]
   }'::JSONB,
-  ARRAY['generated', 'template', 'market-analysis', 'general'],
-  'generated',
+  ARRAY['generated', 'internal', 'market-analysis', 'general', 'ai-reference'],
+  'internal_reference',
+  'system',
   'file:///products/slidetheory/mvp/build/tmp/exports/',
   NULL,
   '{
     "type": "market_analysis_template",
-    "description": "Generic market analysis slide structure"
+    "description": "Generic market analysis slide structure",
+    "internal_use_only": true
   }'::JSONB,
   'Market analysis template. Clean chart layout with professional color scheme. Suitable for general business presentations.',
   generate_random_embedding(),
   '{
-    "source_type": "generated_template",
-    "generated": true
+    "source_type": "internal_reference",
+    "generated": true,
+    "access_restriction": "system_only",
+    "purpose": "ai_style_inspiration"
   }'::JSONB
 ),
 (
   NULL,
-  'Executive Summary - Generated Template',
+  '[INTERNAL] Generated Export - Executive Summary Pattern',
   'general',
   'Executive Summary',
   '{
@@ -419,33 +430,38 @@ INSERT INTO public.slide_library (
     "accent": ["#059669"],
     "background": ["#FFFFFF", "#F8FAFC"]
   }'::JSONB,
-  ARRAY['generated', 'template', 'executive-summary', 'general'],
-  'generated',
+  ARRAY['generated', 'internal', 'executive-summary', 'general', 'ai-reference'],
+  'internal_reference',
+  'system',
   'file:///products/slidetheory/mvp/build/tmp/exports/',
   NULL,
   '{
     "type": "executive_summary_template",
-    "description": "Generic executive summary structure"
+    "description": "Generic executive summary structure",
+    "internal_use_only": true
   }'::JSONB,
   'Executive summary template. Pyramid principle structure with strong headline and supporting bullets. Clean professional design.',
   generate_random_embedding(),
   '{
-    "source_type": "generated_template",
-    "generated": true
+    "source_type": "internal_reference",
+    "generated": true,
+    "access_restriction": "system_only",
+    "purpose": "ai_style_inspiration"
   }'::JSONB
 );
 
--- Update statistics
+-- Show seeding results
 SELECT 
-  'Slide Library Seeding Complete' as status,
-  COUNT(*) as total_slides,
-  COUNT(*) FILTER (WHERE source = 'template') as reference_slides,
-  COUNT(*) FILTER (WHERE source = 'generated') as generated_slides,
-  COUNT(*) FILTER (WHERE industry = 'consulting') as consulting_slides
-FROM public.slide_library;
+  'Internal Reference Slides Seeded' as status,
+  COUNT(*) FILTER (WHERE source = 'internal_reference') as internal_slides,
+  COUNT(*) FILTER (WHERE access_level = 'system') as system_only_slides,
+  COUNT(*) FILTER (WHERE industry = 'consulting') as consulting_slides,
+  COUNT(DISTINCT slide_type) as slide_archetypes
+FROM public.slide_library
+WHERE source = 'internal_reference';
 
 -- Clean up helper function
 DROP FUNCTION IF EXISTS generate_random_embedding;
 
--- Grant permissions
-GRANT SELECT ON public.slide_library TO authenticated, anon;
+-- Grant permissions (but users still can't see system slides due to RLS)
+GRANT SELECT ON public.slide_library TO authenticated;
