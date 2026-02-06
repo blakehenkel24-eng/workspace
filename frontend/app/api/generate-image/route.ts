@@ -1,8 +1,85 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-// This API route generates images for slides
-// Currently uses placeholder images when no Gemini API key is available
-// To enable real image generation, set GEMINI_API_KEY in .env.local
+// Nano Banana Pro image generation using Gemini API
+// This generates professional slide images using AI
+
+interface GeminiResponse {
+  candidates?: Array<{
+    content?: {
+      parts?: Array<{
+        text?: string;
+        inlineData?: {
+          mimeType: string;
+          data: string;
+        };
+      }>;
+    };
+  }>;
+}
+
+async function generateImageWithGemini(prompt: string): Promise<string | null> {
+  const geminiKey = process.env.GEMINI_API_KEY;
+  
+  if (!geminiKey) {
+    console.log('GEMINI_API_KEY not configured');
+    return null;
+  }
+
+  try {
+    // Use Gemini 2.0 Flash for image generation
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp-image-generation:generateContent?key=${geminiKey}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contents: [{
+            parts: [{
+              text: `Create a professional consulting slide image for: ${prompt}
+
+Requirements:
+- Clean, professional business presentation style
+- 16:9 aspect ratio format
+- McKinsey/BCG consulting aesthetic
+- Use blue (#3b82f6) as primary accent color
+- White/light background
+- Minimal, data-driven design
+- Include placeholder for charts, metrics, or key insights
+- Executive-level visual clarity`
+            }]
+          }],
+          generationConfig: {
+            responseModalities: ['Text', 'Image']
+          }
+        })
+      }
+    );
+
+    if (!response.ok) {
+      const error = await response.text();
+      console.error('Gemini API error:', response.status, error);
+      return null;
+    }
+
+    const data: GeminiResponse = await response.json();
+    
+    // Extract image from response
+    const inlineData = data.candidates?.[0]?.content?.parts?.find(
+      part => part.inlineData
+    )?.inlineData;
+
+    if (inlineData?.data) {
+      return `data:${inlineData.mimeType};base64,${inlineData.data}`;
+    }
+
+    return null;
+  } catch (error) {
+    console.error('Image generation error:', error);
+    return null;
+  }
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -16,30 +93,27 @@ export async function POST(request: NextRequest) {
       }, { status: 400 });
     }
 
-    // Check for Gemini API key
-    const geminiKey = process.env.GEMINI_API_KEY;
+    // Try to generate with Gemini first
+    const imageUrl = await generateImageWithGemini(prompt);
     
-    if (!geminiKey) {
-      // No API key - return a placeholder image URL
-      console.log('No GEMINI_API_KEY configured, returning placeholder image');
-      
-      // Generate a data URL for a placeholder slide image
-      const placeholderSvg = generatePlaceholderSVG(prompt);
-      
+    if (imageUrl) {
       return NextResponse.json({
         success: true,
-        imageUrl: placeholderSvg,
-        note: 'Using placeholder image. Set GEMINI_API_KEY for real image generation.'
+        imageUrl: imageUrl,
+        generated: true,
+        provider: 'gemini'
       });
     }
 
-    // If we have a Gemini key, we would call the nano-banana-pro script here
-    // For now, return a placeholder
+    // Fallback to placeholder if generation fails or no API key
+    console.log('Using placeholder image (Gemini unavailable)');
     const placeholderSvg = generatePlaceholderSVG(prompt);
     
     return NextResponse.json({
       success: true,
       imageUrl: placeholderSvg,
+      generated: false,
+      note: 'Using placeholder image. Set GEMINI_API_KEY for real image generation.'
     });
 
   } catch (error) {
