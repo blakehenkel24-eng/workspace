@@ -26,20 +26,20 @@ export default function AppPage() {
       if (response.success && response.slide) {
         setCurrentSlide(response.slide);
         toast({
-          title: "Slide Generated",
-          description: "Your slide has been created successfully.",
+          title: "✨ Slide generated successfully",
+          description: "Your consultant-quality slide is ready.",
         });
       } else {
         toast({
-          title: "Generation Failed",
-          description: response.error || "Failed to generate slide. Please try again.",
+          title: "Generation failed",
+          description: response.error || "We couldn't generate your slide. Please try again.",
           variant: "destructive",
         });
       }
     } catch {
       toast({
-        title: "Error",
-        description: "An unexpected error occurred. Please try again.",
+        title: "Something went wrong",
+        description: "An unexpected error occurred. Please try again in a moment.",
         variant: "destructive",
       });
     } finally {
@@ -54,22 +54,22 @@ export default function AppPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="min-h-screen bg-slate-50 flex flex-col">
       <Header onLoginClick={() => setIsAuthModalOpen(true)} />
 
-      <main className="flex-1 overflow-hidden">
-        <div className="h-full flex flex-col lg:flex-row">
-          <div className="w-full lg:w-[35%] h-full overflow-auto p-4 lg:p-6">
-            <SlideForm onSubmit={handleGenerate} isLoading={isGenerating} />
-          </div>
+      <main className="flex-1 flex flex-col lg:flex-row overflow-hidden">
+        {/* Input Panel - 35% */}
+        <div className="w-full lg:w-[35%] h-[50vh] lg:h-[calc(100vh-57px)] overflow-y-auto border-r border-slate-200 bg-white">
+          <SlideForm onSubmit={handleGenerate} isLoading={isGenerating} />
+        </div>
 
-          <div className="w-full lg:w-[65%] h-full overflow-hidden p-4 lg:p-6 lg:pl-0">
-            <SlidePreview
-              slide={currentSlide}
-              isLoading={isGenerating}
-              onRegenerate={handleRegenerate}
-            />
-          </div>
+        {/* Preview Panel - 65% */}
+        <div className="w-full lg:w-[65%] h-[50vh] lg:h-[calc(100vh-57px)] overflow-hidden bg-slate-100/50">
+          <SlidePreview
+            slide={currentSlide}
+            isLoading={isGenerating}
+            onRegenerate={handleRegenerate}
+          />
         </div>
       </main>
 

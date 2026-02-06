@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { useSupabase } from "../app/app/providers";
-import { User, LogOut, History, Settings, ChevronDown } from "lucide-react";
+import { User, LogOut, History, Settings, ChevronDown, Sparkles } from "lucide-react";
 
 interface HeaderProps {
   onLoginClick: () => void;
@@ -24,54 +24,55 @@ export function Header({ onLoginClick }: HeaderProps) {
   };
 
   return (
-    <header className="border-b border-slate-200 bg-white/80 backdrop-blur-sm sticky top-0 z-50">
+    <header className="border-b border-slate-200 bg-white sticky top-0 z-50">
       <div className="flex h-14 items-center justify-between px-4 lg:px-6">
         {/* Logo */}
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-blue-400 flex items-center justify-center">
-            <span className="text-white text-lg font-bold">◆</span>
+        <a href="/" className="flex items-center gap-2.5 group">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-sm group-hover:shadow-md transition-shadow">
+            <Sparkles className="h-4 w-4 text-white" />
           </div>
-          <span className="text-lg font-semibold text-slate-900">SlideTheory</span>
-          <span className="hidden sm:inline-flex items-center rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-500">
-            Beta
-          </span>
-        </div>
+          <div className="flex items-center gap-2">
+            <span className="text-lg font-bold text-slate-900 tracking-tight">SlideTheory</span>
+            <span className="hidden sm:inline-flex items-center rounded-full bg-blue-50 px-2 py-0.5 text-xs font-semibold text-blue-600 border border-blue-100">
+              Beta
+            </span>
+          </div>
+        </a>
 
         {/* Right side */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
-                  className="flex items-center gap-2 text-slate-700 hover:text-slate-900 hover:bg-slate-100"
+                  className="flex items-center gap-2 text-slate-700 hover:text-slate-900 hover:bg-slate-100 h-9 px-2"
                 >
-                  <div className="w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center text-white text-sm font-medium">
+                  <div className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white text-sm font-semibold shadow-sm">
                     {user.email?.[0].toUpperCase() || "U"}
                   </div>
-                  <span className="hidden sm:inline max-w-[120px] truncate">
+                  <span className="hidden sm:inline max-w-[120px] truncate text-sm font-medium">
                     {user.email?.split("@")[0]}
                   </span>
-                  <ChevronDown className="h-4 w-4" />
+                  <ChevronDown className="h-4 w-4 text-slate-400" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56 bg-white border-slate-200">
-                <div className="px-2 py-1.5 text-sm text-slate-500">
-                  {user.email}
+              <DropdownMenuContent align="end" className="w-56 bg-white border-slate-200 shadow-lg">
+                <div className="px-3 py-2 text-sm text-slate-500 border-b border-slate-100">
+                  <div className="font-medium text-slate-900 truncate">{user.email}</div>
                 </div>
-                <DropdownMenuSeparator className="bg-slate-200" />
-                <DropdownMenuItem className="text-slate-900 focus:bg-slate-100 cursor-pointer">
-                  <History className="mr-2 h-4 w-4" />
+                <DropdownMenuItem className="text-slate-700 focus:bg-slate-50 focus:text-slate-900 cursor-pointer py-2">
+                  <History className="mr-2 h-4 w-4 text-slate-400" />
                   My Slides
                 </DropdownMenuItem>
-                <DropdownMenuItem className="text-slate-900 focus:bg-slate-100 cursor-pointer">
-                  <Settings className="mr-2 h-4 w-4" />
+                <DropdownMenuItem className="text-slate-700 focus:bg-slate-50 focus:text-slate-900 cursor-pointer py-2">
+                  <Settings className="mr-2 h-4 w-4 text-slate-400" />
                   Settings
                 </DropdownMenuItem>
-                <DropdownMenuSeparator className="bg-slate-200" />
+                <DropdownMenuSeparator className="bg-slate-100" />
                 <DropdownMenuItem
                   onClick={handleLogout}
-                  className="text-red-600 focus:bg-slate-100 focus:text-red-600 cursor-pointer"
+                  className="text-red-600 focus:bg-red-50 focus:text-red-600 cursor-pointer py-2"
                 >
                   <LogOut className="mr-2 h-4 w-4" />
                   Log out
@@ -82,10 +83,10 @@ export function Header({ onLoginClick }: HeaderProps) {
             <Button
               variant="ghost"
               onClick={onLoginClick}
-              className="text-slate-700 hover:text-slate-900 hover:bg-slate-100"
+              className="text-slate-700 hover:text-slate-900 hover:bg-slate-100 h-9"
             >
               <User className="mr-2 h-4 w-4" />
-              Sign In
+              <span className="hidden sm:inline">Sign In</span>
             </Button>
           )}
         </div>

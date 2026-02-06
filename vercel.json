@@ -20,6 +20,10 @@
       "dest": "/api/generate-v2.js"
     },
     {
+      "src": "/api/generate-image",
+      "dest": "/api/generate-image.js"
+    },
+    {
       "src": "/api/health",
       "dest": "/api/health.js"
     },
