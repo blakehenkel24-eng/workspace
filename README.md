@@ -18,7 +18,7 @@ Personal workspace for AI-assisted development, product management, and knowledg
 
 ```
 workspace/
-├── README.md              # This file - start here
+├── README.md              # This file -  start here
 ├── .gitignore             # Git ignore rules
 ├── LICENSE                # License file
 │
