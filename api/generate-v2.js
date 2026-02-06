@@ -73,7 +73,7 @@ Generate the slide content as a JSON object with:
 - supporting_elements: Array of key metrics/data points`;
 
     const completion = await openai.chat.completions.create({
-      model: 'kimi-k2-5',
+      model: 'moonshot-v1-128k',
       messages: [
         { role: 'system', content: SYSTEM_PROMPT },
         { role: 'user', content: userPrompt }
