@@ -46,3 +46,5 @@ archive/
 # Google Cloud
 google-service-account.json
 .google-service-account.json
+.vercel
+.env*.local

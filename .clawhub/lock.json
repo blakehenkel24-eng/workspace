@@ -4,6 +4,34 @@
     "self-improving-agent-1-0-1": {
       "version": "1.0.0",
       "installedAt": 1770178362642
+    },
+    "blogwatcher": {
+      "version": "1.0.0",
+      "installedAt": 1770353658090
+    },
+    "github": {
+      "version": "1.0.0",
+      "installedAt": 1770353839577
+    },
+    "nano-banana-pro": {
+      "version": "1.0.1",
+      "installedAt": 1770354155645
+    },
+    "summarize": {
+      "version": "1.0.0",
+      "installedAt": 1770354645042
+    },
+    "mcporter": {
+      "version": "1.0.0",
+      "installedAt": 1770354833500
+    },
+    "proactive-agent": {
+      "version": "3.1.0",
+      "installedAt": 1770384901696
+    },
+    "deep-research": {
+      "version": "1.0.1",
+      "installedAt": 1770385076323
     }
   }
 }

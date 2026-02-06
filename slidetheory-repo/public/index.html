@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SlideTheory — AI-Powered Slides for Strategy Consultants</title>
+    <meta name="description" content="Generate McKinsey, Bain, BCG-quality slides in seconds. Built for strategy consultants and PE professionals.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --primary: #0a0f1c;
+            --accent: #2563eb;
+            --accent-light: #3b82f6;
+            --accent-dark: #1d4ed8;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --bg: #f8fafc;
+            --white: #ffffff;
+            --border: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background: var(--white);
+        }
+
+        /* Rich background with more visual interest */
+        .bg-sophisticated {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                /* Grid pattern */
+                linear-gradient(rgba(37, 99, 235, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(37, 99, 235, 0.03) 1px, transparent 1px),
+                /* Large gradient blobs */
+                radial-gradient(ellipse 80% 50% at 20% 40%, rgba(37, 99, 235, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse 60% 40% at 80% 60%, rgba(59, 130, 246, 0.05) 0%, transparent 50%),
+                radial-gradient(ellipse 40% 30% at 50% 90%, rgba(37, 99, 235, 0.04) 0%, transparent 50%),
+                /* Base gradient */
+                linear-gradient(180deg, #f8fafc 0%, #f1f5f9 50%, #ffffff 100%);
+            background-size: 60px 60px, 60px 60px, 100% 100%, 100% 100%, 100% 100%, 100% 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+            z-index: 1000;
+            padding: 18px 48px;
+        }
+
+        .nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--primary);
+            letter-spacing: -0.5px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: white;
+            font-weight: 700;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+
+        .nav-cta {
+            background: var(--primary);
+            color: white !important;
+            padding: 10px 22px;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        /* Hero with serif accent */
+        .hero {
+            padding: 160px 48px 80px;
+            text-align: center;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(37, 99, 235, 0.08);
+            color: var(--accent);
+            padding: 10px 18px;
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-bottom: 28px;
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 58px;
+            font-weight: 600;
+            line-height: 1.15;
+            letter-spacing: -1px;
+            max-width: 800px;
+            margin: 0 auto 20px;
+            color: var(--primary);
+        }
+
+        .hero h1 span {
+            color: var(--accent);
+            font-style: italic;
+        }
+
+        .hero-subtitle {
+            font-size: 19px;
+            color: var(--text-light);
+            max-width: 560px;
+            margin: 0 auto 36px;
+            font-weight: 400;
+        }
+
+        .hero-ctas {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-bottom: 60px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--text);
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            text-decoration: none;
+            border: 1px solid var(--border);
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg);
+            border-color: #cbd5e1;
+        }
+
+        /* Demo Section - VERTICAL FLOW */
+        .demo-section {
+            padding: 40px 48px 100px;
+        }
+
+        .demo-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .demo-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .demo-header h2 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--primary);
+        }
+
+        .demo-header p {
+            color: var(--text-light);
+            font-size: 17px;
+        }
+
+        /* Vertical flow container */
+        .demo-vertical {
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        /* Input Panel */
+        .input-panel {
+            background: white;
+            border-radius: 16px;
+            padding: 28px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--accent);
+        }
+
+        .panel-number {
+            width: 32px;
+            height: 32px;
+            background: var(--accent);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .panel-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .input-field {
+            margin-bottom: 18px;
+        }
+
+        .input-field label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .input-field select,
+        .input-field input,
+        .input-field textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            background: #fafbfc;
+            color: var(--text);
+        }
+
+        .input-field textarea {
+            min-height: 70px;
+            resize: none;
+            line-height: 1.5;
+        }
+
+        .input-field select[readonly],
+        .input-field input[readonly],
+        .input-field textarea[readonly] {
+            background: #fafbfc;
+            cursor: pointer;
+        }
+
+        .optional-label {
+            font-weight: 400;
+            color: var(--text-light);
+        }
+
+        /* Format toggle */
+        .format-toggle {
+            display: flex;
+            background: #f1f5f9;
+            padding: 4px;
+            border-radius: 8px;
+            gap: 4px;
+        }
+
+        .format-option {
+            flex: 1;
+            padding: 10px 16px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 500;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .format-option.active {
+            background: white;
+            color: var(--accent);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .format-option:not(.active) {
+            color: var(--text-light);
+        }
+
+        /* Sophisticated Arrow */
+        .demo-arrow {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 8px 0;
+        }
+
+        .arrow-sophisticated {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            padding: 16px 32px;
+            border-radius: 100px;
+            color: white;
+            box-shadow: 0 10px 30px rgba(37, 99, 235, 0.3);
+        }
+
+        .arrow-icon-wrap {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .arrow-text-wrap {
+            text-align: left;
+        }
+
+        .arrow-label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        .arrow-value {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        /* Sophisticated Slide Preview */
+        .slide-container {
+            background: #d1d5db;
+            border-radius: 8px;
+            padding: 1px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            border: 1px solid #9ca3af;
+        }
+
+        .windows-bar {
+            background: linear-gradient(180deg, #f9fafb 0%, #f3f4f6 100%);
+            padding: 8px 14px;
+            border-radius: 8px 8px 0 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid #d1d5db;
+        }
+
+        .ppt-icon {
+            font-size: 16px;
+        }
+
+        .win-title {
+            flex: 1;
+            font-size: 12px;
+            color: #374151;
+            font-weight: 500;
+        }
+
+        .win-controls {
+            display: flex;
+            gap: 16px;
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .win-controls span {
+            cursor: default;
+        }
+
+        .slide-content-box {
+            background: white;
+            padding: 36px;
+            border-radius: 0 0 10px 10px;
+        }
+
+        .slide-title {
+            color: var(--accent);
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 1.4;
+            margin-bottom: 28px;
+            padding-bottom: 16px;
+            border-bottom: 3px solid var(--accent);
+        }
+
+        .slide-body {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 36px;
+        }
+
+        .slide-col h4 {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .slide-col ul {
+            list-style: none;
+        }
+
+        .slide-col li {
+            margin-bottom: 12px;
+            padding-left: 16px;
+            position: relative;
+            font-size: 13px;
+            line-height: 1.6;
+            color: #374151;
+        }
+
+        .slide-col li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 8px;
+            width: 6px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 50%;
+        }
+
+        .slide-col li strong {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        /* Beautiful 2x2 Framework */
+        .framework-title {
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            color: white;
+            padding: 12px 18px;
+            font-size: 12px;
+            font-weight: 700;
+            text-align: center;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .framework-2x2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .framework-cell {
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            border: 1.5px solid #e2e8f0;
+            padding: 16px 12px;
+            border-radius: 8px;
+            text-align: center;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .cell-label {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .cell-value {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--primary);
+            line-height: 1.4;
+        }
+
+        /* Features */
+        .features {
+            padding: 100px 48px;
+            background: linear-gradient(180deg, var(--bg) 0%, white 100%);
+        }
+
+        .section-title {
+            text-align: center;
+            max-width: 560px;
+            margin: 0 auto 56px;
+        }
+
+        .section-title h2 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 40px;
+            font-weight: 600;
+            margin-bottom: 14px;
+            color: var(--primary);
+        }
+
+        .section-title p {
+            color: var(--text-light);
+            font-size: 17px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 32px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.08);
+            border-color: rgba(37, 99, 235, 0.2);
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+        }
+
+        .feature-card h3 {
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .feature-card p {
+            font-size: 14px;
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        /* Stats */
+        .stats {
+            padding: 70px 48px;
+            background: var(--primary);
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 48px;
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .stat h4 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 42px;
+            font-weight: 600;
+            color: #60a5fa;
+            margin-bottom: 8px;
+        }
+
+        .stat p {
+            font-size: 14px;
+            color: #94a3b8;
+            font-weight: 500;
+        }
+
+        /* CTA */
+        .cta {
+            padding: 100px 48px;
+            background: linear-gradient(180deg, var(--primary) 0%, #0f172a 100%);
+            text-align: center;
+        }
+
+        .cta h2 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 40px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 14px;
+        }
+
+        .cta p {
+            font-size: 17px;
+            color: #94a3b8;
+            margin-bottom: 40px;
+        }
+
+        .signup-form {
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 14px 18px;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            font-size: 15px;
+            background: rgba(255,255,255,0.05);
+            color: white;
+            font-family: inherit;
+        }
+
+        .form-group input::placeholder {
+            color: #64748b;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 8px;
+        }
+
+        .submit-btn:hover {
+            background: var(--accent-light);
+            transform: translateY(-1px);
+        }
+
+        .privacy {
+            font-size: 13px;
+            color: #64748b;
+            margin-top: 16px;
+        }
+
+        /* Footer */
+        footer {
+            padding: 36px 48px;
+            background: #0a0f1c;
+            color: #64748b;
+            text-align: center;
+            font-size: 14px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 40px;
+            }
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .slide-body {
+                grid-template-columns: 1fr;
+            }
+            .demo-container {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-sophisticated"></div>
+
+    <nav>
+        <div class="nav-inner">
+            <a href="#" class="logo">
+                <div class="logo-icon">S</div>
+                SlideTheory
+            </a>
+            <div class="nav-links">
+                <a href="#demo">How It Works</a>
+                <a href="#features">Features</a>
+                <a href="#signup" class="nav-cta">Get Early Access</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-badge">✨ Now in early access</div>
+        <h1>Consultant-quality slides in <span>30 seconds</span></h1>
+        <p class="hero-subtitle">Generate McKinsey, Bain, BCG-style presentations with AI. Built for strategy consultants who need to move fast.</p>
+        
+        <div class="hero-ctas">
+            <a href="#signup" class="btn-primary">Get Free Early Access →</a>
+            <a href="#demo" class="btn-secondary">See How It Works</a>
+        </div>
+    </section>
+
+    <!-- DEMO SECTION - VERTICAL FLOW -->
+    <section class="demo-section" id="demo">
+        <div class="demo-container">
+            <div class="demo-header">
+                <h2>How SlideTheory works</h2>
+                <p>Describe what you need. Our AI structures it like a top-tier consulting firm would.</p>
+            </div>
+
+            <div class="demo-vertical">
+                <!-- STEP 1: INPUT -->
+                <div class="input-panel">
+                    <div class="panel-header">
+                        <div class="panel-number">1</div>
+                        <div class="panel-title">Your Input</div>
+                    </div>
+
+                    <div class="input-field">
+                        <label>Slide Type</label>
+                        <select onclick="this.showPicker()" readonly>
+                            <option selected>Executive Summary</option>
+                            <option>Recommendation</option>
+                            <option>Market Analysis</option>
+                            <option>Framework / 2x2</option>
+                            <option>General</option>
+                        </select>
+                    </div>
+
+                    <div class="input-field">
+                        <label>Audience</label>
+                        <select onclick="this.showPicker()" readonly>
+                            <option selected>C-Suite / Board</option>
+                            <option>Management / Working Team</option>
+                            <option>Educational / Internal</option>
+                        </select>
+                    </div>
+
+                    <div class="input-field">
+                        <label>Slide Format</label>
+                        <div class="format-toggle">
+                            <div class="format-option active" onclick="toggleFormat(this)">📊 Presentation-style (less detail)</div>
+                            <div class="format-option" onclick="toggleFormat(this)">📄 Read-style (more detail)</div>
+                        </div>
+                    </div>
+
+                    <div class="input-field">
+                        <label>Context</label>
+                        <textarea readonly>Healthcare company evaluating expansion into outpatient surgery centers. Need to assess market opportunities and develop investment thesis.</textarea>
+                    </div>
+
+                    <div class="input-field">
+                        <label><span class="optional-label">Key Data (Optional)</span></label>
+                        <textarea readonly>Market growing 12% annually. Top 3 competitors control 65% share. Strong physician demand in target markets.</textarea>
+                    </div>
+                </div>
+
+                <!-- SOPHISTICATED ARROW -->
+                <div class="demo-arrow">
+                    <div class="arrow-sophisticated">
+                        <div class="arrow-icon-wrap">⚡</div>
+                        <div class="arrow-text-wrap">
+                            <div class="arrow-label">SlideTheory AI</div>
+                            <div class="arrow-value">Generates in 30s</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 2: OUTPUT -->
+                <div class="slide-container">
+                    <div class="windows-bar">
+                        <div class="ppt-icon">📊</div>
+                        <div class="win-title">SlideTheory_Generated.pptx - Microsoft PowerPoint</div>
+                        <div class="win-controls">
+                            <span>—</span>
+                            <span>□</span>
+                            <span>×</span>
+                        </div>
+                    </div>
+
+                    <div class="slide-content-box">
+                        <div class="slide-title">Strategic expansion into outpatient surgery centers presents a compelling growth opportunity rooted in favorable market dynamics and competitive positioning</div>
+
+                        <div class="slide-body">
+                            <div class="slide-col">
+                                <h4>Market Assessment</h4>
+                                <ul>
+                                    <li><strong>12% annual market growth</strong> driven by patient preference for convenience and lower costs</li>
+                                    <li><strong>Fragmented competitive landscape</strong> — top 3 players control only 65%, leaving room for strategic entrants</li>
+                                    <li><strong>Strong physician alignment</strong> — 78% of surveyed physicians prefer outpatient settings for eligible procedures</li>
+                                    <li><strong>Regulatory tailwinds</strong> favor shift from inpatient to outpatient reimbursement models</li>
+                                </ul>
+                            </div>
+
+                            <div class="slide-col">
+                                <h4>Strategic Framework</h4>
+                                <div class="framework-title">Where to Play → How to Win → Investment Thesis</div>
+                                <div class="framework-2x2">
+                                    <div class="framework-cell">
+                                        <div class="cell-label">Market Selection</div>
+                                        <div class="cell-value">High-growth metro areas with physician shortages</div>
+                                    </div>
+                                    <div class="framework-cell">
+                                        <div class="cell-label">Differentiation</div>
+                                        <div class="cell-value">Technology-enabled patient experience</div>
+                                    </div>
+                                    <div class="framework-cell">
+                                        <div class="cell-label">Partnerships</div>
+                                        <div class="cell-value">Key physician group affiliations</div>
+                                    </div>
+                                    <div class="framework-cell">
+                                        <div class="cell-label">Returns</div>
+                                        <div class="cell-value">25-30% IRR with 5-year payback</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" id="features">
+        <div class="section-title">
+            <h2>Built for the way consultants work</h2>
+            <p>From AI generation to proven frameworks — tools that actually save hours.</p>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🤖</div>
+                <h3>AI Slide Generation</h3>
+                <p>Describe what you need, get a consultant-quality slide in 30 seconds. Trained on MBB best practices.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📋</div>
+                <h3>Proven Frameworks</h3>
+                <p>Executive summaries, recommendations, situation analyses — structures that work at top firms.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3>Workflow Automations</h3>
+                <p>Save hours on data processing and formatting with AI-powered automations.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="stats">
+        <div class="stats-grid">
+            <div class="stat">
+                <h4>30s</h4>
+                <p>Average generation time</p>
+            </div>
+            <div class="stat">
+                <h4>50+</h4>
+                <p>Proven frameworks</p>
+            </div>
+            <div class="stat">
+                <h4>98%</h4>
+                <p>Less formatting time</p>
+            </div>
+            <div class="stat">
+                <h4>MBB</h4>
+                <p>Quality standard</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta" id="signup">
+        <h2>Get early access to SlideTheory</h2>
+        <p>Join strategy consultants from top firms. Free resources + early product access.</p>
+
+        <form class="signup-form" id="signupForm" action="https://formspree.io/f/mjgojzby" method="POST">
+            <div class="form-group">
+                <input type="email" name="email" placeholder="Work email" required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <input type="text" name="company" placeholder="Company" required>
+                </div>
+
+                <div class="form-group">
+                    <select name="role" required>
+                        <option value="" disabled selected>Select role</option>
+                        <option value="consultant">Consultant / Associate</option>
+                        <option value="manager">Manager / Director</option>
+                        <option value="executive">C-Suite / Partner</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+            </div>
+
+            <input type="hidden" name="_subject" value="New SlideTheory Signup">
+            <input type="hidden" name="_next" value="https://slidetheory.io?thanks=true">
+
+            <button type="submit" class="submit-btn">Get Free Access →</button>
+            
+            <p class="privacy">No spam. Unsubscribe anytime.</p>
+        </form>
+    </section>
+
+    <footer>
+        <p>© 2026 SlideTheory. Built for consultants who move fast.</p>
+    </footer>
+
+    <script>
+        // Format toggle functionality
+        function toggleFormat(element) {
+            document.querySelectorAll('.format-option').forEach(opt => {
+                opt.classList.remove('active');
+            });
+            element.classList.add('active');
+        }
+
+        // Check for Formspree success
+        if (window.location.search.includes('thanks=true')) {
+            alert('Thanks for signing up! Check your email for early access.');
+        }
+    </script>
+</body>
+</html>

@@ -3,907 +3,522 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SlideTheory — AI-Powered Slides for Strategy Consultants</title>
-    <meta name="description" content="Generate McKinsey, Bain, BCG-quality slides in seconds. Built for strategy consultants and PE professionals.">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <title>SlideTheory — AI Slides for Strategy Consultants</title>
+    <meta name="description" content="Generate McKinsey, Bain, BCG-quality slides in 30 seconds. Built for strategy consultants and PE professionals.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
         :root {
-            --primary: #0a0f1c;
-            --accent: #2563eb;
-            --accent-light: #3b82f6;
-            --accent-dark: #1d4ed8;
-            --text: #1e293b;
-            --text-light: #64748b;
-            --bg: #f8fafc;
-            --white: #ffffff;
+            --primary: #0f172a;
+            --primary-light: #1e293b;
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+            --accent-light: #dbeafe;
+            --accent-glow: rgba(59, 130, 246, 0.3);
+            --text: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #64748b;
+            --bg: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-tertiary: #f1f5f9;
             --border: #e2e8f0;
+            --border-light: #f1f5f9;
+            --success: #10b981;
+            --success-light: #d1fae5;
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+            --shadow-glow: 0 0 40px -10px var(--accent-glow);
         }
 
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
         body {
-            font-family: 'Inter', -apple-system, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             line-height: 1.6;
             color: var(--text);
-            background: var(--white);
+            background: var(--bg);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
-        /* Rich background with more visual interest */
-        .bg-sophisticated {
+        /* Background */
+        .bg-pattern {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: 
-                /* Grid pattern */
-                linear-gradient(rgba(37, 99, 235, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(37, 99, 235, 0.03) 1px, transparent 1px),
-                /* Large gradient blobs */
-                radial-gradient(ellipse 80% 50% at 20% 40%, rgba(37, 99, 235, 0.06) 0%, transparent 50%),
-                radial-gradient(ellipse 60% 40% at 80% 60%, rgba(59, 130, 246, 0.05) 0%, transparent 50%),
-                radial-gradient(ellipse 40% 30% at 50% 90%, rgba(37, 99, 235, 0.04) 0%, transparent 50%),
-                /* Base gradient */
-                linear-gradient(180deg, #f8fafc 0%, #f1f5f9 50%, #ffffff 100%);
-            background-size: 60px 60px, 60px 60px, 100% 100%, 100% 100%, 100% 100%, 100% 100%;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(59, 130, 246, 0.08), transparent),
+                radial-gradient(ellipse 60% 40% at 80% 60%, rgba(16, 185, 129, 0.05), transparent),
+                radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.04) 0%, transparent 50%),
+                radial-gradient(circle at 90% 10%, rgba(16, 185, 129, 0.03) 0%, transparent 40%),
+                url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%233b82f6' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
             pointer-events: none;
             z-index: -1;
         }
 
+        /* Animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.7; transform: scale(1.05); } }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+        @keyframes typing { from { width: 0; } to { width: 100%; } }
+        @keyframes blink { 50% { border-color: transparent; } }
+
+        .animate-on-scroll { opacity: 0; transform: translateY(24px); transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+        .animate-on-scroll.visible { opacity: 1; transform: translateY(0); }
+        .stagger-1 { transition-delay: 0.1s; }
+        .stagger-2 { transition-delay: 0.2s; }
+        .stagger-3 { transition-delay: 0.3s; }
+        .stagger-4 { transition-delay: 0.4s; }
+
         /* Navigation */
         nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: rgba(255, 255, 255, 0.92);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-            z-index: 1000;
-            padding: 18px 48px;
+            position: fixed; top: 0; left: 0; right: 0;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.6);
+            z-index: 1000; padding: 0 24px;
+            transition: all 0.3s ease;
         }
+        nav.scrolled { background: rgba(255, 255, 255, 0.95); box-shadow: var(--shadow-sm); }
+        .nav-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; height: 68px; }
+        .logo { font-size: 22px; font-weight: 800; color: var(--primary); letter-spacing: -0.8px; text-decoration: none; display: flex; align-items: center; gap: 6px; }
+        .logo-text { display: flex; letter-spacing: -0.5px; }
+        .logo-icon { width: 32px; height: 32px; background: linear-gradient(135deg, var(--accent), #60a5fa); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; }
+        .logo span { color: var(--accent); }
+        .nav-links { display: flex; gap: 32px; align-items: center; }
+        .nav-links a { color: var(--text-secondary); text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.2s ease; }
+        .nav-links a:hover { color: var(--text); }
+        .nav-cta { background: var(--accent); color: white !important; padding: 10px 18px; border-radius: var(--radius-md); font-weight: 600; transition: all 0.2s ease; }
+        .nav-cta:hover { background: var(--accent-hover); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+        .mobile-menu-btn { display: none; background: none; border: none; font-size: 22px; cursor: pointer; color: var(--text); padding: 8px; border-radius: var(--radius-sm); }
 
-        .nav-inner {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        /* Hero */
+        .hero { padding: 120px 24px 60px; text-align: center; position: relative; max-width: 1200px; margin: 0 auto; }
+        .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(16, 185, 129, 0.08)); color: var(--accent); padding: 8px 16px; border-radius: 100px; font-size: 13px; font-weight: 600; margin-bottom: 28px; border: 1px solid rgba(59, 130, 246, 0.2); animation: fadeInUp 0.6s ease; }
+        .hero-badge .pulse-dot { width: 8px; height: 8px; background: var(--success); border-radius: 50%; animation: pulse 2s ease-in-out infinite; }
+        .hero h1 { font-size: clamp(36px, 5vw, 64px); font-weight: 800; line-height: 1.08; letter-spacing: -2px; max-width: 850px; margin: 0 auto 20px; animation: fadeInUp 0.6s ease 0.1s both; }
+        .hero h1 .gradient-text { background: linear-gradient(135deg, var(--accent) 0%, #06b6d4 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .hero-subtitle { font-size: clamp(17px, 2vw, 20px); color: var(--text-secondary); max-width: 580px; margin: 0 auto 32px; line-height: 1.6; animation: fadeInUp 0.6s ease 0.2s both; }
+        .hero-ctas { display: flex; gap: 12px; justify-content: center; margin-bottom: 48px; flex-wrap: wrap; animation: fadeInUp 0.6s ease 0.3s both; }
+        .btn { display: inline-flex; align-items: center; gap: 8px; padding: 14px 26px; border-radius: var(--radius-md); font-size: 15px; font-weight: 600; text-decoration: none; border: none; cursor: pointer; transition: all 0.2s ease; }
+        .btn-primary { background: linear-gradient(135deg, var(--accent), #2563eb); color: white; box-shadow: 0 4px 14px rgba(59, 130, 246, 0.35); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(59, 130, 246, 0.45); }
+        .btn-secondary { background: white; color: var(--text); border: 1px solid var(--border); }
+        .btn-secondary:hover { background: var(--bg-secondary); border-color: var(--text-muted); }
 
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 24px;
-            font-weight: 800;
-            color: var(--primary);
-            letter-spacing: -0.5px;
-            text-decoration: none;
-        }
-
-        .logo-icon {
-            width: 36px;
-            height: 36px;
-            background: linear-gradient(135deg, var(--accent), var(--accent-light));
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            color: white;
-            font-weight: 700;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 40px;
-            align-items: center;
-        }
-
-        .nav-links a {
-            color: var(--text-light);
-            text-decoration: none;
-            font-size: 15px;
-            font-weight: 500;
-            transition: color 0.2s;
-        }
-
-        .nav-links a:hover {
-            color: var(--accent);
-        }
-
-        .nav-cta {
-            background: var(--primary);
-            color: white !important;
-            padding: 10px 22px;
-            border-radius: 8px;
-            font-weight: 600;
-        }
-
-        /* Hero with serif accent */
-        .hero {
-            padding: 160px 48px 80px;
-            text-align: center;
-        }
-
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(37, 99, 235, 0.08);
-            color: var(--accent);
-            padding: 10px 18px;
-            border-radius: 100px;
-            font-size: 13px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            margin-bottom: 28px;
-        }
-
-        .hero h1 {
-            font-family: 'Playfair Display', Georgia, serif;
-            font-size: 58px;
-            font-weight: 600;
-            line-height: 1.15;
-            letter-spacing: -1px;
-            max-width: 800px;
-            margin: 0 auto 20px;
-            color: var(--primary);
-        }
-
-        .hero h1 span {
-            color: var(--accent);
-            font-style: italic;
-        }
-
-        .hero-subtitle {
-            font-size: 19px;
-            color: var(--text-light);
-            max-width: 560px;
-            margin: 0 auto 36px;
-            font-weight: 400;
-        }
-
-        .hero-ctas {
-            display: flex;
-            gap: 16px;
-            justify-content: center;
-            margin-bottom: 60px;
-        }
-
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-            padding: 14px 28px;
-            border-radius: 10px;
-            font-size: 15px;
-            font-weight: 600;
-            text-decoration: none;
-            border: none;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-primary:hover {
-            background: var(--accent);
-            transform: translateY(-1px);
-        }
-
-        .btn-secondary {
-            background: white;
-            color: var(--text);
-            padding: 14px 28px;
-            border-radius: 10px;
-            font-size: 15px;
-            font-weight: 600;
-            text-decoration: none;
-            border: 1px solid var(--border);
-            transition: all 0.2s;
-        }
-
-        .btn-secondary:hover {
-            background: var(--bg);
-            border-color: #cbd5e1;
-        }
+        /* Trust Badge */
+        .trust-badge { display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; animation: fadeInUp 0.6s ease 0.4s both; color: var(--text-muted); font-size: 13px; }
+        .trust-stars { display: flex; gap: 2px; color: #fbbf24; }
+        .trust-companies { display: flex; gap: 20px; align-items: center; }
+        .trust-company { font-weight: 600; color: var(--text-muted); opacity: 0.6; }
 
         /* Demo Section - VERTICAL FLOW */
-        .demo-section {
-            padding: 40px 48px 100px;
-        }
+        .demo-section { padding: 50px 24px 80px; background: linear-gradient(180deg, var(--bg) 0%, var(--bg-secondary) 50%, var(--bg) 100%); position: relative; }
+        .demo-section-header { text-align: center; max-width: 600px; margin: 0 auto 48px; }
+        .demo-section-header h2 { font-size: clamp(28px, 3vw, 36px); font-weight: 800; margin-bottom: 12px; letter-spacing: -1px; }
+        .demo-section-header p { font-size: 17px; color: var(--text-secondary); }
 
-        .demo-container {
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        .demo-header {
-            text-align: center;
-            margin-bottom: 48px;
-        }
-
-        .demo-header h2 {
-            font-size: 36px;
-            font-weight: 700;
-            margin-bottom: 12px;
-            color: var(--primary);
-        }
-
-        .demo-header p {
-            color: var(--text-light);
-            font-size: 17px;
-        }
-
-        /* Vertical flow container */
-        .demo-vertical {
-            display: flex;
-            flex-direction: column;
-            gap: 32px;
-        }
+        /* Vertical Flow Container */
+        .demo-flow { max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: 0; position: relative; }
 
         /* Input Panel */
-        .input-panel {
-            background: white;
-            border-radius: 16px;
-            padding: 28px;
-            border: 1px solid var(--border);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-        }
+        .flow-panel { background: white; border-radius: var(--radius-xl); border: 1px solid var(--border); box-shadow: var(--shadow-xl); overflow: hidden; position: relative; }
+        .flow-panel-header { display: flex; align-items: center; gap: 12px; padding: 20px 24px; background: linear-gradient(135deg, var(--bg-secondary), white); border-bottom: 1px solid var(--border); }
+        .flow-panel-icon { width: 36px; height: 36px; background: var(--accent); color: white; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+        .flow-panel-icon.output { background: var(--success); }
+        .flow-panel-title { font-size: 14px; font-weight: 700; color: var(--text); text-transform: uppercase; letter-spacing: 0.5px; }
+        .flow-panel-subtitle { font-size: 13px; color: var(--text-muted); margin-left: auto; }
+        .flow-panel-body { padding: 24px; }
 
-        .panel-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 24px;
-            padding-bottom: 16px;
-            border-bottom: 2px solid var(--accent);
-        }
+        /* Input Fields */
+        .input-grid { display: grid; gap: 16px; }
+        .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .input-field { display: flex; flex-direction: column; gap: 6px; }
+        .input-field label { font-size: 11px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; }
+        .input-field .optional { font-weight: 400; color: var(--text-muted); }
+        .input-value { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px 14px; font-size: 14px; color: var(--text); line-height: 1.5; font-family: inherit; }
+        .input-value.textarea { min-height: 80px; resize: vertical; font-family: inherit; }
+        .input-value.input-select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 36px; cursor: pointer; }
+        .input-value.input-select:hover { border-color: var(--text-muted); }
+        .input-value.input-select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+        .file-input-wrapper { display: flex; align-items: center; padding: 0; gap: 0; }
+        .data-input { flex: 1; border: none; background: transparent; padding: 12px 14px; font-size: 14px; color: var(--text); font-family: inherit; }
+        .data-input:focus { outline: none; }
+        .data-input::placeholder { color: var(--text-muted); }
+        .file-attach-btn { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; margin-right: 4px; background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-secondary); cursor: pointer; transition: all 0.2s ease; }
+        .file-attach-btn:hover { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
+        .expandable-field { display: flex; align-items: center; padding: 0; gap: 0; }
+        .expandable-input { flex: 1; border: none; background: transparent; padding: 12px 14px; font-size: 14px; color: var(--text); font-family: inherit; }
+        .expandable-input:focus { outline: none; }
+        .expandable-input::placeholder { color: var(--text-muted); }
+        .expand-btn { display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; margin-right: 8px; background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-secondary); font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; }
+        .expand-btn:hover { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
 
-        .panel-number {
-            width: 32px;
-            height: 32px;
-            background: var(--accent);
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            font-weight: 700;
-        }
+        /* AI Processing Arrow */
+        .flow-arrow { display: flex; justify-content: center; padding: 24px 0; position: relative; }
+        .flow-arrow::before { content: ''; position: absolute; top: 0; bottom: 0; left: 50%; width: 2px; background: linear-gradient(180deg, var(--border) 0%, var(--accent) 50%, var(--border) 100%); transform: translateX(-50%); z-index: 0; }
+        .ai-pill { display: flex; align-items: center; gap: 12px; background: linear-gradient(135deg, var(--accent), #2563eb); padding: 14px 28px; border-radius: 100px; color: white; box-shadow: 0 10px 30px rgba(59, 130, 246, 0.35); position: relative; z-index: 1; animation: float 3s ease-in-out infinite; }
+        .ai-icon { width: 32px; height: 32px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .ai-text { text-align: left; }
+        .ai-label { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .ai-sublabel { font-size: 12px; opacity: 0.9; margin-top: 2px; }
 
-        .panel-title {
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--primary);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
+        /* Output Panel - Slide Preview */
+        .slide-preview { background: linear-gradient(145deg, #f8fafc 0%, #f1f5f9 100%); border-radius: var(--radius-md); border: 1px solid var(--border); overflow: hidden; }
+        .slide-preview-header { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: white; border-bottom: 1px solid var(--border); }
+        .window-dots { display: flex; gap: 6px; }
+        .window-dots span { width: 10px; height: 10px; border-radius: 50%; }
+        .window-dots span:nth-child(1) { background: #ef4444; }
+        .window-dots span:nth-child(2) { background: #f59e0b; }
+        .window-dots span:nth-child(3) { background: #10b981; }
+        .window-title { flex: 1; text-align: center; font-size: 12px; color: var(--text-muted); font-weight: 500; }
+        .slide-content { padding: 28px; }
+        .slide-headline { font-size: 17px; font-weight: 700; color: var(--accent); margin-bottom: 20px; line-height: 1.4; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+        .slide-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+        .slide-col h4 { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text); margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px solid var(--text); }
+        .slide-col ul { list-style: none; font-size: 13px; line-height: 1.7; }
+        .slide-col li { margin-bottom: 10px; padding-left: 16px; position: relative; color: var(--text-secondary); }
+        .slide-col li::before { content: ''; position: absolute; left: 0; top: 9px; width: 6px; height: 6px; background: var(--accent); border-radius: 50%; }
+        .slide-col li strong { color: var(--text); font-weight: 600; }
+        .framework-section { background: white; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px; }
+        .framework-header { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: white; background: linear-gradient(135deg, #059669, #10b981); padding: 6px 12px; border-radius: var(--radius-sm); margin-bottom: 12px; text-align: center; }
+        .framework-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .framework-cell { background: var(--bg-secondary); border: 1px solid var(--border); padding: 10px; font-size: 11px; text-align: center; min-height: 50px; display: flex; align-items: center; justify-content: center; border-radius: var(--radius-sm); color: var(--text-secondary); line-height: 1.4; }
 
-        .input-field {
-            margin-bottom: 18px;
-        }
-
-        .input-field label {
-            display: block;
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--text);
-            margin-bottom: 6px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .input-field select,
-        .input-field input,
-        .input-field textarea {
-            width: 100%;
-            padding: 12px 14px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            font-size: 14px;
-            font-family: inherit;
-            background: #fafbfc;
-            color: var(--text);
-        }
-
-        .input-field textarea {
-            min-height: 70px;
-            resize: none;
-            line-height: 1.5;
-        }
-
-        .input-field select[readonly],
-        .input-field input[readonly],
-        .input-field textarea[readonly] {
-            background: #fafbfc;
-            cursor: pointer;
-        }
-
-        .optional-label {
-            font-weight: 400;
-            color: var(--text-light);
-        }
-
-        /* Format toggle */
-        .format-toggle {
-            display: flex;
-            background: #f1f5f9;
-            padding: 4px;
-            border-radius: 8px;
-            gap: 4px;
-        }
-
-        .format-option {
-            flex: 1;
-            padding: 10px 16px;
-            text-align: center;
-            font-size: 13px;
-            font-weight: 500;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .format-option.active {
-            background: white;
-            color: var(--accent);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-
-        .format-option:not(.active) {
-            color: var(--text-light);
-        }
-
-        /* Sophisticated Arrow */
-        .demo-arrow {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 8px 0;
-        }
-
-        .arrow-sophisticated {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            background: linear-gradient(135deg, var(--accent), var(--accent-light));
-            padding: 16px 32px;
-            border-radius: 100px;
-            color: white;
-            box-shadow: 0 10px 30px rgba(37, 99, 235, 0.3);
-        }
-
-        .arrow-icon-wrap {
-            width: 40px;
-            height: 40px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-        }
-
-        .arrow-text-wrap {
-            text-align: left;
-        }
-
-        .arrow-label {
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            opacity: 0.9;
-        }
-
-        .arrow-value {
-            font-size: 16px;
-            font-weight: 700;
-        }
-
-        /* Sophisticated Slide Preview */
-        .slide-container {
-            background: #d1d5db;
-            border-radius: 8px;
-            padding: 1px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            border: 1px solid #9ca3af;
-        }
-
-        .windows-bar {
-            background: linear-gradient(180deg, #f9fafb 0%, #f3f4f6 100%);
-            padding: 8px 14px;
-            border-radius: 8px 8px 0 0;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            border-bottom: 1px solid #d1d5db;
-        }
-
-        .ppt-icon {
-            font-size: 16px;
-        }
-
-        .win-title {
-            flex: 1;
-            font-size: 12px;
-            color: #374151;
-            font-weight: 500;
-        }
-
-        .win-controls {
-            display: flex;
-            gap: 16px;
-            font-size: 14px;
-            color: #6b7280;
-        }
-
-        .win-controls span {
-            cursor: default;
-        }
-
-        .slide-content-box {
-            background: white;
-            padding: 36px;
-            border-radius: 0 0 10px 10px;
-        }
-
-        .slide-title {
-            color: var(--accent);
-            font-size: 16px;
-            font-weight: 700;
-            line-height: 1.4;
-            margin-bottom: 28px;
-            padding-bottom: 16px;
-            border-bottom: 3px solid var(--accent);
-        }
-
-        .slide-body {
-            display: grid;
-            grid-template-columns: 1.1fr 0.9fr;
-            gap: 36px;
-        }
-
-        .slide-col h4 {
-            font-size: 12px;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 14px;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-        }
-
-        .slide-col ul {
-            list-style: none;
-        }
-
-        .slide-col li {
-            margin-bottom: 12px;
-            padding-left: 16px;
-            position: relative;
-            font-size: 13px;
-            line-height: 1.6;
-            color: #374151;
-        }
-
-        .slide-col li::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 8px;
-            width: 6px;
-            height: 6px;
-            background: var(--accent);
-            border-radius: 50%;
-        }
-
-        .slide-col li strong {
-            font-weight: 600;
-            color: var(--primary);
-        }
-
-        /* Beautiful 2x2 Framework */
-        .framework-title {
-            background: linear-gradient(135deg, var(--accent), var(--accent-light));
-            color: white;
-            padding: 12px 18px;
-            font-size: 12px;
-            font-weight: 700;
-            text-align: center;
-            border-radius: 8px;
-            margin-bottom: 12px;
-            letter-spacing: 0.5px;
-        }
-
-        .framework-2x2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-
-        .framework-cell {
-            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
-            border: 1.5px solid #e2e8f0;
-            padding: 16px 12px;
-            border-radius: 8px;
-            text-align: center;
-            min-height: 80px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
-
-        .cell-label {
-            font-size: 10px;
-            font-weight: 700;
-            color: var(--accent);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .cell-value {
-            font-size: 12px;
-            font-weight: 500;
-            color: var(--primary);
-            line-height: 1.4;
-        }
+        /* Before/After Section */
+        .before-after { padding: 80px 24px; background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg) 50%, var(--bg-secondary) 100%); position: relative; }
+        .before-after::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%233b82f6' fill-opacity='0.02' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='3'/%3E%3Ccircle cx='13' cy='13' r='3'/%3E%3C/g%3E%3C/svg%3E"); pointer-events: none; }
+        .before-after-header { text-align: center; max-width: 640px; margin: 0 auto 48px; position: relative; z-index: 1; }
+        .before-after-header h2 { font-size: clamp(28px, 3vw, 38px); font-weight: 800; margin-bottom: 16px; letter-spacing: -1px; line-height: 1.2; }
+        .before-after-header p { font-size: 17px; color: var(--text-secondary); line-height: 1.6; }
+        .before-after-grid { display: grid; grid-template-columns: 1fr auto 1fr; gap: 24px; max-width: 1100px; margin: 0 auto; align-items: stretch; position: relative; z-index: 1; }
+        .before-card, .after-card { background: white; border-radius: var(--radius-xl); padding: 28px; border: 1px solid var(--border); box-shadow: var(--shadow-md); }
+        .after-card { border-color: var(--accent); border-width: 2px; box-shadow: 0 4px 20px rgba(59, 130, 246, 0.15), var(--shadow-lg); }
+        .vs-divider { display: flex; align-items: center; justify-content: center; position: relative; }
+        .vs-divider span { background: linear-gradient(135deg, var(--accent), #60a5fa); color: white; width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4); z-index: 2; }
+        .vs-divider::before { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: linear-gradient(180deg, transparent 0%, var(--border) 20%, var(--border) 80%, transparent 100%); transform: translateX(-50%); }
+        .before-card .card-label { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #ef4444; margin-bottom: 20px; padding: 6px 12px; background: rgba(239, 68, 68, 0.08); border-radius: 100px; }
+        .after-card .card-label { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--accent); margin-bottom: 20px; padding: 6px 12px; background: var(--accent-light); border-radius: 100px; }
+        .pain-list, .gain-list { list-style: none; }
+        .pain-list li { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; font-size: 14px; color: var(--text-secondary); line-height: 1.5; }
+        .pain-list li::before { content: '×'; color: #ef4444; font-weight: 700; font-size: 16px; line-height: 1.2; flex-shrink: 0; }
+        .gain-list li { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; font-size: 14px; color: var(--text); line-height: 1.5; }
+        .gain-list li::before { content: '✓'; color: var(--success); font-weight: 700; font-size: 14px; line-height: 1.4; flex-shrink: 0; width: 20px; height: 20px; background: var(--success-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .pain-list li::before { content: '✕'; color: #ef4444; font-weight: 700; flex-shrink: 0; }
+        .gain-list li { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 16px; font-size: 15px; color: var(--text); }
+        .gain-list li::before { content: '✓'; color: var(--success); font-weight: 700; flex-shrink: 0; }
 
         /* Features */
-        .features {
-            padding: 100px 48px;
-            background: linear-gradient(180deg, var(--bg) 0%, white 100%);
-        }
-
-        .section-title {
-            text-align: center;
-            max-width: 560px;
-            margin: 0 auto 56px;
-        }
-
-        .section-title h2 {
-            font-family: 'Playfair Display', Georgia, serif;
-            font-size: 40px;
-            font-weight: 600;
-            margin-bottom: 14px;
-            color: var(--primary);
-        }
-
-        .section-title p {
-            color: var(--text-light);
-            font-size: 17px;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-
-        .feature-card {
-            background: white;
-            padding: 32px;
-            border-radius: 16px;
-            border: 1px solid var(--border);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-            transition: all 0.3s;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 24px rgba(0,0,0,0.08);
-            border-color: rgba(37, 99, 235, 0.2);
-        }
-
-        .feature-icon {
-            width: 48px;
-            height: 48px;
-            background: linear-gradient(135deg, var(--accent), var(--accent-light));
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
-        }
-
-        .feature-card h3 {
-            font-size: 17px;
-            font-weight: 700;
-            margin-bottom: 10px;
-            color: var(--primary);
-        }
-
-        .feature-card p {
-            font-size: 14px;
-            color: var(--text-light);
-            line-height: 1.6;
-        }
+        .features { padding: 70px 24px; background: var(--bg); }
+        .section-header { text-align: center; max-width: 600px; margin: 0 auto 40px; }
+        .section-label { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); margin-bottom: 16px; }
+        .section-header h2 { font-size: clamp(28px, 3vw, 36px); font-weight: 800; margin-bottom: 12px; letter-spacing: -1px; }
+        .section-header p { font-size: 18px; color: var(--text-secondary); }
+        .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; max-width: 1100px; margin: 0 auto; }
+        .feature-card { background: white; padding: 28px; border-radius: var(--radius-lg); border: 1px solid var(--border); transition: all 0.3s ease; }
+        .feature-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); border-color: var(--accent-light); }
+        .feature-icon { width: 48px; height: 48px; background: linear-gradient(135deg, var(--accent), #60a5fa); border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 16px; }
+        .feature-card h3 { font-size: 17px; font-weight: 700; margin-bottom: 8px; color: var(--text); }
+        .feature-card p { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+        .feature-tag { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; color: var(--success); margin-top: 12px; padding: 4px 10px; background: var(--success-light); border-radius: 100px; }
 
         /* Stats */
-        .stats {
-            padding: 70px 48px;
-            background: var(--primary);
-            color: white;
-        }
+        .stats { padding: 60px 24px; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: white; }
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; max-width: 900px; margin: 0 auto; text-align: center; }
+        .stat h4 { font-size: 44px; font-weight: 800; background: linear-gradient(135deg, #60a5fa, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 6px; letter-spacing: -2px; }
+        .stat p { font-size: 14px; color: #94a3b8; font-weight: 500; }
 
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 48px;
-            max-width: 900px;
-            margin: 0 auto;
-            text-align: center;
-        }
+        /* Testimonials / Wall of Love */
+        .testimonials { padding: 70px 24px; background: var(--bg); }
+        .testimonials-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; max-width: 1100px; margin: 0 auto; }
+        .testimonial-card { background: white; padding: 28px; border-radius: var(--radius-lg); border: 1px solid var(--border); transition: all 0.3s ease; }
+        .testimonial-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+        .testimonial-card.featured { background: linear-gradient(145deg, var(--primary) 0%, var(--primary-light) 100%); color: white; border: none; }
+        .stars { display: flex; gap: 3px; margin-bottom: 14px; }
+        .star { color: #fbbf24; font-size: 15px; }
+        .testimonial-text { font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 20px; font-style: italic; }
+        .testimonial-card.featured .testimonial-text { color: #cbd5e1; }
+        .testimonial-author { display: flex; align-items: center; gap: 12px; }
+        .author-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), #60a5fa); display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; font-weight: 600; }
+        .testimonial-card.featured .author-avatar { background: linear-gradient(135deg, #60a5fa, #a78bfa); }
+        .author-info h4 { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+        .author-info p { font-size: 13px; color: var(--text-muted); }
+        .testimonial-card.featured .author-info h4 { color: white; }
+        .testimonial-card.featured .author-info p { color: #94a3b8; }
 
-        .stat h4 {
-            font-family: 'Playfair Display', Georgia, serif;
-            font-size: 42px;
-            font-weight: 600;
-            color: #60a5fa;
-            margin-bottom: 8px;
-        }
-
-        .stat p {
-            font-size: 14px;
-            color: #94a3b8;
-            font-weight: 500;
-        }
-
-        /* CTA */
-        .cta {
-            padding: 100px 48px;
-            background: linear-gradient(180deg, var(--primary) 0%, #0f172a 100%);
-            text-align: center;
-        }
-
-        .cta h2 {
-            font-family: 'Playfair Display', Georgia, serif;
-            font-size: 40px;
-            font-weight: 600;
-            color: white;
-            margin-bottom: 14px;
-        }
-
-        .cta p {
-            font-size: 17px;
-            color: #94a3b8;
-            margin-bottom: 40px;
-        }
-
-        .signup-form {
-            max-width: 480px;
-            margin: 0 auto;
-        }
-
-        .form-group {
-            margin-bottom: 14px;
-        }
-
-        .form-group input,
-        .form-group select {
-            width: 100%;
-            padding: 14px 18px;
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 10px;
-            font-size: 15px;
-            background: rgba(255,255,255,0.05);
-            color: white;
-            font-family: inherit;
-        }
-
-        .form-group input::placeholder {
-            color: #64748b;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 14px;
-        }
-
-        .submit-btn {
-            width: 100%;
-            padding: 16px;
-            background: var(--accent);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            margin-top: 8px;
-        }
-
-        .submit-btn:hover {
-            background: var(--accent-light);
-            transform: translateY(-1px);
-        }
-
-        .privacy {
-            font-size: 13px;
-            color: #64748b;
-            margin-top: 16px;
-        }
+        /* CTA Section */
+        .cta { padding: 70px 24px; background: linear-gradient(135deg, var(--primary) 0%, #0a0f1d 100%); text-align: center; position: relative; overflow: hidden; }
+        .cta::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.08) 0%, transparent 50%); animation: rotate 30s linear infinite; }
+        @keyframes rotate { to { transform: rotate(360deg); } }
+        .cta-inner { position: relative; z-index: 1; max-width: 520px; margin: 0 auto; }
+        .cta h2 { font-size: clamp(28px, 3vw, 36px); font-weight: 800; color: white; margin-bottom: 12px; letter-spacing: -1px; }
+        .cta > div > p { font-size: 17px; color: #94a3b8; margin-bottom: 32px; }
+        .signup-form { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: var(--radius-xl); padding: 28px; }
+        .form-group { margin-bottom: 14px; }
+        .form-group input, .form-group select { width: 100%; padding: 14px 16px; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: var(--radius-md); font-size: 15px; background: rgba(255, 255, 255, 0.05); color: white; font-family: inherit; transition: all 0.2s ease; }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--accent); background: rgba(255, 255, 255, 0.08); }
+        .form-group input::placeholder { color: #64748b; }
+        .form-group select { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 40px; }
+        .form-group select option { background: var(--primary); color: white; }
+        .submit-btn { width: 100%; padding: 16px; background: linear-gradient(135deg, var(--accent), #2563eb); color: white; border: none; border-radius: var(--radius-md); font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; }
+        .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4); }
+        .privacy { font-size: 12px; color: #64748b; margin-top: 14px; }
+        .privacy a { color: #94a3b8; text-decoration: none; }
+        .privacy a:hover { color: white; }
+        .form-success { display: none; padding: 32px; text-align: center; }
+        .form-success.visible { display: block; }
+        .success-icon { width: 64px; height: 64px; background: linear-gradient(135deg, var(--success), #34d399); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 20px; }
+        .form-success h3 { font-size: 24px; font-weight: 700; color: white; margin-bottom: 8px; }
+        .form-success p { color: #94a3b8; font-size: 15px; }
 
         /* Footer */
-        footer {
-            padding: 36px 48px;
-            background: #0a0f1c;
-            color: #64748b;
-            text-align: center;
-            font-size: 14px;
-            border-top: 1px solid rgba(255,255,255,0.05);
+        footer { padding: 60px 24px 28px; background: var(--primary); border-top: 1px solid rgba(255, 255, 255, 0.05); }
+        .footer-inner { max-width: 1100px; margin: 0 auto; }
+        .footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 40px; padding-bottom: 40px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+        .footer-brand { max-width: 280px; }
+        .footer-brand .logo { margin-bottom: 12px; color: white; }
+        .footer-brand p { font-size: 14px; color: #64748b; line-height: 1.6; }
+        .footer-column h4 { font-size: 12px; font-weight: 600; color: white; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px; }
+        .footer-column ul { list-style: none; }
+        .footer-column li { margin-bottom: 10px; }
+        .footer-column a { font-size: 14px; color: #64748b; text-decoration: none; transition: color 0.2s ease; }
+        .footer-column a:hover { color: white; }
+        .footer-bottom { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+        .footer-bottom p { font-size: 13px; color: #475569; }
+        .social-links { display: flex; gap: 12px; }
+        .social-links a { width: 36px; height: 36px; border-radius: var(--radius-sm); background: rgba(255, 255, 255, 0.05); display: flex; align-items: center; justify-content: center; color: #64748b; text-decoration: none; transition: all 0.2s ease; font-size: 15px; }
+        .social-links a:hover { background: var(--accent); color: white; }
+
+        /* Mobile Responsive */
+        @media (max-width: 1024px) {
+            .features-grid, .testimonials-grid { grid-template-columns: repeat(2, 1fr); }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .before-after-grid { grid-template-columns: 1fr; max-width: 500px; gap: 20px; }
+            .vs-divider { padding: 10px 0; }
+            .vs-divider::before { display: none; }
+            .vs-divider span { width: 40px; height: 40px; font-size: 12px; }
+            .footer-top { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .nav-links { display: none; position: absolute; top: 68px; left: 0; right: 0; background: white; flex-direction: column; padding: 20px; gap: 16px; border-bottom: 1px solid var(--border); box-shadow: var(--shadow-lg); }
+            .nav-links.active { display: flex; }
+            .mobile-menu-btn { display: block; }
+            .hero { padding: 120px 20px 60px; }
+            .hero h1 { letter-spacing: -1px; }
+            .hero-ctas { flex-direction: column; align-items: center; }
+            .btn { width: 100%; max-width: 300px; justify-content: center; }
+            .demo-section, .before-after, .features, .testimonials, .cta { padding: 60px 20px; }
+            .features-grid, .testimonials-grid { grid-template-columns: 1fr; }
+            .input-row { grid-template-columns: 1fr; }
+            .slide-layout { grid-template-columns: 1fr; }
+            .ai-sublabel { display: none; }
+            .flow-panel-body { padding: 20px; }
+            .stats-grid { grid-template-columns: 1fr 1fr; gap: 24px; }
+            .stat h4 { font-size: 36px; }
+            .footer-top { grid-template-columns: 1fr; gap: 28px; }
+            .footer-bottom { flex-direction: column; text-align: center; }
+        }
+        @media (max-width: 480px) { .stats-grid { grid-template-columns: 1fr; } }
+
+        /* Accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 40px;
-            }
-            .features-grid {
-                grid-template-columns: 1fr;
-            }
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            .slide-body {
-                grid-template-columns: 1fr;
-            }
-            .demo-container {
-                max-width: 100%;
-            }
-        }
+        /* Focus styles */
+        a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     </style>
 </head>
 <body>
-    <div class="bg-sophisticated"></div>
+    <div class="bg-pattern"></div>
 
-    <nav>
+    <!-- Navigation -->
+    <nav id="navbar">
         <div class="nav-inner">
             <a href="#" class="logo">
-                <div class="logo-icon">S</div>
-                SlideTheory
+                <div class="logo-icon">◆</div>
+                <span class="logo-text">Slide<span style="color: var(--accent);">Theory</span></span>
             </a>
-            <div class="nav-links">
-                <a href="#demo">How It Works</a>
+            <div class="nav-links" id="navLinks">
                 <a href="#features">Features</a>
+                <a href="#demo">Demo</a>
+                <a href="#testimonials">Reviews</a>
                 <a href="#signup" class="nav-cta">Get Early Access</a>
             </div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle menu">☰</button>
         </div>
     </nav>
 
+    <!-- Hero Section -->
     <section class="hero">
-        <div class="hero-badge">✨ Now in early access</div>
-        <h1>Consultant-quality slides in <span>30 seconds</span></h1>
-        <p class="hero-subtitle">Generate McKinsey, Bain, BCG-style presentations with AI. Built for strategy consultants who need to move fast.</p>
-        
-        <div class="hero-ctas">
-            <a href="#signup" class="btn-primary">Get Free Early Access →</a>
-            <a href="#demo" class="btn-secondary">See How It Works</a>
+        <div class="hero-badge animate-on-scroll">
+            <span class="pulse-dot"></span>
+            Now accepting early access requests
+        </div>
+        <h1 class="animate-on-scroll stagger-1">
+            Consultant-quality slides<br>in <span class="gradient-text">30 seconds</span>
+        </h1>
+        <p class="hero-subtitle animate-on-scroll stagger-2">
+            You have the data. You have the insights. But staring at a blank slide wondering "how do I structure this?" Our AI generates complete, consultant-quality slides using McKinsey, Bain, BCG frameworks — perfectly fit for your context, audience, and data.
+        </p>
+        <div class="hero-ctas animate-on-scroll stagger-3">
+            <a href="#signup" class="btn btn-primary">
+                Get Free Early Access →
+            </a>
+            <a href="#demo" class="btn btn-secondary">
+                See How It Works
+            </a>
+        </div>
+
+        <!-- Trust Badge -->
+        <div class="trust-badge animate-on-scroll stagger-4">
+            <div class="trust-stars">★★★★★</div>
+            <span>Trusted by consultants from</span>
+            <div class="trust-companies">
+                <span class="trust-company">McKinsey</span>
+                <span class="trust-company">Bain</span>
+                <span class="trust-company">BCG</span>
+            </div>
         </div>
     </section>
 
-    <!-- DEMO SECTION - VERTICAL FLOW -->
+    <!-- Demo Section - Vertical Input/Output Flow -->
     <section class="demo-section" id="demo">
-        <div class="demo-container">
-            <div class="demo-header">
-                <h2>How SlideTheory works</h2>
-                <p>Describe what you need. Our AI structures it like a top-tier consulting firm would.</p>
+        <div class="demo-section-header animate-on-scroll">
+            <div class="section-label">See It In Action</div>
+            <h2>From Brief to Board-Ready Slide</h2>
+            <p>Watch SlideTheory transform your input into a consultant-quality slide in seconds.</p>
+        </div>
+
+        <div class="demo-flow">
+            <!-- Input Panel -->
+            <div class="flow-panel animate-on-scroll stagger-1">
+                <div class="flow-panel-header">
+                    <div class="flow-panel-icon">1</div>
+                    <div class="flow-panel-title">Your Input</div>
+                    <div class="flow-panel-subtitle">Describe what you need</div>
+                </div>
+                <div class="flow-panel-body">
+                    <div class="input-grid">
+                        <div class="input-row">
+                            <div class="input-field">
+                                <label>Slide Type</label>
+                                <select class="input-value input-select">
+                                    <option>Executive Summary</option>
+                                    <option>Market Analysis</option>
+                                    <option>Competitive Landscape</option>
+                                    <option>Financial Model</option>
+                                    <option>Strategic Recommendation</option>
+                                    <option>Issue Tree / Root Cause</option>
+                                    <option>2x2 Matrix</option>
+                                    <option>Waterfall Chart</option>
+                                </select>
+                            </div>
+                            <div class="input-field">
+                                <label>Audience</label>
+                                <select class="input-value input-select">
+                                    <option>C-Suite / Board</option>
+                                    <option>Management</option>
+                                    <option>Working Team</option>
+                                    <option>External Client</option>
+                                    <option>Investors / PE</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="input-field">
+                            <label>Context & Situation</label>
+                            <textarea class="input-value textarea" rows="3">Healthcare company evaluating expansion into outpatient surgery centers. Market growing at 12% annually, but top 3 competitors control 65% share.</textarea>
+                        </div>
+
+                        <div class="input-row">
+                            <div class="input-field">
+                                <label>Key Data <span class="optional">(optional)</span></label>
+                                <div class="input-value file-input-wrapper">
+                                    <input type="text" class="data-input" placeholder="Paste data or upload file..." value="$450M market, 8.5% satisfaction gap">
+                                    <button class="file-attach-btn" title="Upload CSV/Excel">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="input-field">
+                                <label>Key Takeaway <span class="optional">(optional)</span></label>
+                                <div class="expandable-field">
+                                    <input type="text" class="input-value expandable-input" placeholder="What should the audience remember?" value="Expansion is viable with phased approach">
+                                    <button class="expand-btn" title="Expand for more details">+</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="demo-vertical">
-                <!-- STEP 1: INPUT -->
-                <div class="input-panel">
-                    <div class="panel-header">
-                        <div class="panel-number">1</div>
-                        <div class="panel-title">Your Input</div>
+            <!-- AI Processing Arrow -->
+            <div class="flow-arrow animate-on-scroll stagger-2">
+                <div class="ai-pill">
+                    <div class="ai-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <path d="M12 2L12 22M12 22L5 15M12 22L19 15"/>
+                        </svg>
                     </div>
-
-                    <div class="input-field">
-                        <label>Slide Type</label>
-                        <select onclick="this.showPicker()" readonly>
-                            <option selected>Executive Summary</option>
-                            <option>Recommendation</option>
-                            <option>Market Analysis</option>
-                            <option>Framework / 2x2</option>
-                            <option>General</option>
-                        </select>
-                    </div>
-
-                    <div class="input-field">
-                        <label>Audience</label>
-                        <select onclick="this.showPicker()" readonly>
-                            <option selected>C-Suite / Board</option>
-                            <option>Management / Working Team</option>
-                            <option>Educational / Internal</option>
-                        </select>
-                    </div>
-
-                    <div class="input-field">
-                        <label>Slide Format</label>
-                        <div class="format-toggle">
-                            <div class="format-option active" onclick="toggleFormat(this)">📊 Presentation-style (less detail)</div>
-                            <div class="format-option" onclick="toggleFormat(this)">📄 Read-style (more detail)</div>
-                        </div>
-                    </div>
-
-                    <div class="input-field">
-                        <label>Context</label>
-                        <textarea readonly>Healthcare company evaluating expansion into outpatient surgery centers. Need to assess market opportunities and develop investment thesis.</textarea>
-                    </div>
-
-                    <div class="input-field">
-                        <label><span class="optional-label">Key Data (Optional)</span></label>
-                        <textarea readonly>Market growing 12% annually. Top 3 competitors control 65% share. Strong physician demand in target markets.</textarea>
+                    <div class="ai-text">
+                        <div class="ai-label">AI Processing</div>
+                        <div class="ai-sublabel">Applying framework • Structuring insights • Generating slide</div>
                     </div>
                 </div>
+            </div>
 
-                <!-- SOPHISTICATED ARROW -->
-                <div class="demo-arrow">
-                    <div class="arrow-sophisticated">
-                        <div class="arrow-icon-wrap">⚡</div>
-                        <div class="arrow-text-wrap">
-                            <div class="arrow-label">SlideTheory AI</div>
-                            <div class="arrow-value">Generates in 30s</div>
-                        </div>
-                    </div>
+            <!-- Output Panel -->
+            <div class="flow-panel animate-on-scroll stagger-3">
+                <div class="flow-panel-header">
+                    <div class="flow-panel-icon output">2</div>
+                    <div class="flow-panel-title">Generated Slide</div>
+                    <div class="flow-panel-subtitle">Ready in 30 seconds</div>
                 </div>
-
-                <!-- STEP 2: OUTPUT -->
-                <div class="slide-container">
-                    <div class="windows-bar">
-                        <div class="ppt-icon">📊</div>
-                        <div class="win-title">SlideTheory_Generated.pptx - Microsoft PowerPoint</div>
-                        <div class="win-controls">
-                            <span>—</span>
-                            <span>□</span>
-                            <span>×</span>
-                        </div>
-                    </div>
-
-                    <div class="slide-content-box">
-                        <div class="slide-title">Strategic expansion into outpatient surgery centers presents a compelling growth opportunity rooted in favorable market dynamics and competitive positioning</div>
-
-                        <div class="slide-body">
-                            <div class="slide-col">
-                                <h4>Market Assessment</h4>
-                                <ul>
-                                    <li><strong>12% annual market growth</strong> driven by patient preference for convenience and lower costs</li>
-                                    <li><strong>Fragmented competitive landscape</strong> — top 3 players control only 65%, leaving room for strategic entrants</li>
-                                    <li><strong>Strong physician alignment</strong> — 78% of surveyed physicians prefer outpatient settings for eligible procedures</li>
-                                    <li><strong>Regulatory tailwinds</strong> favor shift from inpatient to outpatient reimbursement models</li>
-                                </ul>
+                <div class="flow-panel-body">
+                    <div class="slide-preview">
+                        <div class="slide-preview-header">
+                            <div class="window-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
                             </div>
-
-                            <div class="slide-col">
-                                <h4>Strategic Framework</h4>
-                                <div class="framework-title">Where to Play → How to Win → Investment Thesis</div>
-                                <div class="framework-2x2">
-                                    <div class="framework-cell">
-                                        <div class="cell-label">Market Selection</div>
-                                        <div class="cell-value">High-growth metro areas with physician shortages</div>
-                                    </div>
-                                    <div class="framework-cell">
-                                        <div class="cell-label">Differentiation</div>
-                                        <div class="cell-value">Technology-enabled patient experience</div>
-                                    </div>
-                                    <div class="framework-cell">
-                                        <div class="cell-label">Partnerships</div>
-                                        <div class="cell-value">Key physician group affiliations</div>
-                                    </div>
-                                    <div class="framework-cell">
-                                        <div class="cell-label">Returns</div>
-                                        <div class="cell-value">25-30% IRR with 5-year payback</div>
+                            <div class="window-title">Executive Summary — SlideTheory</div>
+                        </div>
+                        <div class="slide-content">
+                            <h3 class="slide-headline">Strategic expansion into outpatient surgery centers presents a compelling growth opportunity with manageable competitive dynamics</h3>
+                            <div class="slide-layout">
+                                <div class="slide-col">
+                                    <h4>Market Assessment</h4>
+                                    <ul>
+                                        <li><strong>12% annual growth</strong> in outpatient procedures through 2028</li>
+                                        <li><strong>Top 3 competitors</strong> control 65% market share — fragmentation opportunity exists</li>
+                                        <li><strong>Patient surveys</strong> reveal 8.5 point satisfaction gap vs. incumbents</li>
+                                        <li><strong>Regulatory tailwinds</strong> favor shift to outpatient settings</li>
+                                    </ul>
+                                </div>
+                                <div class="slide-col">
+                                    <div class="framework-section">
+                                        <div class="framework-header">Where to Play → How to Win</div>
+                                        <div class="framework-grid">
+                                            <div class="framework-cell">Geographic markets with highest growth & lowest competition density</div>
+                                            <div class="framework-cell">Service lines with largest satisfaction gaps vs. incumbents</div>
+                                            <div class="framework-cell">Partner with 2-3 regional players for rapid market entry</div>
+                                            <div class="framework-cell">Differentiate through superior patient experience & outcomes</div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -914,105 +529,327 @@
         </div>
     </section>
 
-    <section class="features" id="features">
-        <div class="section-title">
-            <h2>Built for the way consultants work</h2>
-            <p>From AI generation to proven frameworks — tools that actually save hours.</p>
+    <!-- Before/After Section -->
+    <section class="before-after">
+        <div class="before-after-header animate-on-scroll">
+            <div class="section-label">The Difference</div>
+            <h2>From Blank Slides to Complete Presentations</h2>
+            <p>Stop staring at blank slides. Our AI doesn't just give you structure—it generates complete, consultant-quality slides with content, visuals, and insights in 30 seconds.</p>
         </div>
 
-        <div class="features-grid">
-            <div class="feature-card">
-                <div class="feature-icon">🤖</div>
-                <h3>AI Slide Generation</h3>
-                <p>Describe what you need, get a consultant-quality slide in 30 seconds. Trained on MBB best practices.</p>
+        <div class="before-after-grid">
+            <div class="before-card animate-on-scroll stagger-1">
+                <div class="card-label">❌ Without SlideTheory</div>
+                <ul class="pain-list">
+                    <li>Having data and insights, but no idea how to structure them</li>
+                    <li>Staring at blank slides not knowing where to start</li>
+                    <li>Wishing you had a McKinsey-quality framework for YOUR specific context</li>
+                    <li>Second-guessing if your argument flow is right</li>
+                    <li>Formatting headaches and alignment issues</li>
+                    <li>Starting from scratch every single time</li>
+                </ul>
             </div>
 
-            <div class="feature-card">
-                <div class="feature-icon">📋</div>
-                <h3>Proven Frameworks</h3>
-                <p>Executive summaries, recommendations, situation analyses — structures that work at top firms.</p>
+            <div class="vs-divider">
+                <span>VS</span>
             </div>
 
-            <div class="feature-card">
-                <div class="feature-icon">⚡</div>
-                <h3>Workflow Automations</h3>
-                <p>Save hours on data processing and formatting with AI-powered automations.</p>
+            <div class="after-card animate-on-scroll stagger-2">
+                <div class="card-label">✓ With SlideTheory</div>
+                <ul class="gain-list">
+                    <li><strong>AI generates complete slides</strong> — not just structure, but full content with headlines, insights, and visuals</li>
+                    <li><strong>MBB-quality output</strong> — McKinsey, Bain, BCG structure, style, and methodology built-in</li>
+                    <li><strong>Ready-to-present</strong> — slides that need minimal editing, not hours of refinement</li>
+                    <li><strong>Context-aware</strong> — automatically adapted to your industry, audience, and data</li>
+                    <li><strong>30 seconds</strong> — from raw input to consultant-quality slide</li>
+                </ul>
             </div>
         </div>
     </section>
 
+    <!-- Features -->
+    <section class="features" id="features">
+        <div class="section-header animate-on-scroll">
+            <div class="section-label">Features</div>
+            <h2>Everything you need for consultant-quality slides</h2>
+            <p>From AI generation to proven frameworks — tools that save hours, not add complexity.</p>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card animate-on-scroll stagger-1">
+                <div class="feature-icon">⚡</div>
+                <h3>AI Slide Generation</h3>
+                <p>Describe what you need, get a consultant-quality slide in 30 seconds. Trained on MBB best practices.</p>
+                <div class="feature-tag">10x faster than scratch</div>
+            </div>
+
+            <div class="feature-card animate-on-scroll stagger-2">
+                <div class="feature-icon">📐</div>
+                <h3>Proven Frameworks</h3>
+                <p>Executive summaries, 2x2 matrices, issue trees — structures that work at top consulting firms.</p>
+                <div class="feature-tag">50+ templates</div>
+            </div>
+
+            <div class="feature-card animate-on-scroll stagger-3">
+                <div class="feature-icon">🎯</div>
+                <h3>Audience Optimization</h3>
+                <p>Automatically adjusts tone and detail level for C-suite, working teams, or board presentations.</p>
+                <div class="feature-tag">Right message, right audience</div>
+            </div>
+
+            <div class="feature-card animate-on-scroll stagger-1">
+                <div class="feature-icon">📊</div>
+                <h3>Data Integration</h3>
+                <p>Upload spreadsheets or raw data. SlideTheory structures insights into clear visualizations.</p>
+                <div class="feature-tag">Transform data instantly</div>
+            </div>
+
+            <div class="feature-card animate-on-scroll stagger-2">
+                <div class="feature-icon">🔄</div>
+                <h3>One-Click Refinement</h3>
+                <p>Iterate with natural language: "Make it more concise" or "Add competitor comparison."</p>
+                <div class="feature-tag">Perfect slides, faster</div>
+            </div>
+
+            <div class="feature-card animate-on-scroll stagger-3">
+                <div class="feature-icon">📤</div>
+                <h3>PowerPoint Export</h3>
+                <p>Download native .pptx files with editable charts, text, and formatting. No lock-in.</p>
+                <div class="feature-tag">Works with your workflow</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats -->
     <section class="stats">
         <div class="stats-grid">
-            <div class="stat">
+            <div class="stat animate-on-scroll stagger-1">
                 <h4>30s</h4>
                 <p>Average generation time</p>
             </div>
-            <div class="stat">
+            <div class="stat animate-on-scroll stagger-2">
                 <h4>50+</h4>
                 <p>Proven frameworks</p>
             </div>
-            <div class="stat">
+            <div class="stat animate-on-scroll stagger-3">
                 <h4>98%</h4>
                 <p>Less formatting time</p>
             </div>
-            <div class="stat">
+            <div class="stat animate-on-scroll stagger-4">
                 <h4>MBB</h4>
                 <p>Quality standard</p>
             </div>
         </div>
     </section>
 
-    <section class="cta" id="signup">
-        <h2>Get early access to SlideTheory</h2>
-        <p>Join strategy consultants from top firms. Free resources + early product access.</p>
+    <!-- Testimonials -->
+    <section class="testimonials" id="testimonials">
+        <div class="section-header animate-on-scroll">
+            <div class="section-label">Wall of Love 🧡</div>
+            <h2>Loved by consultants at top firms</h2>
+            <p>See what early users are saying about SlideTheory.</p>
+        </div>
 
-        <form class="signup-form" id="signupForm" action="https://formspree.io/f/mjgojzby" method="POST">
-            <div class="form-group">
-                <input type="email" name="email" placeholder="Work email" required>
+        <div class="testimonials-grid">
+            <div class="testimonial-card animate-on-scroll stagger-1">
+                <div class="stars">★★★★★</div>
+                <p class="testimonial-text">"SlideTheory cut my deck prep time by 70%. The frameworks are spot-on — it feels like having a senior associate build your slides."</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">SK</div>
+                    <div class="author-info">
+                        <h4>Sarah K.</h4>
+                        <p>Engagement Manager, McKinsey</p>
+                    </div>
+                </div>
             </div>
 
-            <div class="form-row">
-                <div class="form-group">
-                    <input type="text" name="company" placeholder="Company" required>
+            <div class="testimonial-card featured animate-on-scroll stagger-2">
+                <div class="stars">★★★★★</div>
+                <p class="testimonial-text">"Finally, an AI tool that understands consulting. The slides actually follow the 'so what' structure partners expect. Game changer for tight deadlines."</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">MJ</div>
+                    <div class="author-info">
+                        <h4>Michael J.</h4>
+                        <p>Principal, BCG</p>
+                    </div>
                 </div>
+            </div>
 
+            <div class="testimonial-card animate-on-scroll stagger-3">
+                <div class="stars">★★★★★</div>
+                <p class="testimonial-text">"Used it for a board presentation last week. Generated the exec summary in under a minute, spent 5 minutes tweaking. Partner was impressed."</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">AR</div>
+                    <div class="author-info">
+                        <h4>Alex R.</h4>
+                        <p>Associate, Bain</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta" id="signup">
+        <div class="cta-inner">
+            <h2 class="animate-on-scroll">Get early access to SlideTheory</h2>
+            <p class="animate-on-scroll stagger-1">Join strategy consultants from top firms. Free resources + early product access.</p>
+
+            <form class="signup-form animate-on-scroll stagger-2" id="signupForm" action="https://formspree.io/f/mjgojzby" method="POST">
                 <div class="form-group">
-                    <select name="role" required>
-                        <option value="" disabled selected>Select role</option>
+                    <input type="email" name="email" placeholder="Enter your work email" required>
+                </div>
+                <div class="form-group">
+                    <select name="role">
+                        <option value="" disabled selected>Select your role (optional)</option>
                         <option value="consultant">Consultant / Associate</option>
                         <option value="manager">Manager / Director</option>
-                        <option value="executive">C-Suite / Partner</option>
+                        <option value="partner">C-Suite / Partner</option>
                         <option value="other">Other</option>
                     </select>
                 </div>
+                <button type="submit" class="submit-btn">Get Free Access →</button>
+                <p class="privacy">
+                    No spam. Unsubscribe anytime. Read our <a href="#">Privacy Policy</a>.
+                </p>
+            </form>
+
+            <div class="form-success" id="formSuccess">
+                <div class="success-icon">✓</div>
+                <h3>You're on the list!</h3>
+                <p>Check your email for early access details and exclusive resources.</p>
             </div>
-
-            <input type="hidden" name="_subject" value="New SlideTheory Signup">
-            <input type="hidden" name="_next" value="https://slidetheory.io?thanks=true">
-
-            <button type="submit" class="submit-btn">Get Free Access →</button>
-            
-            <p class="privacy">No spam. Unsubscribe anytime.</p>
-        </form>
+        </div>
     </section>
 
+    <!-- Footer -->
     <footer>
-        <p>© 2026 SlideTheory. Built for consultants who move fast.</p>
+        <div class="footer-inner">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <a href="#" class="logo">
+                        <div class="logo-icon">◆</div>
+                        <span class="logo-text">Slide<span style="color: var(--accent);">Theory</span></span>
+                    </a>
+                    <p>AI-powered slide generation for strategy consultants. Build McKinsey-quality presentations in seconds.</p>
+                </div>
+
+                <div class="footer-column">
+                    <h4>Product</h4>
+                    <ul>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#demo">Demo</a></li>
+                        <li><a href="#signup">Early Access</a></li>
+                        <li><a href="#">Changelog</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="#">About</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="#">Privacy</a></li>
+                        <li><a href="#">Terms</a></li>
+                        <li><a href="#">Security</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>© 2026 SlideTheory. Built for consultants who move fast.</p>
+                <div class="social-links">
+                    <a href="#" aria-label="Twitter">𝕏</a>
+                    <a href="#" aria-label="LinkedIn">in</a>
+                    <a href="#" aria-label="Email">@</a>
+                </div>
+            </div>
+        </div>
     </footer>
 
     <script>
-        // Format toggle functionality
-        function toggleFormat(element) {
-            document.querySelectorAll('.format-option').forEach(opt => {
-                opt.classList.remove('active');
-            });
-            element.classList.add('active');
-        }
+        // Navbar scroll effect
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 20) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
 
-        // Check for Formspree success
-        if (window.location.search.includes('thanks=true')) {
-            alert('Thanks for signing up! Check your email for early access.');
-        }
+        // Intersection Observer for scroll animations
+        const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.animate-on-scroll').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Form handling
+        const form = document.getElementById('signupForm');
+        const formSuccess = document.getElementById('formSuccess');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const submitBtn = form.querySelector('.submit-btn');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Submitting...';
+            submitBtn.disabled = true;
+
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: new FormData(form),
+                    headers: { 'Accept': 'application/json' }
+                });
+
+                if (response.ok) {
+                    form.style.display = 'none';
+                    formSuccess.classList.add('visible');
+                } else {
+                    throw new Error('Submission failed');
+                }
+            } catch (error) {
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+                alert('Something went wrong. Please try again.');
+            }
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navLinks = document.getElementById('navLinks');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            mobileMenuBtn.textContent = navLinks.classList.contains('active') ? '✕' : '☰';
+        });
     </script>
 </body>
 </html>
