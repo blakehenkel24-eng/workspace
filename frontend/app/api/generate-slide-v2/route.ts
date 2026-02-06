@@ -1,11 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { OpenAI } from 'openai';
 
-const openai = new OpenAI({
-  apiKey: process.env.KIMI_API_KEY,
-  baseURL: process.env.KIMI_BASE_URL || 'https://api.moonshot.cn/v1',
-});
-
 const SYSTEM_PROMPT = `You are an expert strategy consultant who creates McKinsey/BCG-quality slide content.
 
 Generate professional slide content following these principles:
@@ -24,6 +19,12 @@ Keep bullets under 12 words each, use parallel structure, and front-load insight
 
 export async function POST(request: NextRequest) {
   try {
+    // Initialize OpenAI client inside handler (not at module level) to avoid build-time errors
+    const openai = new OpenAI({
+      apiKey: process.env.KIMI_API_KEY,
+      baseURL: process.env.KIMI_BASE_URL || 'https://api.moonshot.cn/v1',
+    });
+
     const body = await request.json();
     const { slideType, context, audience, keyTakeaway, presentationMode, dataInput } = body;
     
