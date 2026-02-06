@@ -41,7 +41,13 @@ const generateSlide = asyncHandler(async (req, res) => {
     });
   }
   
-  const { slideType, context, dataPoints, targetAudience, framework } = request.toJSON();
+  // Support both V1 (targetAudience) and V2 (audience) field names
+  const requestData = request.toJSON();
+  const slideType = requestData.slideType;
+  const context = requestData.context;
+  const dataPoints = requestData.dataPoints;
+  const targetAudience = requestData.targetAudience || requestData.audience;
+  const framework = requestData.framework;
   
   // Generate cache key
   const cacheKey = generateCacheKey(slideType, context, dataPoints, targetAudience, framework);
@@ -144,9 +150,15 @@ const generateSlide = asyncHandler(async (req, res) => {
   res.status(STATUS.OK).json(responseData);
 });
 
-// Placeholder for v2 implementation
+// V2 implementation - normalizes field names before calling shared logic
 const generateSlideV2 = asyncHandler(async (req, res) => {
-  // For now, just call the v1 implementation
+  // Normalize V2 field names to match V1 model expectations
+  // V2 uses 'audience', V1 model expects 'targetAudience'
+  if (req.body.audience !== undefined && req.body.targetAudience === undefined) {
+    req.body.targetAudience = req.body.audience;
+  }
+  
+  // Call the shared implementation
   return generateSlide(req, res);
 });
 

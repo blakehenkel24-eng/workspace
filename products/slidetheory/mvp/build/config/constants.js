@@ -35,13 +35,19 @@ module.exports = {
   },
   
   // Slide Types
+  // V1 Legacy Types (classic consulting slides)
+  // V2 Types (layout-focused: Horizontal Flow, Vertical Flow, Graph/Chart, General)
   SLIDE_TYPES: [
     'Executive Summary',
     'Market Analysis',
     'Financial Model',
     'Competitive Analysis',
     'Growth Strategy',
-    'Risk Assessment'
+    'Risk Assessment',
+    'Horizontal Flow',
+    'Vertical Flow',
+    'Graph/Chart',
+    'General'
   ],
   
   // Export Formats

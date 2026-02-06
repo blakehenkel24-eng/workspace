@@ -3,13 +3,18 @@
  */
 
 // Valid slide types from the application
+// Includes V1 legacy types + V2 layout types
 const VALID_SLIDE_TYPES = [
   'Executive Summary',
-  'Market Analysis', 
+  'Market Analysis',
   'Financial Model',
   'Competitive Analysis',
   'Growth Strategy',
-  'Risk Assessment'
+  'Risk Assessment',
+  'Horizontal Flow',
+  'Vertical Flow',
+  'Graph/Chart',
+  'General'
 ];
 
 // Valid audiences

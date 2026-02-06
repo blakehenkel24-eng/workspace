@@ -1,12 +1,12 @@
 {
   "version": "2.0",
   "createdAt": "2026-02-05T01:00:50.342Z",
-  "updatedAt": "2026-02-05T14:36:12.956Z",
+  "updatedAt": "2026-02-06T01:02:51.131Z",
   "slides": {
-    "totalGenerated": 27,
+    "totalGenerated": 29,
     "totalCached": 0,
     "byType": {
-      "Executive Summary": 16,
+      "Executive Summary": 18,
       "Market Analysis": 4,
       "Financial Model": 4,
       "Competitive Analysis": 1,
@@ -14,7 +14,7 @@
       "Risk Assessment": 1
     },
     "byTemplate": {
-      "Executive Summary": 16,
+      "Executive Summary": 18,
       "Market Analysis": 4,
       "Financial Model": 4,
       "Competitive Analysis": 1,
@@ -37,12 +37,19 @@
           "Growth Strategy": 1,
           "Risk Assessment": 1
         }
+      },
+      "2026-02-06": {
+        "total": 2,
+        "cached": 0,
+        "types": {
+          "Executive Summary": 2
+        }
       }
     },
     "generationTime": {
-      "totalMs": 186244,
-      "count": 27,
-      "avgMs": 6898,
+      "totalMs": 198551,
+      "count": 29,
+      "avgMs": 6847,
       "minMs": 0,
       "maxMs": 33777,
       "p50": 0,
@@ -80,14 +87,14 @@
     "landingPage": 0,
     "formStarted": 0,
     "formCompleted": 0,
-    "generationStarted": 4,
-    "generationCompleted": 4,
+    "generationStarted": 6,
+    "generationCompleted": 5,
     "exportStarted": 3,
     "exportCompleted": 3,
     "dropOffPoints": {
       "landingToForm": 0,
       "formStartToComplete": 0,
-      "formToGeneration": -4,
+      "formToGeneration": -5,
       "generationToExport": 0
     }
   },
@@ -97,7 +104,7 @@
   },
   "hourlyDistribution": [
     0,
-    0,
+    2,
     0,
     0,
     0,
@@ -127,7 +134,7 @@
     0,
     0,
     27,
-    0,
+    2,
     0
   ],
   "totalSlides": 14,

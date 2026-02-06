@@ -184,21 +184,29 @@ describe('Validation Functions', () => {
   });
 
   describe('VALID_SLIDE_TYPES', () => {
-    
-    it('should contain exactly 6 slide types', () => {
-      assert.strictEqual(VALID_SLIDE_TYPES.length, 6);
-    });
 
-    it('should contain expected slide types', () => {
-      const expected = [
+    it('should contain V1 legacy slide types', () => {
+      const v1Types = [
         'Executive Summary',
-        'Market Analysis', 
+        'Market Analysis',
         'Financial Model',
         'Competitive Analysis',
         'Growth Strategy',
         'Risk Assessment'
       ];
-      for (const type of expected) {
+      for (const type of v1Types) {
+        assert.ok(VALID_SLIDE_TYPES.includes(type), `Should include "${type}"`);
+      }
+    });
+
+    it('should contain V2 layout slide types', () => {
+      const v2Types = [
+        'Horizontal Flow',
+        'Vertical Flow',
+        'Graph/Chart',
+        'General'
+      ];
+      for (const type of v2Types) {
         assert.ok(VALID_SLIDE_TYPES.includes(type), `Should include "${type}"`);
       }
     });

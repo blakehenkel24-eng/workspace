@@ -12,9 +12,12 @@ class SlideGenerationRequest {
   constructor(data = {}) {
     this.slideType = data.slideType;
     this.context = data.context;
-    this.targetAudience = data.targetAudience;
-    this.dataPoints = data.dataPoints || [];
+    // Support both V1 (targetAudience) and V2 (audience) field names
+    this.targetAudience = data.targetAudience || data.audience;
+    this.dataPoints = data.dataPoints || data.dataInput || [];
     this.framework = data.framework;
+    this.keyTakeaway = data.keyTakeaway;
+    this.presentationMode = data.presentationMode;
   }
   
   /**
@@ -85,7 +88,9 @@ class SlideGenerationRequest {
       context: this.context,
       targetAudience: this.targetAudience,
       dataPoints: this.dataPoints,
-      framework: this.framework
+      framework: this.framework,
+      keyTakeaway: this.keyTakeaway,
+      presentationMode: this.presentationMode
     };
   }
 }
