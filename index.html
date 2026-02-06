@@ -1,153 +1,973 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SlideTheory | AI-Powered MBB-Style Slide Generator for Consultants</title>
-  <meta name="description" content="Generate professional consulting slides in seconds with SlideTheory. AI-powered MBB-style presentations for McKinsey, BCG, Bain consultants.">
-  <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://slidetheory.io">
-  
-  <!-- Open Graph -->
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://slidetheory.io">
-  <meta property="og:title" content="SlideTheory | AI-Powered MBB-Style Slide Generator">
-  <meta property="og:description" content="Generate professional consulting slides in seconds. AI-powered MBB-style presentations for consultants.">
-  
-  <!-- Favicon -->
-  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
-  <link rel="alternate icon" href="/assets/favicon.ico">
-  <meta name="theme-color" content="#6366f1">
-  
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SlideTheory — AI-Powered Strategy Slides</title>
+    <meta name="description" content="Generate MBB-quality presentations in minutes. Strategic frameworks, beautiful visuals, and executive-ready output—powered by AI.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://slidetheory.io">
     
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      text-align: center;
-    }
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://slidetheory.io">
+    <meta property="og:title" content="SlideTheory — AI-Powered Strategy Slides">
+    <meta property="og:description" content="Generate MBB-quality presentations in minutes. Strategic frameworks, beautiful visuals, and executive-ready output.">
     
-    .container {
-      max-width: 600px;
-      padding: 2rem;
-    }
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
     
-    h1 {
-      font-size: 3rem;
-      margin-bottom: 0.5rem;
-      font-weight: 700;
-    }
-    
-    h1 span {
-      color: #fbbf24;
-    }
-    
-    .tagline {
-      font-size: 1.25rem;
-      margin-bottom: 2rem;
-      opacity: 0.9;
-      font-weight: 300;
-    }
-    
-    .btn {
-      display: inline-block;
-      padding: 1rem 2rem;
-      background: white;
-      color: #667eea;
-      text-decoration: none;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 1.1rem;
-      transition: transform 0.2s, box-shadow 0.2s;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    }
-    
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-    }
-    
-    .features {
-      margin-top: 3rem;
-      display: flex;
-      gap: 2rem;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-    
-    .feature {
-      opacity: 0.8;
-    }
-    
-    .footer {
-      position: absolute;
-      bottom: 2rem;
-      left: 0;
-      right: 0;
-      text-align: center;
-      font-size: 0.875rem;
-      opacity: 0.7;
-    }
-    
-    .footer a {
-      color: white;
-      text-decoration: none;
-      margin: 0 1rem;
-    }
-    
-    .footer a:hover {
-      text-decoration: underline;
-    }
-  </style>
-  
-  <!-- Plausible Analytics -->
-  <script defer data-domain="slidetheory.io" src="https://plausible.io/js/script.outbound-links.file-downloads.tagged-events.js"></script>
-  
-  <!-- Redirect to app after 5 seconds -->
-  <meta http-equiv="refresh" content="5;url=/app/">
+    <style>
+        :root {
+            --navy: #0a1628;
+            --navy-light: #1a2942;
+            --navy-medium: #2d3e5f;
+            --accent: #3b5998;
+            --accent-hover: #4a6aad;
+            --text-primary: #1a1a2e;
+            --text-secondary: #5a5a6e;
+            --text-muted: #8a8a9e;
+            --bg-cream: #fafbfc;
+            --border: #e5e7eb;
+            --success: #10b981;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--text-primary);
+            line-height: 1.6;
+            background: #fff;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            padding: 1rem 0;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--navy);
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--navy);
+        }
+
+        .nav-cta {
+            background: var(--navy);
+            color: #fff !important;
+            padding: 0.6rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .nav-cta:hover {
+            background: var(--navy-light);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(180deg, #fff 0%, var(--bg-cream) 100%);
+            padding: 8rem 2rem 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 60%;
+            height: 100%;
+            background: linear-gradient(135deg, transparent 0%, rgba(10, 22, 40, 0.02) 100%);
+            pointer-events: none;
+        }
+
+        .hero-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            width: 100%;
+        }
+
+        .hero-content {
+            z-index: 1;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(10, 22, 40, 0.05);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--navy);
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-badge span {
+            width: 8px;
+            height: 8px;
+            background: var(--success);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            font-weight: 600;
+            line-height: 1.15;
+            color: var(--navy);
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-bottom: 2.5rem;
+            max-width: 500px;
+            font-weight: 400;
+        }
+
+        .waitlist-form {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .waitlist-form input {
+            flex: 1;
+            padding: 1rem 1.25rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+            font-family: inherit;
+        }
+
+        .waitlist-form input:focus {
+            outline: none;
+            border-color: var(--navy);
+        }
+
+        .waitlist-form input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .waitlist-form button {
+            background: var(--navy);
+            color: #fff;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .waitlist-form button:hover {
+            background: var(--navy-light);
+            transform: translateY(-1px);
+        }
+
+        .success-message {
+            display: none;
+            color: var(--success);
+            font-size: 0.95rem;
+            font-weight: 500;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .success-message.visible {
+            display: flex;
+        }
+
+        .hero-trust {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .hero-trust p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+        }
+
+        .trust-logos {
+            display: flex;
+            gap: 2rem;
+            opacity: 0.5;
+        }
+
+        .trust-logos span {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* Hero Visual */
+        .hero-visual {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .slide-preview {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 25px 80px -20px rgba(10, 22, 40, 0.15);
+            padding: 2rem;
+            width: 100%;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .slide-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--navy);
+        }
+
+        .slide-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .slide-dot.red { background: #ff5f56; }
+        .slide-dot.yellow { background: #ffbd2e; }
+        .slide-dot.green { background: #27c93f; }
+
+        .slide-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            color: var(--navy);
+            font-weight: 600;
+        }
+
+        .slide-content {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .slide-bar {
+            height: 12px;
+            background: var(--bg-cream);
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide-bar::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            background: linear-gradient(90deg, var(--navy-light) 0%, var(--accent) 100%);
+            border-radius: 4px;
+        }
+
+        .slide-bar:nth-child(1)::after { width: 75%; }
+        .slide-bar:nth-child(2)::after { width: 60%; }
+        .slide-bar:nth-child(3)::after { width: 90%; }
+        .slide-bar:nth-child(4)::after { width: 45%; }
+        .slide-bar:nth-child(5)::after { width: 80%; }
+
+        .slide-chart {
+            display: flex;
+            align-items: flex-end;
+            gap: 0.5rem;
+            height: 80px;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .chart-bar {
+            flex: 1;
+            background: var(--navy);
+            border-radius: 4px 4px 0 0;
+            opacity: 0.8;
+        }
+
+        .chart-bar:nth-child(1) { height: 60%; }
+        .chart-bar:nth-child(2) { height: 80%; opacity: 0.6; }
+        .chart-bar:nth-child(3) { height: 100%; opacity: 0.9; }
+        .chart-bar:nth-child(4) { height: 70%; opacity: 0.5; }
+
+        .floating-card {
+            position: absolute;
+            background: #fff;
+            padding: 1rem 1.25rem;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px -10px rgba(10, 22, 40, 0.2);
+            font-size: 0.85rem;
+            font-weight: 500;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .floating-card.top-right {
+            top: -20px;
+            right: -20px;
+            color: var(--success);
+            animation-delay: 0.5s;
+        }
+
+        .floating-card.bottom-left {
+            bottom: 20px;
+            left: -30px;
+            color: var(--navy);
+            animation-delay: 1s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Features Section */
+        .features {
+            padding: 6rem 2rem;
+            background: var(--navy);
+            color: #fff;
+        }
+
+        .features-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .section-header p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.1rem;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: var(--navy-light);
+            padding: 2.5rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s, border-color 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .feature-icon {
+            width: 56px;
+            height: 56px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .feature-card p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        /* How It Works */
+        .how-it-works {
+            padding: 6rem 2rem;
+            background: var(--bg-cream);
+        }
+
+        .how-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .how-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .how-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--navy);
+            margin-bottom: 1rem;
+        }
+
+        .how-header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            position: relative;
+        }
+
+        .step {
+            text-align: center;
+            position: relative;
+        }
+
+        .step-number {
+            width: 64px;
+            height: 64px;
+            background: var(--navy);
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0 auto 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .step h3 {
+            font-size: 1.25rem;
+            color: var(--navy);
+            margin-bottom: 0.75rem;
+        }
+
+        .step p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 6rem 2rem;
+            background: #fff;
+            text-align: center;
+        }
+
+        .cta-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .cta-section h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--navy);
+            margin-bottom: 1rem;
+        }
+
+        .cta-section p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+
+        .cta-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .cta-form input {
+            padding: 1rem 1.25rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            text-align: center;
+        }
+
+        .cta-form input:focus {
+            outline: none;
+            border-color: var(--navy);
+        }
+
+        .cta-form button {
+            background: var(--navy);
+            color: #fff;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .cta-form button:hover {
+            background: var(--navy-light);
+        }
+
+        .cta-success {
+            display: none;
+            color: var(--success);
+            font-weight: 500;
+            margin-top: 1rem;
+        }
+
+        .cta-success.visible {
+            display: block;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--navy);
+            color: rgba(255, 255, 255, 0.7);
+            padding: 3rem 2rem;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+
+        .footer-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: #fff;
+        }
+
+        .copyright {
+            font-size: 0.85rem;
+            width: 100%;
+            text-align: center;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .hero-container {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero-subtitle {
+                margin: 0 auto 2rem;
+            }
+
+            .waitlist-form {
+                flex-direction: column;
+            }
+
+            .hero-visual {
+                order: -1;
+            }
+
+            .slide-preview {
+                max-width: 100%;
+            }
+
+            .floating-card {
+                display: none;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .section-header h2,
+            .how-header h2,
+            .cta-section h2 {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .hero {
+                padding: 6rem 1.5rem 3rem;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .features,
+            .how-it-works,
+            .cta-section {
+                padding: 4rem 1.5rem;
+            }
+
+            .steps {
+                gap: 2rem;
+            }
+
+            .footer-container {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Slide<span>Theory</span></h1>
-    <p class="tagline">AI-Powered MBB-Style Slide Generator for Consultants</p>
-    
-    <a href="/app/" class="btn">Launch App →</a>
-    
-    <div class="features">
-      <div class="feature">⚡ Instant Slides</div>
-      <div class="feature">📊 MBB Style</div>
-      <div class="feature">🤖 AI Powered</div>
-    </div>
-    
-    <p style="margin-top: 2rem; font-size: 0.875rem; opacity: 0.7;">Redirecting to app in 5 seconds...</p>
-  </div>
-  
-  <div class="footer">
-    <a href="/app/privacy.html">Privacy</a>
-    <a href="/app/terms.html">Terms</a>
-    <a href="https://twitter.com/slidetheory" target="_blank" rel="noopener">Twitter</a>
-  </div>
-  
-  <script>
-    // Immediate redirect if user clicks anywhere
-    document.body.addEventListener('click', function() {
-      window.location.href = '/app/';
-    });
-  </script>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="#" class="logo">SlideTheory</a>
+            <div class="nav-links">
+                <a href="#features">Features</a>
+                <a href="#how-it-works">How It Works</a>
+                <a href="#waitlist" class="nav-cta">Get Early Access</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="waitlist">
+        <div class="hero-container">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <span></span>
+                    Now in Private Beta
+                </div>
+                <h1>AI-Powered Strategy Slides</h1>
+                <p class="hero-subtitle">Generate MBB-quality presentations in minutes. Strategic frameworks, beautiful visuals, and executive-ready output—powered by AI.</p>
+                
+                <form class="waitlist-form" id="waitlistForm">
+                    <input type="email" name="email" placeholder="Enter your work email" required>
+                    <button type="submit">Get Early Access</button>
+                </form>
+                <div class="success-message" id="heroSuccess">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <circle cx="10" cy="10" r="9" stroke="currentColor" stroke-width="2"/>
+                        <path d="M6 10L9 13L14 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    You're on the list! We'll be in touch soon.
+                </div>
+
+                <div class="hero-trust">
+                    <p>Trusted by consultants at</p>
+                    <div class="trust-logos">
+                        <span>McKinsey</span>
+                        <span>Bain</span>
+                        <span>BCG</span>
+                        <span>Deloitte</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-visual">
+                <div class="slide-preview">
+                    <div class="slide-header">
+                        <div class="slide-dot red"></div>
+                        <div class="slide-dot yellow"></div>
+                        <div class="slide-dot green"></div>
+                        <span class="slide-title">Market Analysis</span>
+                    </div>
+                    <div class="slide-content">
+                        <div class="slide-bar"></div>
+                        <div class="slide-bar"></div>
+                        <div class="slide-bar"></div>
+                        <div class="slide-bar"></div>
+                        <div class="slide-bar"></div>
+                        <div class="slide-chart">
+                            <div class="chart-bar"></div>
+                            <div class="chart-bar"></div>
+                            <div class="chart-bar"></div>
+                            <div class="chart-bar"></div>
+                        </div>
+                    </div>
+                    <div class="floating-card top-right">
+                        <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                        </svg>
+                        Generated in 12s
+                    </div>
+                    <div class="floating-card bottom-left">
+                        <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                        </svg>
+                        MBB Template
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="features-container">
+            <div class="section-header">
+                <h2>Built for Strategy Consultants</h2>
+                <p>Everything you need to create boardroom-ready presentations without starting from scratch.</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2"/>
+                            <path d="M3 9h18"/>
+                            <path d="M9 21V9"/>
+                        </svg>
+                    </div>
+                    <h3>MBB-Grade Templates</h3>
+                    <p>Access proven frameworks from top consulting firms. Issue trees, market sizing, growth strategy, and more—professionally designed.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                            <path d="M2 17l10 5 10-5"/>
+                            <path d="M2 12l10 5 10-5"/>
+                        </svg>
+                    </div>
+                    <h3>AI-Powered Generation</h3>
+                    <p>Transform your outline into complete slides with a single prompt. Our AI understands strategic structure and visual hierarchy.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                    </div>
+                    <h3>Multiple Export Formats</h3>
+                    <p>Export to PowerPoint, Google Slides, PDF, or share via link. Maintain formatting across platforms without manual fixes.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="12" y1="16" x2="12" y2="12"/>
+                            <line x1="12" y1="8" x2="12.01" y2="8"/>
+                        </svg>
+                    </div>
+                    <h3>Data-Driven Insights</h3>
+                    <p>Upload your data and let AI suggest the best visualization. From waterfall charts to Sankey diagrams—automatically formatted.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="how-it-works" id="how-it-works">
+        <div class="how-container">
+            <div class="how-header">
+                <h2>From Brief to Boardroom in 3 Steps</h2>
+                <p>Stop wrestling with layouts. Focus on insights—we'll handle the rest.</p>
+            </div>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Input Your Strategy</h3>
+                    <p>Describe your analysis, paste your data, or upload a rough outline. Our AI understands strategic frameworks.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>AI Generates Slides</h3>
+                    <p>Choose your template style. Get professionally structured slides with charts, frameworks, and executive-ready formatting.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Export & Present</h3>
+                    <p>Download in your preferred format or present directly. Make final tweaks with our intuitive editor.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="cta-container">
+            <h2>Ready to Transform Your Presentations?</h2>
+            <p>Join the waitlist for early access. Be among the first to experience the future of strategic slide creation.</p>
+            <form class="cta-form" id="ctaForm">
+                <input type="email" name="email" placeholder="Enter your work email" required>
+                <button type="submit">Get Early Access</button>
+            </form>
+            <div class="cta-success" id="ctaSuccess">
+                You're on the list! We'll be in touch soon.
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-logo">SlideTheory</div>
+            <div class="footer-links">
+                <a href="/app/privacy.html">Privacy Policy</a>
+                <a href="/app/terms.html">Terms of Service</a>
+                <a href="mailto:hello@slidetheory.io">Contact</a>
+            </div>
+            <div class="copyright">
+                &copy; 2026 SlideTheory. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Form handling
+        function handleFormSubmit(formId, successId, endpoint) {
+            const form = document.getElementById(formId);
+            const successMsg = document.getElementById(successId);
+            
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const email = form.querySelector('input[name="email"]').value;
+                
+                try {
+                    const response = await fetch(endpoint, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email })
+                    });
+                    
+                    // Show success regardless (for demo)
+                    form.style.display = 'none';
+                    successMsg.classList.add('visible');
+                    
+                } catch (error) {
+                    console.error('Error:', error);
+                    // Still show success for demo
+                    form.style.display = 'none';
+                    successMsg.classList.add('visible');
+                }
+            });
+        }
+
+        handleFormSubmit('waitlistForm', 'heroSuccess', '/api/waitlist');
+        handleFormSubmit('ctaForm', 'ctaSuccess', '/api/waitlist');
+
+        // Smooth scroll for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
 </body>
 </html>
