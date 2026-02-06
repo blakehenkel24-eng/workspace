@@ -202,6 +202,18 @@ function parseAIResponse(aiContent: string, keyTakeaway: string, slideType: stri
 export async function POST(request: NextRequest) {
   console.log('[generate-slide-v2] POST request received');
   
+  // Handle CORS
+  if (request.method === 'OPTIONS') {
+    return new NextResponse(null, {
+      status: 200,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type',
+      },
+    });
+  }
+  
   try {
     // Parse request body
     let body;
@@ -347,6 +359,12 @@ Generate the slide content as a JSON object with:
     return NextResponse.json({
       success: true,
       slide: slide,
+    }, {
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type',
+      },
     });
 
   } catch (error) {
@@ -538,7 +556,7 @@ function escapeHtml(text: string): string {
   if (!text) return '';
   const str = typeof text === 'string' ? text : String(text);
   return str
-    .replace(&/g, '&amp;')
+    .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')

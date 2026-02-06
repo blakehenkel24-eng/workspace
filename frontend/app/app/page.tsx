@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Header } from "@/components/header";
-import { SlideForm } from "@/components/slide-form";
-import { SlidePreview } from "@/components/slide-preview";
-import { AuthModal } from "@/components/auth-modal";
-import { generateSlide } from "@/lib/api";
-import { GenerateSlideRequest, SlideData } from "@/lib/types";
-import { useToast } from "@/hooks/use-toast";
+import { Header } from "../../components/header";
+import { SlideForm } from "../../components/slide-form";
+import { SlidePreview } from "../../components/slide-preview";
+import { AuthModal } from "../../components/auth-modal";
+import { generateSlide } from "../../lib/api";
+import { GenerateSlideRequest, SlideData } from "../../lib/types";
+import { useToast } from "../../hooks/use-toast";
 
 export default function AppPage() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
