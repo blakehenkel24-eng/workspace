@@ -13,12 +13,12 @@ Consultant-level slides in 30 seconds
 **Subheadline:**
 ```
 AI-powered slide generation for strategy consultants. 
-Dump your notes. Get a professionally structured deck instantly.
+Dump your notes. Get a professionally structured slide instantly.
 ```
 
 **CTA:**
 ```
-[Try AI Slide Generation →]
+[Generate Slide →]
 ```
 
 **Social Proof:**
