@@ -12,6 +12,12 @@
 ### Preferences Learned
 [Things you've discovered about how they like to work]
 
+**Research Model Usage (CRITICAL):**
+- Default web search: `perplexity/sonar-pro-search` (via OpenRouter)
+- Deep research: `perplexity/sonar-deep-research` — **ONLY** when explicitly requested
+- Trigger words for deep research: "deep research", "a ton of research", "extensive research"
+- Deep research is expensive — respect the trigger words
+
 ### Important Dates
 [Birthdays, anniversaries, deadlines they care about]
 
@@ -30,7 +36,10 @@
 [What's currently in progress]
 
 ### Key Decisions Made
-[Important decisions and their reasoning]
+- **2026-02-10:** Switched web search from Brave API to Perplexity via OpenRouter
+  - Default: `perplexity/sonar-pro-search`
+  - Deep research: `perplexity/sonar-deep-research` (expensive, use sparingly)
+  - Rule: Only use deep research model when explicitly requested
 
 ### Things to Remember
 [Anything else important for continuity]
