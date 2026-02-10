@@ -40,6 +40,13 @@
   - Default: `perplexity/sonar-pro-search`
   - Deep research: `perplexity/sonar-deep-research` (expensive, use sparingly)
   - Rule: Only use deep research model when explicitly requested
+- **2026-02-10:** Security hardening completed - OpenClaw audit
+  - API keys moved to `.secrets.env` (chmod 600)
+  - Gateway tokens regenerated and diversified
+  - `allowInsecureAuth` disabled
+  - Cron jobs no longer auto-push to main (staging gate added)
+  - All sensitive configs locked to 600/700 permissions
+  - **REQUIRED ACTION:** Regenerate all API keys (exposed in audit)
 
 ### Things to Remember
 [Anything else important for continuity]

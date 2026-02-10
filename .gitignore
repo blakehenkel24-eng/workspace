@@ -1,55 +1,43 @@
-# Environment variables - NEVER COMMIT
+# Exclude embedded git repositories (handled separately)
+business/agent-studio-v2/my-app/
+business/agent-studio/my-app/
+business/slidetheory/
+shared/tools/mission-control/
+skills/x-research/
+archive/OpenClaw-OPS-Suite/
+
+# Large files
+*.tar.gz
+*.zip
+*.tar
+
+# Secrets and env files (NEVER commit)
 .env
 .env.*
-.env.local
-.env.production
-.env.staging
-*.env
+.secrets.env
+system/.env.temp
+system/claude_desktop_config.json
 
-# API Keys and Secrets
-*api*key*
-*api*secret*
-*secret*
-*token*
-*credential*
-*.pem
-*.key
+# Credentials (NEVER commit)
+.credentials/
 
-# Node.js
+# Node modules
 node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+*/node_modules/
+
+# Build outputs
+.next/
+dist/
+build/
 
 # Logs
 *.log
 logs/
 
-# OS
+# OS files
 .DS_Store
 Thumbs.db
 
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# Temporary
-tmp/
-temp/
-*.tmp
-
-# Archives (old code that shouldn't be committed)
-archive/
-
-# Google Cloud
-google-service-account.json
-.google-service-account.json
-.vercel
-.env*.local
-
-# MCP Config files with secrets
-claude_desktop_config.json
-config/mcporter.json
-.credentials/
+# Backup files
+*.bak
+*.bak.*

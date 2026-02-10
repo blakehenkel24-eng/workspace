@@ -1,0 +1,163 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #0D0D0D;
+  --foreground: #FAFAFA;
+  --card: #141414;
+  --card-foreground: #FAFAFA;
+  --popover: #141414;
+  --popover-foreground: #FAFAFA;
+  --primary: #6E56CF;
+  --primary-foreground: #FFFFFF;
+  --secondary: #1A1A1A;
+  --secondary-foreground: #FAFAFA;
+  --muted: #1A1A1A;
+  --muted-foreground: #A1A1AA;
+  --accent: #6E56CF;
+  --accent-foreground: #FFFFFF;
+  --destructive: #EF4444;
+  --destructive-foreground: #FFFFFF;
+  --border: #27272A;
+  --input: #27272A;
+  --ring: #6E56CF;
+  --radius: 0.625rem;
+}
+
+.dark {
+  --background: #0D0D0D;
+  --foreground: #FAFAFA;
+  --card: #141414;
+  --card-foreground: #FAFAFA;
+  --popover: #141414;
+  --popover-foreground: #FAFAFA;
+  --primary: #6E56CF;
+  --primary-foreground: #FFFFFF;
+  --secondary: #1A1A1A;
+  --secondary-foreground: #FAFAFA;
+  --muted: #1A1A1A;
+  --muted-foreground: #A1A1AA;
+  --accent: #6E56CF;
+  --accent-foreground: #FFFFFF;
+  --destructive: #EF4444;
+  --destructive-foreground: #FFFFFF;
+  --border: #27272A;
+  --input: #27272A;
+  --ring: #6E56CF;
+}
+
+* {
+  border-color: var(--border);
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  /* Prevent horizontal scroll on mobile */
+  overflow-x: hidden;
+}
+
+/* Custom scrollbar - thinner on mobile */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+@media (min-width: 640px) {
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted-foreground);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Focus ring */
+.focus-ring:focus {
+  outline: none;
+  ring: 2px;
+  ring-color: #6E56CF;
+  ring-offset: 2px;
+  ring-offset-color: #0D0D0D;
+}
+
+/* Mobile touch improvements */
+@layer utilities {
+  /* Ensure minimum touch target size */
+  .touch-target {
+    min-width: 44px;
+    min-height: 44px;
+  }
+  
+  /* Prevent text selection on interactive elements */
+  .no-select {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  
+  /* Smooth scrolling for mobile */
+  .scroll-smooth {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Safe area padding for notched devices */
+  .safe-area-inset {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* Mobile-specific adjustments */
+@media (max-width: 640px) {
+  /* Reduce font size slightly on very small screens */
+  html {
+    font-size: 14px;
+  }
+  
+  /* Ensure inputs are properly sized on mobile */
+  input, select, textarea {
+    font-size: 16px; /* Prevents iOS zoom on focus */
+  }
+  
+  /* Better touch handling for cards */
+  .touch-manipulation {
+    touch-action: manipulation;
+  }
+}
+
+/* Prevent pull-to-refresh on mobile web apps */
+@supports (-webkit-touch-callout: none) {
+  body {
+    overscroll-behavior-y: none;
+  }
+}

@@ -1,0 +1,597 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================================
+   SLIDETHEORY DESIGN SYSTEM v3.0
+   Premium, distinctive visual identity for AI slide generation
+   ============================================================================ */
+
+@layer base {
+  :root {
+    /* Primary Colors - Teal (Intelligence, Trust, Consulting-grade) */
+    --teal-50: #f0fdfa;
+    --teal-100: #ccfbf1;
+    --teal-200: #99f6e4;
+    --teal-300: #5eead4;
+    --teal-400: #2dd4bf;
+    --teal-500: #14b8a6;
+    --teal-600: #0d9488;
+    --teal-700: #0f766e;
+    --teal-800: #115e59;
+    --teal-900: #134e4a;
+
+    /* Accent Colors - Orange (Energy, Action, Warmth) */
+    --orange-50: #fff7ed;
+    --orange-100: #ffedd5;
+    --orange-200: #fed7aa;
+    --orange-300: #fdba74;
+    --orange-400: #fb923c;
+    --orange-500: #f97316;
+    --orange-600: #ea580c;
+    --orange-700: #c2410c;
+    --orange-800: #9a3412;
+    --orange-900: #7c2d12;
+
+    /* Neutral Colors - Slate (Professional, Clean) */
+    --slate-50: #f8fafc;
+    --slate-100: #f1f5f9;
+    --slate-200: #e2e8f0;
+    --slate-300: #cbd5e1;
+    --slate-400: #94a3b8;
+    --slate-500: #64748b;
+    --slate-600: #475569;
+    --slate-700: #334155;
+    --slate-800: #1e293b;
+    --slate-900: #0f172a;
+    --slate-950: #020617;
+
+    /* Semantic Colors */
+    --success: #10b981;
+    --warning: #f59e0b;
+    --error: #ef4444;
+    --info: #3b82f6;
+
+    /* Shadcn UI Variables */
+    --background: 0 0% 100%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    --primary: 174 84% 30%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222 47% 11%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+    --accent: 174 84% 30%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 174 84% 30%;
+    --radius: 0.75rem;
+
+    /* Shadow System */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.08), 0 2px 4px -2px rgb(0 0 0 / 0.04);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.04);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.08), 0 8px 10px -6px rgb(0 0 0 / 0.04);
+    --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.15);
+    --shadow-glow: 0 0 40px -10px rgba(13, 148, 136, 0.3);
+    --shadow-glow-accent: 0 0 40px -10px rgba(249, 115, 22, 0.3);
+    --shadow-inner: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
+
+    /* Animation Timing */
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* Duration */
+    --duration-fast: 150ms;
+    --duration-normal: 200ms;
+    --duration-slow: 300ms;
+    --duration-slower: 500ms;
+    --duration-slowest: 700ms;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1, "ss01" 1;
+  }
+
+  /* Enhanced Focus States */
+  :focus-visible {
+    @apply outline-none;
+    box-shadow: 0 0 0 2px var(--slate-100), 0 0 0 4px var(--teal-500);
+  }
+
+  /* Selection Styling */
+  ::selection {
+    background: rgba(13, 148, 136, 0.2);
+    color: var(--teal-900);
+  }
+}
+
+/* ============================================================================
+   ANIMATION KEYFRAMES
+   ============================================================================ */
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in-down {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(13, 148, 136, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 12px rgba(13, 148, 136, 0);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes gradient-shift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes bounce-subtle {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Animation Delay Utilities */
+.animation-delay-100 { animation-delay: 100ms; }
+.animation-delay-200 { animation-delay: 200ms; }
+.animation-delay-300 { animation-delay: 300ms; }
+.animation-delay-400 { animation-delay: 400ms; }
+.animation-delay-500 { animation-delay: 500ms; }
+
+/* ============================================================================
+   ANIMATION UTILITY CLASSES
+   ============================================================================ */
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.6s var(--ease-out) forwards;
+}
+
+.animate-fade-in-down {
+  animation: fade-in-down 0.5s var(--ease-out) forwards;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.4s ease-out forwards;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.4s var(--ease-out) forwards;
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.5s var(--ease-out) forwards;
+}
+
+.animate-slide-in-left {
+  animation: slide-in-left 0.5s var(--ease-out) forwards;
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--slate-100) 25%,
+    var(--slate-200) 50%,
+    var(--slate-100) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+.animate-bounce-subtle {
+  animation: bounce-subtle 2s ease-in-out infinite;
+}
+
+.animate-spin-slow {
+  animation: spin-slow 8s linear infinite;
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient-shift 8s ease infinite;
+}
+
+/* ============================================================================
+   SCROLLBAR STYLING
+   ============================================================================ */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--slate-300);
+  border-radius: 4px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--slate-400);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--slate-300) transparent;
+}
+
+/* ============================================================================
+   GRADIENT UTILITIES
+   ============================================================================ */
+
+.gradient-text {
+  background: linear-gradient(135deg, var(--teal-600) 0%, var(--teal-500) 50%, var(--orange-500) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-text-teal {
+  background: linear-gradient(135deg, var(--teal-700) 0%, var(--teal-500) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-bg-hero {
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(13, 148, 136, 0.08), transparent),
+    radial-gradient(ellipse 60% 40% at 80% 60%, rgba(249, 115, 22, 0.05), transparent),
+    radial-gradient(circle at 20% 80%, rgba(13, 148, 136, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 90% 10%, rgba(249, 115, 22, 0.04) 0%, transparent 40%);
+}
+
+.gradient-bg-mesh {
+  background:
+    radial-gradient(at 40% 20%, rgba(13, 148, 136, 0.08) 0px, transparent 50%),
+    radial-gradient(at 80% 0%, rgba(249, 115, 22, 0.06) 0px, transparent 50%),
+    radial-gradient(at 0% 50%, rgba(13, 148, 136, 0.06) 0px, transparent 50%),
+    radial-gradient(at 80% 50%, rgba(249, 115, 22, 0.04) 0px, transparent 50%),
+    radial-gradient(at 0% 100%, rgba(13, 148, 136, 0.08) 0px, transparent 50%);
+  animation: gradient-shift 15s ease infinite;
+  background-size: 200% 200%;
+}
+
+/* ============================================================================
+   GLASSMORPHISM
+   ============================================================================ */
+
+.glass {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.glass-dark {
+  background: rgba(15, 23, 42, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-subtle {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* ============================================================================
+   COMPONENT PATTERNS
+   ============================================================================ */
+
+/* Buttons */
+.btn-primary {
+  @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold text-white transition-all duration-200;
+  background: linear-gradient(135deg, var(--teal-600) 0%, var(--teal-500) 100%);
+  box-shadow: 0 4px 14px rgba(13, 148, 136, 0.35);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(13, 148, 136, 0.45);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-secondary {
+  @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold bg-white text-slate-700 border border-slate-200 transition-all duration-200;
+}
+
+.btn-secondary:hover {
+  @apply bg-slate-50 border-slate-300;
+  transform: translateY(-1px);
+}
+
+.btn-ghost {
+  @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium text-slate-600 transition-all duration-200;
+}
+
+.btn-ghost:hover {
+  @apply bg-slate-100 text-slate-900;
+}
+
+/* Cards */
+.card-hover {
+  @apply bg-white rounded-2xl border border-slate-200 transition-all duration-300;
+  box-shadow: var(--shadow-sm);
+}
+
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-xl);
+  border-color: var(--teal-200);
+}
+
+.card-elevated {
+  @apply bg-white rounded-2xl;
+  box-shadow:
+    0 4px 6px -1px rgb(0 0 0 / 0.05),
+    0 2px 4px -2px rgb(0 0 0 / 0.05),
+    0 0 0 1px rgb(0 0 0 / 0.02);
+}
+
+/* Inputs */
+.input-premium {
+  @apply w-full px-4 py-3 rounded-xl bg-white border border-slate-200 text-slate-900 placeholder:text-slate-400 transition-all duration-200;
+}
+
+.input-premium:focus {
+  @apply outline-none border-teal-500;
+  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.1);
+}
+
+.input-premium:hover:not(:focus) {
+  border-color: var(--slate-300);
+}
+
+/* ============================================================================
+   SLIDE PREVIEW STYLES
+   ============================================================================ */
+
+.slide-preview-container {
+  aspect-ratio: 16 / 9;
+}
+
+.slide-container {
+  @apply w-full h-full p-8 bg-white text-slate-900 flex flex-col overflow-auto;
+  min-height: 100%;
+}
+
+.slide-header {
+  @apply mb-4 flex-shrink-0 pb-4;
+  border-bottom: 2px solid var(--slate-800);
+}
+
+.slide-title {
+  @apply text-3xl font-bold text-slate-900;
+  line-height: 1.15;
+}
+
+.key-message-box {
+  @apply bg-gradient-to-r from-teal-50 to-teal-100/50 border-l-4 border-teal-600 p-4 mb-4 rounded-r-lg;
+}
+
+.key-message-box p {
+  @apply text-base font-medium text-slate-800;
+}
+
+/* ============================================================================
+   UTILITY CLASSES
+   ============================================================================ */
+
+.text-balance {
+  text-wrap: balance;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Skeleton Loading */
+.skeleton {
+  @apply animate-shimmer rounded-lg;
+  background: linear-gradient(
+    90deg,
+    var(--slate-100) 25%,
+    var(--slate-200) 50%,
+    var(--slate-100) 75%
+  );
+  background-size: 200% 100%;
+}
+
+/* Beta Badge */
+.beta-badge {
+  @apply inline-flex items-center rounded-full bg-teal-100 px-2.5 py-1 text-xs font-semibold text-teal-700;
+}
+
+/* Character Counter */
+.character-count {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Focus Ring */
+.focus-ring {
+  @apply focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 focus:ring-offset-white;
+}
+
+/* Image Loading */
+.img-fade {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.img-fade.loaded {
+  opacity: 1;
+}
+
+/* ============================================================================
+   RESPONSIVE UTILITIES
+   ============================================================================ */
+
+@media (max-width: 640px) {
+  .gradient-text {
+    background: linear-gradient(135deg, var(--teal-600) 0%, var(--teal-500) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}
+
+/* ============================================================================
+   ACCESSIBILITY
+   ============================================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .glass,
+  .glass-dark,
+  .glass-subtle {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
