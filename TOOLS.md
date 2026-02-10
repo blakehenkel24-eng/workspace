@@ -2,7 +2,7 @@
 
 > Document tool-specific configurations, gotchas, and credentials here.
 
-Last Updated: 2026-02-10 (Perplexity models added)
+Last Updated: 2026-02-10 (Perplexity + MCP + Full Tool Stack)
 
 ---
 
@@ -292,6 +292,340 @@ docker logs -f openclaw-dxad-openclaw-1
 
 ---
 
+## MCP Servers (External Stack)
+
+**Note:** These are configured in Blake's Cursor/Claude Desktop environment per USER.md, but not currently available in OpenClaw.
+
+### GitHub MCP
+**Status:** ⚠️ Not configured in OpenClaw (available in Cursor)
+
+**Purpose:** GitHub repo management, issues, PRs, code search
+
+**What it does:**
+- Create/read/update issues and PRs
+- Search code across repositories
+- Manage branches and commits
+- Read file contents from repos
+
+**Gotchas:**
+- Uses `gh` CLI as fallback in OpenClaw
+- Rate limits apply for unauthenticated requests
+
+---
+
+### Supabase MCP
+**Status:** ⚠️ Not configured in OpenClaw (available in Cursor)
+
+**Purpose:** Database management, queries, schema operations
+
+**What it does:**
+- Execute SQL queries
+- Manage tables and schemas
+- Handle migrations
+- Query realtime data
+
+**Gotchas:**
+- Use Supabase dashboard or `psql` CLI as fallback
+- Edge Functions managed via CLI
+
+---
+
+### Puppeteer MCP
+**Status:** ⚠️ Not configured in OpenClaw (available in Cursor)
+
+**Purpose:** Browser automation, screenshots, scraping
+
+**What it does:**
+- Navigate web pages
+- Take screenshots
+- Extract data
+- Fill forms
+
+**Gotchas:**
+- Use OpenClaw `browser` tool as fallback
+- Can be resource-intensive
+
+---
+
+## Additional Tools Available
+
+### Vercel CLI
+**Status:** ✅ Available (via exec)
+
+**Common Operations:**
+```bash
+# Deploy
+cd my-app && vercel --prod
+
+# Check deployments
+vercel list
+
+# View logs
+vercel logs my-app
+```
+
+**Gotchas:**
+- Requires `VERCEL_TOKEN` env var for non-interactive use
+- Team/scope may need specification
+
+---
+
+### Supabase CLI
+**Status:** ✅ Available (via exec)
+
+**Common Operations:**
+```bash
+# Login (one-time)
+supabase login
+
+# Link project
+supabase link --project-ref <ref>
+
+# Push migrations
+supabase db push
+
+# Start local dev
+supabase start
+
+# Generate types
+supabase gen types typescript --project-id <id>
+```
+
+**Gotchas:**
+- Local dev requires Docker
+- Migrations should be version controlled
+
+---
+
+### GitHub CLI (`gh`)
+**Status:** ✅ Available (via exec)
+
+**Common Operations:**
+```bash
+# Repo operations
+gh repo view
+gh repo create
+
+# Issues
+gh issue create --title "Bug" --body "Description"
+gh issue list
+
+# PRs
+gh pr create --title "Feature" --body "Changes"
+gh pr merge
+
+# Codespaces
+gh codespace list
+```
+
+**Gotchas:**
+- Authenticate with `gh auth login` or `GH_TOKEN` env var
+- Enterprise GitHub may need `GH_HOST` set
+
+---
+
+### npm / Node.js
+**Status:** ✅ Available (via exec)
+
+**Common Operations:**
+```bash
+# Install dependencies
+npm install
+
+# Run scripts
+npm run dev
+npm run build
+npm test
+
+# Global packages
+npm install -g <package>
+```
+
+**Gotchas:**
+- Node version managed via `nvm` if installed
+- `package-lock.json` should be committed
+
+---
+
+### Image Generation (OpenAI)
+**Status:** ✅ Working (via `image` tool)
+
+**Configuration:**
+- Provider: OpenAI
+- Model: `gpt-4o` (DALL-E 3)
+- Key: `OPENAI_API_KEY`
+
+**Common Operations:**
+```javascript
+// Generate image
+{
+  "tool": "image",
+  "prompt": "description of image",
+  "size": "1024x1024"  // or 1792x1024, 1024x1792
+}
+```
+
+**Gotchas:**
+- Costs per image (not per token)
+- Quality: standard or hd (hd costs more)
+- Style: vivid or natural
+
+---
+
+### Text-to-Speech (TTS)
+**Status:** ✅ Working (via `tts` tool)
+
+**Configuration:**
+- Provider: OpenAI
+- Model: `tts-1` or `tts-1-hd`
+- Voices: alloy, echo, fable, onyx, nova, shimmer
+
+**Common Operations:**
+```javascript
+// Generate speech
+{
+  "tool": "tts",
+  "text": "Hello world",
+  "voice": "alloy"
+}
+```
+
+**Gotchas:**
+- Returns audio file path (MEDIA:)
+- Supports multiple output formats
+
+---
+
+### Canvas (Browser Rendering)
+**Status:** ✅ Working (via `canvas` tool)
+
+**Purpose:** Present/evaluate HTML/CSS/JS, take screenshots
+
+**Common Operations:**
+```bash
+# Present HTML
+canvas present --html "<h1>Hello</h1>"
+
+# Navigate to URL
+canvas navigate --url "https://example.com"
+
+# Take screenshot
+canvas screenshot
+```
+
+**Gotchas:**
+- Good for previewing components before deploying
+- Limited interaction (no clicking)
+
+---
+
+### Browser Automation
+**Status:** ✅ Working (via `browser` tool)
+
+**Purpose:** Full browser control (Playwright-based)
+
+**Common Operations:**
+```bash
+# Open page
+browser open --url "https://example.com"
+
+# Take snapshot (accessible tree)
+browser snapshot
+
+# Click element
+browser click --ref e12
+
+# Type text
+browser type --ref e15 --text "hello"
+
+# Screenshot
+browser screenshot --fullPage
+```
+
+**Gotchas:**
+- Requires Chrome extension for Chrome profile
+- Sandbox mode available for isolated browsing
+- Supports both `role` and `aria` refs
+
+---
+
+### Cron Jobs
+**Status:** ✅ Working (via `cron` tool)
+
+**Purpose:** Schedule automated tasks
+
+**Common Operations:**
+```bash
+# List jobs
+cron list
+
+# Add job
+cron add --schedule '{"kind":"every","everyMs":3600000}' \
+  --payload '{"kind":"agentTurn","message":"Do task"}'
+
+# Remove job
+cron remove --jobId <id>
+
+# Trigger now
+cron run --jobId <id>
+```
+
+**Gotchas:**
+- Supports `at`, `every`, and `cron` schedules
+- AgentTurn payload runs in isolated session
+- SystemEvent payload injects into main session
+
+---
+
+### Nodes (Paired Devices)
+**Status:** ✅ Available
+
+**Purpose:** Control paired mobile devices
+
+**Common Operations:**
+```bash
+# List devices
+nodes status
+
+# Take photo
+nodes camera_snap --facing back
+
+# Record screen
+nodes screen_record --duration 30s
+
+# Run command on device
+nodes run --command ["ls","-la"]
+```
+
+**Gotchas:**
+- Requires device pairing via QR code
+- Limited to allowed operations
+
+---
+
+### Messaging
+**Status:** ✅ Working (via `message` tool)
+
+**Purpose:** Send messages via configured channels
+
+**Common Operations:**
+```bash
+# Send message
+message send --target "channel-name" --message "Hello"
+
+# Create thread
+message send --target "channel" --message "Topic" --threadName "Discussion"
+
+# Send poll
+message send --target "channel" --pollQuestion "Vote?" --pollOption "Yes" --pollOption "No"
+```
+
+**Supported Channels:**
+- Telegram ✅ (configured)
+- WhatsApp, Discord, Slack, etc. (if configured)
+
+---
+
 ## Agent Configuration
 
 ### Memory Search
@@ -432,6 +766,44 @@ sessions_spawn --task "do something"
 # Send message to session
 sessions_send --sessionKey <key> --message "hello"
 ```
+
+---
+
+## Potential Future Tools
+
+### To Consider Adding:
+
+**APIs & Services:**
+- **Stripe** — Payment processing, subscription management
+- **SendGrid/Mailgun** — Transactional emails
+- **Twilio** — SMS, phone calls
+- **Airtable** — Database/spreadsheet hybrid
+- **Notion API** — Docs, wikis, databases
+- **Linear** — Issue tracking (alternative to GitHub Issues)
+- **Figma API** — Design system integration
+- **Cloudflare API** — DNS, Workers, R2 storage
+
+**Development Tools:**
+- **Docker CLI** — Container management
+- **Terraform** — Infrastructure as code
+- **AWS CLI** — Cloud resource management
+- **Fly.io CLI** — Alternative deployment platform
+
+**Data & Analytics:**
+- **Google Analytics API** — Traffic analysis
+- **Mixpanel/Amplitude** — Product analytics
+- **PostHog** — Open-source product analytics
+- **Tinybird** — Real-time analytics
+
+**Monitoring:**
+- **Sentry** — Error tracking
+- **Better Stack** — Uptime monitoring
+- **LogRocket** — Session replay
+
+**Communication:**
+- **Discord bot** — Community management
+- **Slack app** — Team notifications (enable existing skill)
+- **Cal.com** — Scheduling
 
 ---
 
